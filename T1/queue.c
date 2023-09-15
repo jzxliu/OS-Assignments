@@ -69,12 +69,15 @@ int queue_A_enqueue(void *item)
 
 /* Add code BEGIN */
     if (!queue_A_initialized){
-        return -5;
+        return ERR_NOT_INITIALIZED;
     }
     queue_A_node_t *new_node = malloc(sizeof(queue_A_node_t));
     new_node->item = item;
+    new_node->next = NULL;
     if (queue_A_tail != NULL){
         queue_A_tail->next = new_node;
+    } else {
+        queue_A_head = new_node;
     }
     queue_A_tail = new_node;
     return 0;
@@ -95,16 +98,19 @@ int queue_A_dequeue(void **item)
 /* Add code BEGIN */
 
     if (!queue_A_initialized){
-        return -5;
+        return ERR_NOT_INITIALIZED;
     }
 
     if (queue_A_head == NULL){
-        return -3;
+        return ERR_EMPTY;
     }
     *item = queue_A_head->item;
-    queue_A_node_t* temp_head = queue_A_head;
+    queue_A_node_t* to_be_freed = queue_A_head;
     queue_A_head = queue_A_head->next;
-	free(temp_head);
+    if (queue_A_head == NULL) {
+        queue_A_tail = NULL;
+    }
+	free(to_be_freed);
     return 0;
 
 /* Add code END */
@@ -122,12 +128,22 @@ int queue_A_remove_from_queue(void *item)
 
 /* Add code BEGIN */
     if (!queue_A_initialized){
-        return -5;
+        return ERR_NOT_INITIALIZED;
     }
 
     if (queue_A_head == NULL){
-        return -4;
+        return ERR_NO_SUCH_ITEM;
     }
+
+    if (queue_A_head->item == item){
+        queue_A_node_t* to_be_freed = queue_A_head;
+        queue_A_head = queue_A_head->next;
+        if (queue_A_head == NULL) {
+            queue_A_tail = NULL;
+        }
+        free(to_be_freed);
+    }
+
     return 0;
 /* Add code END */
 
