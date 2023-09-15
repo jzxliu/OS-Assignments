@@ -22,7 +22,7 @@ bool queue_A_initialized = false;
 typedef struct queue_A_node {
 
 /* Add code BEGIN */
-
+    struct queue_A_node *next;
 
 /* Add code END */
 
@@ -49,8 +49,12 @@ int queue_A_initialize()
 {
 
 /* Add code BEGIN */
+    if (queue_A_initialized){
+        return ERR_INITIALIZED;
+    }
+    queue_A_initialized = true;
 
-	
+	return 0;
 /* Add code END */
 
 	/* Change the return value when you implement this function. */
@@ -64,7 +68,16 @@ int queue_A_enqueue(void *item)
 {
 
 /* Add code BEGIN */
-
+    if (!queue_A_initialized){
+        return -5;
+    }
+    queue_A_node_t *new_node = malloc(sizeof(queue_A_node_t));
+    new_node->item = item;
+    if (queue_A_tail != NULL){
+        queue_A_tail->next = new_node;
+    }
+    queue_A_tail = new_node;
+    return 0;
 	
 /* Add code END */
 
@@ -81,7 +94,19 @@ int queue_A_dequeue(void **item)
 
 /* Add code BEGIN */
 
-	
+    if (!queue_A_initialized){
+        return -5;
+    }
+
+    if (queue_A_head == NULL){
+        return -3;
+    }
+    *item = queue_A_head->item;
+    queue_A_node_t* temp_head = queue_A_head;
+    queue_A_head = queue_A_head->next;
+	free(temp_head);
+    return 0;
+
 /* Add code END */
 
 	/* Change the return value when you implement this function. */
@@ -96,8 +121,14 @@ int queue_A_remove_from_queue(void *item)
 {
 
 /* Add code BEGIN */
+    if (!queue_A_initialized){
+        return -5;
+    }
 
-
+    if (queue_A_head == NULL){
+        return -4;
+    }
+    return 0;
 /* Add code END */
 
 	/* Change the return value when you implement this function. */
@@ -113,7 +144,9 @@ void queue_A_print_queue()
 	printf("head: %p, tail: %p\n", queue_A_head, queue_A_tail);
 	
 /* Add code BEGIN */
-
+    if (!queue_A_initialized){
+        printf("NOT INITIALIZED\n");
+    }
 	
 /* Add code END */
 	
