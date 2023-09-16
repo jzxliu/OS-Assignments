@@ -184,8 +184,15 @@ void queue_A_print_queue()
 /* Add code BEGIN */
     if (!queue_A_initialized){
         printf("NOT INITIALIZED\n");
+        return;
     }
-	
+
+    queue_A_node_t *curr = queue_A_head;
+	while (curr != NULL) {
+        printf("[%p, %p] -> ", curr, curr->item);
+        curr = curr->next;
+    }
+
 /* Add code END */
 	
 	printf("(nil)\n");
