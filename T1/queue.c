@@ -208,7 +208,19 @@ int queue_A_destroy()
 
 /* Add code BEGIN */
 
+    if (!queue_A_initialized){
+        return ERR_NOT_INITIALIZED;
+    }
 
+    queue_A_node_t *curr = queue_A_head;
+    while (curr != NULL){
+        to_be_freed = curr;
+        curr = curr->next;
+        free(to_be_freed);
+    }
+    queue_A_head = NULL;
+    queue_A_tail = NULL;
+    return 0;
 /* Add code END */
 
 	/* Change the return value when you implement this function. */
