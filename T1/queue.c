@@ -214,7 +214,7 @@ int queue_A_destroy()
 
     queue_A_node_t *curr = queue_A_head;
     while (curr != NULL){
-        to_be_freed = curr;
+        queue_A_node_t *to_be_freed = curr;
         curr = curr->next;
         free(to_be_freed);
     }
