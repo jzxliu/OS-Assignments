@@ -104,6 +104,11 @@ int queue_A_dequeue(void **item)
     if (queue_A_head == NULL){
         return ERR_EMPTY;
     }
+
+    if (item == NULL){
+        return ERR_INVALID_ARG;
+    }
+
     *item = queue_A_head->item;
     queue_A_node_t* to_be_freed = queue_A_head;
     queue_A_head = queue_A_head->next;
@@ -142,9 +147,26 @@ int queue_A_remove_from_queue(void *item)
             queue_A_tail = NULL;
         }
         free(to_be_freed);
+        return 0;
     }
 
-    return 0;
+    queue_A_node_t *curr = queue_A_head;
+
+    while(curr->next != NULL){
+        if (curr->next->item == item){
+            queue_A_node_t* to_be_freed = curr->next;
+            curr->next = curr->next->next;
+            if (curr->next == NULL){
+                queue_A_tail = curr;
+            }
+            free(to_be_freed);
+            return 0;
+        }
+        curr = curr->next;
+    }
+
+    return ERR_NO_SUCH_ITEM;
+
 /* Add code END */
 
 	/* Change the return value when you implement this function. */
