@@ -336,6 +336,10 @@ int queue_B_dequeue(void** item)
         return ERR_EMPTY;
     }
 
+    if (item == NULL){
+        return ERR_INVALID_ARG;
+    }
+
     *item = queue_B_nodes[queue_B_head].item;
 
     queue_B_head += 1;
