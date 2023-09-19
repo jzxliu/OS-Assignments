@@ -274,6 +274,9 @@ int queue_B_initialize()
 {
 
 /* Add code BEGIN */
+    if (queue_B_initialized){
+        return ERR_INITIALIZED;
+    }
     queue_B_initialized = true;
 
     return 0;
