@@ -189,7 +189,7 @@ void queue_A_print_queue()
 
     queue_A_node_t *curr = queue_A_head;
 	while (curr != NULL) {
-        printf("[%p, %p] -> ", curr, curr->item);
+        printf("[%p: %p] -> ", curr, curr->item);
         curr = curr->next;
     }
 
@@ -430,7 +430,7 @@ void queue_B_print_queue()
 
     unsigned long curr = queue_B_head;
     while (curr != queue_B_tail) {
-        printf("[%p, %p] -> ", &queue_B_nodes[curr], queue_B_nodes[curr].item);
+        printf("[%p: %p] -> ", &queue_B_nodes[curr], queue_B_nodes[curr].item);
         curr++;
         if (curr >= PART_B_MAX_SIZE) {
             curr = 0;
