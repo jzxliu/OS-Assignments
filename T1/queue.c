@@ -256,9 +256,9 @@ queue_B_node_t queue_B_nodes[PART_B_MAX_SIZE];
 /* You may change the names and types of these 3 global variables.
  * You may not add any additional global variables.
  */  
-unsigned long queue_B_var_1 = 0;
-unsigned long queue_B_var_2 = 0;
-unsigned long queue_B_var_3 = 0;
+unsigned long queue_B_head = 0;
+unsigned long queue_B_tail = 0;
+unsigned long queue_B_size = 0;
 
 /* Add code BEGIN */
 
@@ -274,8 +274,9 @@ int queue_B_initialize()
 {
 
 /* Add code BEGIN */
+    queue_B_initialized = true;
 
-	
+    return 0;
 /* Add code END */
 
 	/* Change the return value when you implement this function. */
@@ -290,6 +291,24 @@ int queue_B_enqueue(void* item)
 
 /* Add code BEGIN */
 
+    if (!queue_B_initialized) {
+        return ERR_NOT_INITIALIZED;
+    }
+
+    if (queue_B_size >= PART_B_MAX_SIZE){
+        return ERR_FULL;
+    }
+
+    queue_B_nodes[queue_B_tail].item = item;
+
+    queue_B_tail += 1;
+    if (queue_B_tail >= PART_B_MAX_SIZE) {
+        queue_B_tail = 0;
+    }
+
+    queue_B_size += 1;
+
+    return 0;
 
 /* Add code END */
 
@@ -306,7 +325,25 @@ int queue_B_dequeue(void** item)
 
 /* Add code BEGIN */
 
-	
+    if (!queue_B_initialized) {
+        return ERR_NOT_INITIALIZED;
+    }
+
+    if (queue_B_size <= 0){
+        return ERR_EMPTY;
+    }
+
+    *item = queue_B_nodes[queue_B_head].item;
+
+    queue_B_head += 1;
+    if (queue_B_head >= PART_B_MAX_SIZE) {
+        queue_B_head = 0;
+    }
+
+    queue_B_size -= 1;
+
+    return 0;
+
 /* Add code END */
 	
 	/* Change the return value when you implement this function. */
@@ -321,7 +358,49 @@ int queue_B_remove_from_queue(void *item)
 {
 	
 /* Add code BEGIN */
+    unsigned long curr = queue_B_head;
 
+    if (!queue_B_initialized) {
+        return ERR_NOT_INITIALIZED;
+    }
+
+    if (queue_B_size <= 0){
+        return ERR_NO_SUCH_ITEM;
+    }
+
+    while (curr != queue_B_tail) {
+
+        if (queue_B_nodes[curr].item == item){
+
+            queue_B_tail -= 1;
+            if (queue_B_tail <= -1){
+                queue_B_tail = PART_B_MAX_SIZE - 1;
+            }
+
+            while (curr != queue_B_tail) {
+                if (curr != PART_B_MAX_SIZE - 1) {
+                    queue_B_nodes[curr].item = queue_B_nodes[curr+1].item;
+                } else {
+                    queue_B_nodes[curr].item = queue_B_nodes[0].item;
+                }
+
+                curr ++;
+                if (curr >= PART_B_MAX_SIZE) {
+                    curr = 0;
+                }
+            }
+
+            queue_B_size -= 1;
+            return 0;
+        }
+
+        curr ++;
+        if (curr >= PART_B_MAX_SIZE) {
+            curr = 0;
+        }
+    }
+
+    return ERR_NO_SUCH_ITEM;
 
 /* Add code END */
 
@@ -339,8 +418,22 @@ void queue_B_print_queue()
 	/* printf("head: %p, tail: %p\n", <addr of head>, <addr of tail>); */
 
 	/* Add code BEGIN */
+    printf("head: %p, tail: %p\n", &queue_B_nodes[queue_B_head], &queue_B_nodes[queue_B_tail]);
 
-	
+    if (!queue_B_initialized){
+        printf("NOT INITIALIZED\n");
+        return;
+    }
+
+    unsigned long curr = queue_B_head;
+    while (curr != queue_B_tail) {
+        printf("[%p, %p] -> ", &queue_B_nodes[curr], queue_B_nodes[curr].item);
+        curr++;
+        if (curr >= PART_B_MAX_SIZE) {
+            curr = 0;
+        }
+    }
+
 	/* Add code END */
 	
 	printf("(nil)\n");
@@ -354,7 +447,13 @@ int queue_B_destroy()
 {
 
 /* Add code BEGIN */
+    if (!queue_B_initialized) {
+        return ERR_NOT_INITIALIZED;
+    }
 
+    for (unsigned long curr = 0; curr < PART_B_MAX_SIZE; curr++){
+        queue_B_nodes[curr].item = NULL;
+    }
 
 /* Add code END */
 	
