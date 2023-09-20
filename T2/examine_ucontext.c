@@ -175,7 +175,7 @@ main(int argc, char **argv)
 
 	/* 7. Show the distance (in bytes) between setcontext_called and err. */
 	printf("number of bytes pushed to the stack between setcontext_called "
-	       "and err = %ld\n", (unsigned long)&err - (unsigned long)&setcontext_called);
+	       "and err = %ld\n", (unsigned long)&setcontext_called - (unsigned long)&err);
 
 	/* 8. Show the value of the stack pointer register saved in my_context. */
 	printf("stack pointer register (RSP) stored in my_context = 0x%lx\n",
@@ -183,7 +183,7 @@ main(int argc, char **argv)
 
 	/* 9. Show the distance (in bytes) between err and the saved RSP. */
 	printf("number of bytes between err and the saved stack in my_context "
-	       "= %ld\n", (unsigned long)my_context.uc_mcontext.gregs[REG_RSP] - (unsigned long)&err);
+	       "= %ld\n", (unsigned long)&err - (unsigned long)my_context.uc_mcontext.gregs[REG_RSP]);
 
 	/* QUESTION: What is the value of the uc_stack field in my_context?
 	 * Note that this field is used to store an alternate stack for use
@@ -192,7 +192,7 @@ main(int argc, char **argv)
 
 	/* 10. Show the value of the uc_stack field in my_context. */
 	printf("value of uc_stack.ss_sp = 0x%lx\n",
-	       (unsigned long)my_context.uc_stack.ss_sp);
+	       (unsigned long)&my_context.uc_stack);
 
 
 	/* Now we will try to understand how setcontext works. */
