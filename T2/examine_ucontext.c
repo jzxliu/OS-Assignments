@@ -175,7 +175,7 @@ main(int argc, char **argv)
 
 	/* 7. Show the distance (in bytes) between setcontext_called and err. */
 	printf("number of bytes pushed to the stack between setcontext_called "
-	       "and err = %ld\n", (unsigned long)-1);
+	       "and err = %ld\n", (unsigned long) (&err - &setcontext_called));
 
 	/* 8. Show the value of the stack pointer register saved in my_context. */
 	printf("stack pointer register (RSP) stored in my_context = 0x%lx\n",
