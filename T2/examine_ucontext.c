@@ -124,7 +124,7 @@ main(int argc, char **argv)
 	 */
 	
 	/* 2. Show the memory address of the main() function. */
-	printf("memory address of main() = 0x%lx\n", (long unsigned int)my_context.uc_mcontext.gregs[REG_RIP]);
+	printf("memory address of main() = 0x%lx\n", (unsigned long)&main);
 	
 	/* 3. Show the memory address of the program counter saved in my_context. 
 	 * Hint: the uc_mcontext field of the ucontext_t struct holds
