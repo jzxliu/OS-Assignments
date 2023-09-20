@@ -136,7 +136,7 @@ main(int argc, char **argv)
 	 */
 	printf("memory address of the program counter (RIP) saved "
 	       "in my_context = 0x%lx\n",
-	       (unsigned long)-1);
+	       (unsigned long)my_context.uc_mcontext.gregs[REG_RIP]);
 
 	/* What is the distance (i.e., number of bytes) between the address of 
 	 * main and the address of the program counter saved in my_context?
