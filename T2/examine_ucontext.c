@@ -115,7 +115,7 @@ main(int argc, char **argv)
 
 
 	/* 1. Show size of ucontext_t structure. Hint: use sizeof(). */
-	printf("ucontext_t size = %ld bytes\n", sizeof(my_context));
+	printf("ucontext_t size = %ld bytes\n", sizeof(ucontext_t));
 
 	/* now, look inside of the context you just saved. */
 
@@ -124,7 +124,7 @@ main(int argc, char **argv)
 	 */
 	
 	/* 2. Show the memory address of the main() function. */
-	printf("memory address of main() = 0x%lx\n", (unsigned long)-1);
+	printf("memory address of main() = 0x%lx\n", (void *)my_context.uc_mcontext.gregs[REG_RIP]);
 	
 	/* 3. Show the memory address of the program counter saved in my_context. 
 	 * Hint: the uc_mcontext field of the ucontext_t struct holds
