@@ -167,11 +167,11 @@ main(int argc, char **argv)
 
 	/* 5. Show the memory address of the variable setcontext_called. */
 	printf("memory address of the variable setcontext_called = %p\n",
-	       (void *)-1);
+	       &setcontext_called);
 
 	/* 6. Show the memory address of the variable err. */
 	printf("memory address of the variable err = %p\n",
-	       (void *)-1);
+	       &err);
 
 	/* 7. Show the distance (in bytes) between setcontext_called and err. */
 	printf("number of bytes pushed to the stack between setcontext_called "
