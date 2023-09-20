@@ -146,10 +146,10 @@ main(int argc, char **argv)
 	/* Now, think about parameters. */
 
 	/* (Not marked) Show the value of argc passed to main(). */
-	printf("argc = %d\n", -1);
+	printf("argc = %d\n", argc);
 
 	/* 4. Show the memory address of the argv array passed to main(). */
-	printf("argv = %p\n", (void *)-1);
+	printf("argv = %p\n", (void *)argv);
 	
 	/* QUESTIONS: How are the parameters argc and argv passed into the main 
 	 * function? 
