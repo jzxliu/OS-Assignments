@@ -115,7 +115,7 @@ main(int argc, char **argv)
 
 
 	/* 1. Show size of ucontext_t structure. Hint: use sizeof(). */
-	printf("ucontext_t size = %ld bytes\n", (long int)-1);
+	printf("ucontext_t size = %ld bytes\n", sizeof(my_context));
 
 	/* now, look inside of the context you just saved. */
 
