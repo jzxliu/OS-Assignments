@@ -192,7 +192,7 @@ main(int argc, char **argv)
 
 	/* 10. Show the value of the uc_stack field in my_context. */
 	printf("value of uc_stack.ss_sp = 0x%lx\n",
-	       (unsigned long)&my_context.uc_stack);
+	       (unsigned long)my_context.uc_stack);
 
 
 	/* Now we will try to understand how setcontext works. */
