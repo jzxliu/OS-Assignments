@@ -222,7 +222,7 @@ thread_yield(Tid want_tid)
 
     printf("wtf setcontext didn't run");
     /* Shouldn't get here */
-	return THREAD_FAILED;
+	return 0;
 }
 
 void
