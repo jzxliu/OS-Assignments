@@ -134,6 +134,7 @@ call_setcontext(ucontext_t * context)
 {
     int err = setcontext(context);
     assert(!err);
+    printf("wtf setcontext didn't run");
 }
 
 static void
