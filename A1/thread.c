@@ -186,7 +186,10 @@ thread_yield(Tid want_tid)
     } else if (want_tid == THREAD_SELF){
         want_tid = thread_id();
     } else {
-        if (want_tid >= THREAD_MAX_THREADS || threads[want_tid].state == 0) {
+        if (want_tid >= THREAD_MAX_THREADS) {
+            return THREAD_INVALID;
+        }
+        if (threads[want_tid].state == 0) {
             return THREAD_INVALID;
         }
 
