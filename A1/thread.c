@@ -220,7 +220,8 @@ thread_yield(Tid want_tid)
     current_thread = want_tid;
     call_setcontext(&(threads[want_tid].context));
 
-	return want_tid;
+    /* Shouldn't get here */
+	return THREAD_FAILED;
 }
 
 void
