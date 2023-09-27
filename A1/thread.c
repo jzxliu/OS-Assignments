@@ -33,7 +33,7 @@ struct thread {
      * 2: thread is waiting
      */
 
-    bool killed = false;
+    bool killed;
 	ucontext_t context;
 
 };
@@ -158,6 +158,9 @@ thread_init(void)
     }
     current_thread = 0;
     threads[0].state = 1;
+    threads[0].setcontext_called = 0;
+    threads[0].TID = 0;
+    threads[0].killed = 0;
 }
 
 Tid
