@@ -17,12 +17,134 @@ struct wait_queue {
 
 /* This is the thread control block. */
 struct thread {
-	/* ... Fill this in ... */
+
+    Tid TID;
+
+    /* Points to the thread stack allocated*/
+    void *thread_stack;
+
+    volatile int setcontext_called = 0;
+
+    int state = 0;
+    /* States:
+     * 0: thread is unused
+     * 1: thread is running
+     * 2: thread is waiting
+     */
+
+    bool killed = false;
+	ucontext_t context;
+
 };
+
+volatile bool threads_initialized = false;
+
+struct thread threads[THREAD_MAX_THREADS];
+
+volatile Tid current_thread;
+
+
+typedef struct ready_queue_node {
+
+    Tid TID;
+
+} ready_node;
+
+volatile ready_node ready_queue[THREAD_MAX_THREADS];
+volatile unsigned long ready_head = 0;
+volatile unsigned long ready_tail = 0;
+volatile unsigned long ready_size = 0;
+
+
+/* Add thread to the tail of the queue.
+ * Returns 0 on success or an appropriate error code on failure.
+ */
+int ready_queue_enqueue(Tid TID)
+{
+
+    ready_queue[ready_tail].TID = TID;
+
+    queue_B_tail += 1;
+    if (ready_tail >= THREAD_MAX_THREADS) {
+        ready_tail = 0;
+    }
+
+    ready_size += 1;
+
+    return 0;
+}
+
+/* Returns the first Tid in the queue, and remove it from the queue.
+ * Returns -1 if queue is empty
+ */
+Tid ready_queue_pop()
+{
+    if(ready_size == 0){
+        return -1;
+    }
+    Tid out = ready_queue[ready_head].TID;
+    ready_head += 1;
+    if (ready_head >= THREAD_MAX_THREADS) {
+        ready_head = 0;
+    }
+    ready_size -= 1;
+    return out;
+}
+
+
+/* Search the queue for 'TID' and, if found, remove it from the queue.
+ * Returns 0 if the TID is found, or -1 if the TID is not in the queue.
+ */
+int ready_queue_remove(Tid TID)
+{
+    unsigned long curr = ready_head;
+    while (curr != ready_tail) {
+        if (ready_queue[curr].TID == TID){
+            ready_tail -= 1;
+            if (ready_tail <= -1){
+                ready_tail = THREAD_MAX_THREADS - 1;
+            }
+            while (curr != ready_tail) {
+                if (curr != THREAD_MAX_THREADS - 1) {
+                    ready_queue[curr].TID = ready_queue[curr+1].TID;
+                } else {
+                    ready_queue[curr].TID = ready_queue[0].TID;
+                }
+
+                curr ++;
+                if (curr >= THREAD_MAX_THREADS) {
+                    curr = 0;
+                }
+            }
+            ready_size -= 1;
+            return 0;
+        }
+        curr ++;
+        if (curr >= PART_B_MAX_SIZE) {
+            curr = 0;
+        }
+    }
+    return -1;
+}
+
+/**/
+static void
+call_setcontext(ucontext_t * context)
+{
+    int err = setcontext(context);
+    assert(!err);
+}
+
+static void
+call_getcontext(ucontext_t * context)
+{
+    int err = getcontext(context);
+    assert(!err);
+}
 
 /**************************************************************************
  * Assignment 1: Refer to thread.h for the detailed descriptions of the six
- *               functions you need to implement. 
+ *               functions you need to implement.
  **************************************************************************/
 
 void
@@ -30,18 +152,21 @@ thread_init(void)
 {
 	/* Add necessary initialization for your threads library here. */
         /* Initialize the thread control block for the first thread */
-	TBD();
+	if (threads_initialized) {
+        return;
+    }
+    current_thread = 0;
+    threads[0].state = 1;
 }
 
 Tid
 thread_id()
 {
-	TBD();
-	return THREAD_INVALID;
+	return current_thread;
 }
 
 /* New thread starts by calling thread_stub. The arguments to thread_stub are
- * the thread_main() function, and one argument to the thread_main() function. 
+ * the thread_main() function, and one argument to the thread_main() function.
  */
 void
 thread_stub(void (*thread_main)(void *), void *arg)
@@ -60,7 +185,36 @@ thread_create(void (*fn) (void *), void *parg)
 Tid
 thread_yield(Tid want_tid)
 {
-	TBD();
+
+    if (want_tid == THREAD_ANY){
+        if (ready_size <= 1) {
+            return THREAD_NONE;
+        }
+        want_tid = ready_queue[ready_head].TID;
+        ready_queue_remove(want_tid);
+        ready_queue_enqueue(current_thread);
+    } else if (want_tid == THREAD_SELF){
+        want_tid = current_thread;
+    } else {
+        if (threads[want_tid].state == 0) {
+            return THREAD_INVALID;
+        }
+
+        /* modify the queue */
+        ready_queue_remove(want_tid);
+        ready_queue_enqueue(current_thread);
+    }
+
+    call_getcontext(&(threads[curr].context));
+
+    if (threads[current_thread].setcontext_called) {
+        threads[current_thread].setcontext_called = 0;
+        return want_tid;
+    }
+
+    threads[current_thread].setcontext_called = 1;
+    call_setcontext(&(threads[want_tid].context));
+
 	return THREAD_FAILED;
 }
 
