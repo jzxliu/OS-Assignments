@@ -24,9 +24,9 @@ struct thread {
     /* Points to the thread stack allocated*/
     void *thread_stack;
 
-    int setcontext_called = 0;
+    volatile int setcontext_called;
 
-    int state = 0;
+    int state;
     /* States:
      * 0: thread is unused
      * 1: thread is running
