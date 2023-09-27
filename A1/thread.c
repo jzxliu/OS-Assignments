@@ -134,7 +134,6 @@ call_setcontext(ucontext_t * context)
 {
     int err = setcontext(context);
     assert(!err);
-    printf("wtf setcontext didn't run");
 }
 
 static void
@@ -221,6 +220,7 @@ thread_yield(Tid want_tid)
     current_thread = want_tid;
     call_setcontext(&(threads[want_tid].context));
 
+    printf("wtf setcontext didn't run");
     /* Shouldn't get here */
 	return THREAD_FAILED;
 }
