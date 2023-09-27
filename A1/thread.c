@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ucontext.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "thread.h"
 
 /* This is the wait queue structure, needed for Assignment 2. */ 
@@ -37,7 +38,7 @@ struct thread {
 
 };
 
-volatile bool threads_initialized = false;
+bool threads_initialized = false;
 
 struct thread threads[THREAD_MAX_THREADS];
 
@@ -64,7 +65,7 @@ int ready_queue_enqueue(Tid TID)
 
     ready_queue[ready_tail].TID = TID;
 
-    queue_B_tail += 1;
+    ready_tail += 1;
     if (ready_tail >= THREAD_MAX_THREADS) {
         ready_tail = 0;
     }
@@ -120,7 +121,7 @@ int ready_queue_remove(Tid TID)
             return 0;
         }
         curr ++;
-        if (curr >= PART_B_MAX_SIZE) {
+        if (curr >= THREAD_MAX_THREADS) {
             curr = 0;
         }
     }
