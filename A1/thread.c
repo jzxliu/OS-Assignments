@@ -218,11 +218,10 @@ thread_yield(Tid want_tid)
 
     threads[thread_id()].setcontext_called = 1;
     current_thread = want_tid;
-    call_setcontext(&(threads[want_tid].context));
+    setcontext(&(threads[want_tid].context));
 
-    printf("wtf setcontext didn't run");
     /* Shouldn't get here */
-	return 0;
+	return THREAD_FAILED;
 }
 
 void
