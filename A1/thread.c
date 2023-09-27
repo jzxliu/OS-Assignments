@@ -161,7 +161,7 @@ thread_init(void)
     threads[0].setcontext_called = 0;
     threads[0].TID = 0;
     threads[0].killed = 0;
-    threads[0].contest = { 0 };
+    threads[0].context = { 0 };
 }
 
 Tid
