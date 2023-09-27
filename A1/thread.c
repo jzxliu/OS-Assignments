@@ -161,7 +161,6 @@ thread_init(void)
     threads[0].setcontext_called = 0;
     threads[0].TID = 0;
     threads[0].killed = 0;
-    threads[0].context = { 0 };
 }
 
 Tid
@@ -221,7 +220,7 @@ thread_yield(Tid want_tid)
     current_thread = want_tid;
     call_setcontext(&(threads[want_tid].context));
 
-	return THREAD_FAILED;
+	return want_tid;
 }
 
 void
