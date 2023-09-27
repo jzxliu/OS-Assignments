@@ -209,7 +209,7 @@ thread_yield(Tid want_tid)
         ready_queue_enqueue(current_thread);
     }
 
-    call_getcontext(&(threads[curr].context));
+    call_getcontext(&(threads[current_thread].context));
 
     if (threads[current_thread].setcontext_called) {
         threads[current_thread].setcontext_called = 0;
