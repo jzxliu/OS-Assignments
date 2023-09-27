@@ -128,21 +128,6 @@ int ready_queue_remove(Tid TID)
     return -1;
 }
 
-/**/
-static void
-call_setcontext(ucontext_t * context)
-{
-    int err = setcontext(context);
-    assert(!err);
-}
-
-static void
-call_getcontext(ucontext_t * context)
-{
-    int err = getcontext(context);
-    assert(!err);
-}
-
 /**************************************************************************
  * Assignment 1: Refer to thread.h for the detailed descriptions of the six
  *               functions you need to implement.
@@ -209,7 +194,8 @@ thread_yield(Tid want_tid)
         ready_queue_enqueue(thread_id());
     }
 
-    call_getcontext(&(threads[thread_id()].context));
+    int err = getcontext(context);
+    assert(!err);
 
     if (threads[thread_id()].setcontext_called) {
         threads[thread_id()].setcontext_called = 0;
