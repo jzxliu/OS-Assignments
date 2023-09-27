@@ -200,7 +200,7 @@ thread_yield(Tid want_tid)
     } else if (want_tid == THREAD_SELF){
         want_tid = current_thread;
     } else {
-        if (threads[want_tid].state == 0) {
+        if (want_tid >= THREAD_MAX_THREADS || threads[want_tid].state == 0) {
             return THREAD_INVALID;
         }
 
@@ -209,7 +209,7 @@ thread_yield(Tid want_tid)
         ready_queue_enqueue(current_thread);
     }
 
-    call_getcontext(&(threads[current_thread].context));
+    call_getcontext(&(threads[0].context));
 
     if (threads[current_thread].setcontext_called) {
         threads[current_thread].setcontext_called = 0;
@@ -218,7 +218,7 @@ thread_yield(Tid want_tid)
 
     threads[current_thread].setcontext_called = 1;
     current_thread = want_tid;
-    call_setcontext(&(threads[want_tid].context));
+    call_setcontext(&(threads[0].context));
 
     /* Shouldn't get here */
 	return THREAD_FAILED;
