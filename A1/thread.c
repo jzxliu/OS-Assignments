@@ -34,7 +34,7 @@ struct thread {
      */
 
     bool killed;
-	ucontext_t context;
+	ucontext_t *context;
 
 };
 
@@ -146,6 +146,7 @@ thread_init(void)
     threads[0].setcontext_called = 0;
     threads[0].TID = 0;
     threads[0].killed = 0;
+    threads[0].context = malloc(sizeof(ucontext_t));
 }
 
 Tid
@@ -194,7 +195,7 @@ thread_yield(Tid want_tid)
         ready_queue_enqueue(thread_id());
     }
 
-    int err = getcontext(context);
+    int err = getcontext(threads[want_tid].context);
     assert(!err);
 
     if (threads[thread_id()].setcontext_called) {
@@ -204,7 +205,7 @@ thread_yield(Tid want_tid)
 
     threads[thread_id()].setcontext_called = 1;
     current_thread = want_tid;
-    setcontext(&(threads[want_tid].context));
+    setcontext(threads[want_tid].context);
 
     /* Shouldn't get here */
 	return THREAD_FAILED;
