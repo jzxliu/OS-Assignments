@@ -42,7 +42,7 @@ bool threads_initialized = false;
 
 struct thread threads[THREAD_MAX_THREADS];
 
-volatile Tid current_thread;
+Tid current_thread;
 
 
 typedef struct ready_queue_node {
@@ -196,9 +196,9 @@ thread_yield(Tid want_tid)
         }
         want_tid = ready_queue[ready_head].TID;
         ready_queue_remove(want_tid);
-        ready_queue_enqueue(current_thread);
+        ready_queue_enqueue(thread_id());
     } else if (want_tid == THREAD_SELF){
-        want_tid = current_thread;
+        want_tid = thread_id();
     } else {
         if (want_tid >= THREAD_MAX_THREADS || threads[want_tid].state == 0) {
             return THREAD_INVALID;
@@ -206,19 +206,19 @@ thread_yield(Tid want_tid)
 
         /* modify the queue */
         ready_queue_remove(want_tid);
-        ready_queue_enqueue(current_thread);
+        ready_queue_enqueue(thread_id());
     }
 
-    call_getcontext(&(threads[0].context));
+    call_getcontext(&(threads[thread_id()].context));
 
-    if (threads[current_thread].setcontext_called) {
-        threads[current_thread].setcontext_called = 0;
+    if (threads[thread_id()].setcontext_called) {
+        threads[thread_id()].setcontext_called = 0;
         return want_tid;
     }
 
-    threads[current_thread].setcontext_called = 1;
+    threads[thread_id()].setcontext_called = 1;
     current_thread = want_tid;
-    call_setcontext(&(threads[0].context));
+    call_setcontext(&(threads[want_tid].context));
 
     /* Shouldn't get here */
 	return THREAD_FAILED;
