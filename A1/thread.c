@@ -54,7 +54,7 @@ thread_init(void)
     /* Initialize the thread control block for the first thread */
 
     getcontext(&(current_thread.context));
-    current_thread.thread_stack = current_thread.context.uc_mcontext.gregs[RSP];
+    current_thread.thread_stack = current_thread.context.uc_mcontext.gregs[REG_RSP];
     current_thread.setcontext_called = 0;
     current_thread.TID = 0;
     current_thread.next = NULL;
@@ -114,7 +114,7 @@ thread_yield(Tid want_tid)
 {
     // If want_tid is THREAD_ANY or THREAD_SELF, set it to an actual TID according to requirements
     if (want_tid == THREAD_ANY){
-        if (ready_size <= 1) {
+        if (current_thread.next == NULL) {
             return THREAD_NONE;
         }
         want_tid = current_thread.next->TID;
@@ -129,14 +129,14 @@ thread_yield(Tid want_tid)
     // Find thread with want_tid, return THREAD_INVALID if can't find it in structure
     struct thread wanted = current_thread;
     if (want_tid != thread_id()) {
-        while (wanted.next != NULL && wanted.next.TID != want_tid) {
-            wanted = wanted.next;
+        while (wanted.next != NULL && wanted.next->TID != want_tid) {
+            wanted = wanted->next;
         }
     }
 
     // to do: Update queue structure
 
-    int err = getcontext(current_thread.context);
+    int err = getcontext(&(current_thread.context));
     assert(!err);
 
     if (current_thread.setcontext_called) {
@@ -145,7 +145,7 @@ thread_yield(Tid want_tid)
     }
 
     current_thread.setcontext_called = 1;
-    setcontext(wanted.context);
+    setcontext(&(wanted.context));
 
     /* Shouldn't get here */
 	return THREAD_FAILED;
