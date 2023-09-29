@@ -169,7 +169,7 @@ thread_yield(Tid want_tid)
     current_thread.setcontext_called = 1;
 
     current_thread = *wanted;
-    setcontext(current_thread.context);
+    setcontext(&(current_thread.context));
 
     /* Shouldn't get here */
 	return THREAD_FAILED;
