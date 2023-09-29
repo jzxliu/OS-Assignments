@@ -98,26 +98,41 @@ thread_create(void (*fn) (void *), void *parg)
 	 * 4. Change its context according to assignment requirements (RSP - Stack Pointer, RIP - Instruction Pointer)
 	 * 5.
 	 */
-    /*Tid new_tid = 0;
-    while (threads[new_tid].state != 0){
+
+    // Find an available TID
+    Tid new_tid = 0;
+    bool tid_unused = 0;
+    while (!tid_unused){
         new_tid ++;
         if (new_tid == THREAD_MAX_THREADS){
             return THREAD_NOMORE;
         }
+        tid_unused = 1;
+        struct thread *curr = &current_thread;
+        while (curr != NULL && tid_unused){
+            if (curr->TID == new_tid) {
+                tid_unused = 0;
+            }
+            curr = curr->next;
+        }
     }
 
-    threads[new_tid].context = malloc(sizeof(ucontext_t));
 
-    getcontext(threads[new_tid].context);
 
-    threads[new_tid].thread_stack = malloc(THREAD_MIN_STACK);
+    struct thread new_thread = malloc(sizeof(struct thread));
 
-    threads[new_tid].context.uc_mcontext.gregs[RSP] = threads[new_tid].thread_stack;
+    new_thread.TID = new_tid;
+    new_thread.setcontext_called = 0;
+    new_thread.next = NULL;
+    new_thread.state = 1;
+    new_thread.thread_stack = malloc(THREAD_MIN_STACK);
+    getcontext(&(new_thread.context));
 
-    threads[new_tid].context->uc_mcontext.gregs[RIP] = &thread_stub();
+    new_thread.context.uc_mcontext.gregs[REG_RSP] = new_thread.thread_stack;
 
-    return new_tid;*/
-    return 0;
+    new_thread.context->uc_mcontext.gregs[REG_RIP] = &thread_stub();
+
+    return new_tid;
 }
 
 Tid
