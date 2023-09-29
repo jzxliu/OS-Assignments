@@ -157,13 +157,15 @@ test_basic()
 
 	/* store address of some variable on stack */
 	stack_array[thread_id()] = (long *)&ret;
-    printf("we're here 1");
+    printf("thread id is %d\n", thread_id());
+    printf("address of ret is %p\n", (long *)&ret);
+
 	int ii, jj;
 	/* we will be using THREAD_MAX_THREADS threads later */
 	Tid child[THREAD_MAX_THREADS];
 	char msg[NTHREADS][1024];
-
-    printf("we're here 2");
+    printf("thread id is %d\n", thread_id());
+    printf("address of ret is %p\n", (long *)&ret);
 	/* create NTHREADS threads */
 	for (ii = 0; ii < NTHREADS; ii++) {
 		ret = snprintf(msg[ii], 1023, "hello from thread %3d", ii);
