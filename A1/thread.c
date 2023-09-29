@@ -54,7 +54,7 @@ thread_init(void)
     /* Initialize the thread control block for the first thread */
 
     getcontext(&(current_thread.context));
-    current_thread.thread_stack = current_thread.context.uc_mcontext.gregs[REG_RSP];
+    current_thread.thread_stack = (void *)current_thread.context.uc_mcontext.gregs[REG_RSP];
     current_thread.setcontext_called = 0;
     current_thread.TID = 0;
     current_thread.next = NULL;
@@ -130,7 +130,7 @@ thread_yield(Tid want_tid)
     struct thread wanted = current_thread;
     if (want_tid != thread_id()) {
         while (wanted.next != NULL && wanted.next->TID != want_tid) {
-            wanted = wanted->next;
+            wanted = *(wanted.next);
         }
     }
 
