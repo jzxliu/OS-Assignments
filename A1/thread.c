@@ -92,12 +92,6 @@ thread_stub(void (*thread_main)(void *), void *arg)
 Tid
 thread_create(void (*fn) (void *), void *parg)
 {
-	/* 1. Find an available TID
-	 * 2. Allocate space for its context, make new context
-	 * 3. Allocate stack for new thread
-	 * 4. Change its context according to assignment requirements (RSP - Stack Pointer, RIP - Instruction Pointer)
-	 * 5.
-	 */
 
     // Find an available TID
     Tid new_tid = 0;
@@ -117,8 +111,7 @@ thread_create(void (*fn) (void *), void *parg)
         }
     }
 
-
-
+    // Allocate stack for new thread
     struct thread *new_thread = malloc(sizeof(struct thread));
 
     new_thread->TID = new_tid;
@@ -128,8 +121,9 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->thread_stack = (long long int) malloc(THREAD_MIN_STACK);
     getcontext(&(new_thread->context));
 
+    // Modify the context of newly created thread
     new_thread->context.uc_mcontext.gregs[REG_RSP] = new_thread->thread_stack;
-    new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) thread_stub;
+    new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
     new_thread->context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
     new_thread->context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
 
