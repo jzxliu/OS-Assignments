@@ -22,7 +22,7 @@ struct thread {
     Tid TID;
 
     /* Points to the thread stack allocated*/
-    void *thread_stack;
+    long long int thread_stack;
 
     struct thread *next;
 
@@ -65,7 +65,7 @@ thread_init(void)
     /* Initialize the thread control block for the first thread */
 
     getcontext(&(current_thread.context));
-    current_thread.thread_stack = (void *)current_thread.context.uc_mcontext.gregs[REG_RSP];
+    current_thread.thread_stack = current_thread.context.uc_mcontext.gregs[REG_RSP];
     current_thread.setcontext_called = 0;
     current_thread.TID = 0;
     current_thread.next = NULL;
@@ -125,12 +125,12 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->setcontext_called = 0;
     new_thread->next = NULL;
     new_thread->state = 1;
-    new_thread->thread_stack = malloc(THREAD_MIN_STACK);
+    new_thread->thread_stack = (long long int) malloc(THREAD_MIN_STACK);
     getcontext(&(new_thread->context));
 
     new_thread->context.uc_mcontext.gregs[REG_RSP] = new_thread->thread_stack;
 
-    new_thread->context->uc_mcontext.gregs[REG_RIP] = &thread_stub();
+    new_thread->context.uc_mcontext.gregs[REG_RIP] = &(thread_stub());
 
     add_to_end(new_thread);
 
