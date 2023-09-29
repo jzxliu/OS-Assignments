@@ -296,8 +296,11 @@ test_basic()
 		printf("Detected %lu bytes leaked from %lu un-freed mallocs.\n",
 		       get_current_bytes_malloced(),
 		       get_current_num_malloced());
-	}		
-	
+	}
+
+    printf("We are about to go into the grand finale")
+    ret = thread_yield(THREAD_ANY);
+    assert(ret == THREAD_NONE);
 	grand_finale();
 	printf("\n\nBUG: test should not get here\n\n");
 	assert(0);
