@@ -128,7 +128,7 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
 
     printf("memory address of fn = 0x%lx\n", (unsigned long) fn);
-    new_thread->context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
+    new_thread->context.uc_mcontext.gregs[REG_EDI] = (long long int) fn;
 
     printf("memory address of parg = 0x%lx\n", (unsigned long) parg);
     new_thread->context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
