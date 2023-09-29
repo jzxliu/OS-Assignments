@@ -127,10 +127,10 @@ thread_yield(Tid want_tid)
     }
 
     // Find thread with want_tid, return THREAD_INVALID if can't find it in structure
-    struct thread wanted = current_thread;
+    struct thread *wanted = &current_thread;
     if (want_tid != thread_id()) {
-        while (wanted.next != NULL && wanted.next->TID != want_tid) {
-            wanted = *(wanted.next);
+        while (wanted->next != NULL && wanted->next->TID != want_tid) {
+            wanted = wanted->next;
         }
     }
 
@@ -145,7 +145,7 @@ thread_yield(Tid want_tid)
     }
 
     current_thread.setcontext_called = 1;
-    setcontext(&(wanted.context));
+    setcontext(&(wanted->context));
 
     /* Shouldn't get here */
 	return THREAD_FAILED;
