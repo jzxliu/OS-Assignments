@@ -111,8 +111,6 @@ thread_create(void (*fn) (void *), void *parg)
         }
     }
 
-    printf("creating thread with tid %d\n", new_tid);
-
     // Allocate stack for new thread
     struct thread *new_thread = malloc(sizeof(struct thread));
 
