@@ -65,7 +65,6 @@ thread_init(void)
     /* Initialize the thread control block for the first thread */
 
     getcontext(&(current_thread.context));
-    current_thread.thread_stack = current_thread.context.uc_mcontext.gregs[REG_RSP];
     current_thread.setcontext_called = 0;
     current_thread.TID = 0;
     current_thread.next = NULL;
@@ -85,6 +84,7 @@ thread_id()
 void
 thread_stub(void (*thread_main)(void *), void *arg)
 {
+    printf("calling stub function\n");
         thread_main(arg); // call thread_main() function with arg
         thread_exit(0);
 }
