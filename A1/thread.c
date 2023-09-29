@@ -121,7 +121,7 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->thread_stack = (long long int) malloc(THREAD_MIN_STACK);
     getcontext(&(new_thread->context));
 
-    fn(parg);
+    *fn(parg);
 
     // Modify the context of newly created thread
     new_thread->context.uc_mcontext.gregs[REG_RSP] = new_thread->thread_stack;
