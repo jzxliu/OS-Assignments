@@ -87,7 +87,7 @@ thread_create(void (*fn) (void *), void *parg)
 	 * 4. Change its context according to assignment requirements (RSP - Stack Pointer, RIP - Instruction Pointer)
 	 * 5.
 	 */
-    Tid new_tid = 0;
+    /*Tid new_tid = 0;
     while (threads[new_tid].state != 0){
         new_tid ++;
         if (new_tid == THREAD_MAX_THREADS){
@@ -105,7 +105,8 @@ thread_create(void (*fn) (void *), void *parg)
 
     threads[new_tid].context->uc_mcontext.gregs[RIP] = &thread_stub();
 
-    return new_tid;
+    return new_tid;*/
+    return 0;
 }
 
 Tid
