@@ -112,7 +112,7 @@ thread_create(void (*fn) (void *), void *parg)
     }
 
     // Allocate stack for new thread
-    struct thread *new_thread = malloc(sizeof(struct thread));
+    struct thread *new_thread = malloc(sizeof(struct thread) + 16);
 
     new_thread->TID = new_tid;
     new_thread->setcontext_called = 0;
