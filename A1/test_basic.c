@@ -166,6 +166,8 @@ test_basic()
 	for (ii = 0; ii < NTHREADS; ii++) {
 		ret = snprintf(msg[ii], 1023, "hello from thread %3d", ii);
 		assert(ret > 0);
+
+        printf("creating child %d\n", ii);
 		child[ii] = thread_create((void (*)(void *))hello, msg[ii]);
 		assert(thread_ret_ok(child[ii]));
         printf("created child %d\n", ii);
