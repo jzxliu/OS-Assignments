@@ -65,7 +65,6 @@ thread_init(void)
     /* Initialize the thread control block for the first thread */
 
     getcontext(&(current_thread->context));
-    current_thread->setcontext_called = 0;
     current_thread->TID = 0;
     current_thread->next = NULL;
     current_thread->state = 1;
@@ -114,7 +113,6 @@ thread_create(void (*fn) (void *), void *parg)
     struct thread *new_thread = malloc(sizeof(struct thread));
 
     new_thread->TID = new_tid;
-    new_thread->setcontext_called = 0;
     new_thread->next = NULL;
     new_thread->state = 1;
     new_thread->thread_stack = malloc(THREAD_MIN_STACK);
@@ -194,7 +192,7 @@ thread_exit(int exit_code)
 {
     if (current_thread->TID == 0){
         if (current_thread->next == NULL){
-            exit();
+            exit(exit_code);
         } else {
             setcontext(&(current_thread->next->context));
         }
@@ -205,7 +203,7 @@ thread_exit(int exit_code)
         if (current_thread == NULL){
             free(to_free_2);
             free(to_free_1);
-            exit();
+            exit(exit_code);
         } else {
             free(to_free_2);
             free(to_free_1);
