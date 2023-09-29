@@ -158,8 +158,6 @@ test_basic()
 	/* store address of some variable on stack */
 	stack_array[thread_id()] = (long *)&ret;
 
-    printf("got here");
-
 	int ii, jj;
 	/* we will be using THREAD_MAX_THREADS threads later */
 	Tid child[THREAD_MAX_THREADS];
