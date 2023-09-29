@@ -40,13 +40,14 @@ struct thread {
 };
 
 // Current thread is always head of the queue structure.
-struct thread current_thread;
+struct thread main_thread;
+struct thread *current_thread = &main_thread;
 
 
 void
 add_to_end(struct thread* t){
     // Function to add thread to end of queue.
-    struct thread *curr = &current_thread;
+    struct thread *curr = current_thread;
     while (curr->next != NULL){
         curr = curr->next;
     }
@@ -64,18 +65,18 @@ thread_init(void)
 	/* Add necessary initialization for your threads library here. */
     /* Initialize the thread control block for the first thread */
 
-    getcontext(&(current_thread.context));
-    current_thread.setcontext_called = 0;
-    current_thread.TID = 0;
-    current_thread.next = NULL;
-    current_thread.state = 1;
+    getcontext(&(current_thread->context));
+    current_thread->setcontext_called = 0;
+    current_thread->TID = 0;
+    current_thread->next = NULL;
+    current_thread->state = 1;
 
 }
 
 Tid
 thread_id()
 {
-	return current_thread.TID;
+	return current_thread->TID;
 }
 
 /* New thread starts by calling thread_stub. The arguments to thread_stub are
@@ -84,8 +85,6 @@ thread_id()
 void
 thread_stub(void (*thread_main)(void *), void *arg)
 {
-    printf("calling stub function\n");
-
     thread_main(arg); // call thread_main() function with arg
         thread_exit(0);
 }
@@ -103,7 +102,7 @@ thread_create(void (*fn) (void *), void *parg)
             return THREAD_NOMORE;
         }
         tid_unused = 1;
-        struct thread *curr = &current_thread;
+        struct thread *curr = current_thread;
         while (curr != NULL && tid_unused){
             if (curr->TID == new_tid) {
                 tid_unused = 0;
@@ -124,14 +123,8 @@ thread_create(void (*fn) (void *), void *parg)
 
     // Modify the context of newly created thread
     new_thread->context.uc_mcontext.gregs[REG_RSP] = ((long long int) new_thread->thread_stack) - 8;
-
-    printf("memory address of stub function = 0x%lx\n", (unsigned long)&thread_stub);
     new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
-
-    printf("memory address of fn = 0x%lx\n", (unsigned long) fn);
     new_thread->context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
-
-    printf("value of parg = 0x%lx\n", (unsigned long) parg);
     new_thread->context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
 
     add_to_end(new_thread);
@@ -144,24 +137,24 @@ thread_yield(Tid want_tid)
 {
     struct thread *wanted;
     // If want_tid is THREAD_ANY or THREAD_SELF, set it to an actual TID according to requirements
-    if (want_tid == THREAD_ANY || (current_thread.next != NULL && want_tid == current_thread.next->TID)){
-        if (current_thread.next == NULL) {
+    if (want_tid == THREAD_ANY || (current_thread->next != NULL && want_tid == current_thread->next->TID)){
+        if (current_thread->next == NULL) {
             return THREAD_NONE;
         }
-        want_tid = current_thread.next->TID;
-        wanted = current_thread.next;
-        add_to_end(&current_thread);
+        want_tid = current_thread->next->TID;
+        wanted = current_thread->next;
+        add_to_end(current_thread);
 
     } else if (want_tid == THREAD_SELF || want_tid == thread_id()){
         want_tid = thread_id();
-        wanted = &current_thread;
+        wanted = current_thread;
 
     } else { // Find thread with want_tid, return THREAD_INVALID if can't find it in structure
-        if ((unsigned int)want_tid >= (unsigned int)THREAD_MAX_THREADS || current_thread.next == NULL) {
+        if ((unsigned int)want_tid >= (unsigned int)THREAD_MAX_THREADS || current_thread->next == NULL) {
             return THREAD_INVALID;
         }
 
-        struct thread *curr = current_thread.next;
+        struct thread *curr = current_thread->next;
         while (curr->next != NULL && curr->next->TID != want_tid) {
             curr = curr->next;
         }
@@ -172,23 +165,22 @@ thread_yield(Tid want_tid)
         // Update queue structure
         wanted = curr->next;
         curr->next = curr->next->next;
-        wanted->next = current_thread.next;
+        wanted->next = current_thread->next;
 
-        add_to_end(&current_thread);
+        add_to_end(current_thread);
     }
 
-    int err = getcontext(&(current_thread.context));
+    int err = getcontext(&(current_thread->context));
     assert(!err);
 
-    if (current_thread.setcontext_called) {
-        current_thread.setcontext_called = 0;
+    if (current_thread->setcontext_called) {
+        current_thread->setcontext_called = 0;
         printf("since setcontext has been called, return the want_tid %d\n", want_tid);
         return want_tid;
     }
 
-    current_thread.setcontext_called = 1;
-
-    current_thread = *wanted;
+    current_thread->setcontext_called = 1;
+    current_thread = wanted;
     printf("since setcontext has not been called, call setcontext on thread with id %d\n", current_thread.TID);
     setcontext(&(current_thread.context));
 
