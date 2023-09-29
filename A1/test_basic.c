@@ -156,6 +156,7 @@ test_basic()
 	assert(ret2 == ret);
 
 	/* store address of some variable on stack */
+    printf("thread id is %d\n", thread_id());
 	stack_array[thread_id()] = (long *)&ret;
 
 	int ii, jj;
