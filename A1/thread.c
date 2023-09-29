@@ -178,13 +178,11 @@ thread_yield(Tid want_tid)
 
     if (current_thread->setcontext_called) {
         current_thread->setcontext_called = 0;
-        printf("since setcontext has been called, return the want_tid %d\n", want_tid);
         return want_tid;
     }
 
     current_thread->setcontext_called = 1;
     current_thread = wanted;
-    printf("since setcontext has not been called, call setcontext on thread with id %d\n", current_thread->TID);
     setcontext(&(current_thread->context));
 
     /* Shouldn't get here */
