@@ -120,7 +120,7 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->setcontext_called = 0;
     new_thread->next = NULL;
     new_thread->state = 1;
-    new_thread->thread_stack = malloc(THREAD_MIN_STACK + 8);
+    new_thread->thread_stack = malloc(THREAD_MIN_STACK);
     getcontext(&(new_thread->context));
 
     // Modify the context of newly created thread
