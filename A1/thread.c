@@ -215,7 +215,7 @@ thread_exit(int exit_code)
 Tid
 thread_kill(Tid tid)
 {
-	struct thread *curr = current_thread;
+	struct thread *curr = current_thread->next;
     while (curr != NULL) {
         if (curr->TID == tid) {
             curr->state = 3;
