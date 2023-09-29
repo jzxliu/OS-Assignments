@@ -122,7 +122,7 @@ thread_create(void (*fn) (void *), void *parg)
     getcontext(&(new_thread->context));
 
     // Modify the context of newly created thread
-    new_thread->context.uc_mcontext.gregs[REG_RSP] = (long long int) new_thread->thread_stack;
+    new_thread->context.uc_mcontext.gregs[REG_RSP] = (long long int) 0;
 
     printf("memory address of stub function = 0x%lx\n", (unsigned long)&thread_stub);
     new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
