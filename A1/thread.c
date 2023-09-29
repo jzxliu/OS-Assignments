@@ -130,7 +130,7 @@ thread_create(void (*fn) (void *), void *parg)
 
     new_thread->context.uc_mcontext.gregs[REG_RSP] = new_thread->thread_stack;
 
-    new_thread->context.uc_mcontext.gregs[REG_RIP] = thread_stub;
+    new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) thread_stub;
 
     add_to_end(new_thread);
 
