@@ -26,13 +26,12 @@ struct thread {
 
     struct thread *next;
 
-    int setcontext_called;
-
     int state;
     /* States:
      * 0: thread is unused
      * 1: thread is active
-     * 2: thread is killed
+     * 2: thread is waiting (after having called setcontext)
+     * 3: thread is killed
      */
 
 	ucontext_t context;
@@ -86,7 +85,7 @@ void
 thread_stub(void (*thread_main)(void *), void *arg)
 {
     thread_main(arg); // call thread_main() function with arg
-        thread_exit(0);
+    thread_exit(0);
 }
 
 Tid
@@ -173,13 +172,16 @@ thread_yield(Tid want_tid)
 
     int err = getcontext(&(current_thread->context));
     assert(!err);
+    if (current_thread->state == 3){
+        thread_exit(0);
+    }
 
-    if (current_thread->setcontext_called) {
-        current_thread->setcontext_called = 0;
+    if (current_thread->state == 2) {
+        current_thread->state = 1;
         return want_tid;
     }
 
-    current_thread->setcontext_called = 1;
+    current_thread->state = 2;
     current_thread = wanted;
     setcontext(&(current_thread->context));
 
@@ -190,14 +192,40 @@ thread_yield(Tid want_tid)
 void
 thread_exit(int exit_code)
 {
-	TBD();
+    if (current_thread->TID == 0){
+        if (current_thread->next == NULL){
+            exit();
+        } else {
+            setcontext(&(current_thread->next->context));
+        }
+    } else {
+        void *to_free_1 = current_thread->thread_stack;
+        void *to_free_2 = current_thread;
+        current_thread = current_thread->next;
+        if (current_thread == NULL){
+            free(to_free_2);
+            free(to_free_1);
+            exit();
+        } else {
+            free(to_free_2);
+            free(to_free_1);
+            setcontext(&(current_thread->context));
+        }
+    }
 }
 
 Tid
 thread_kill(Tid tid)
 {
-	TBD();
-	return THREAD_FAILED;
+	struct thread *curr = current_thread;
+    while (curr != NULL) {
+        if (curr->TID == tid) {
+            curr->state = 3;
+            return tid;
+        }
+        curr = curr->next;
+    }
+    return THREAD_INVALID;
 }
 
 /**************************************************************************
