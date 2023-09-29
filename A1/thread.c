@@ -39,8 +39,19 @@ struct thread {
 
 };
 
+// Current thread is always head of the queue structure.
 struct thread current_thread;
 
+
+void
+add_to_end(struct thread* t){
+    // Function to add thread to end of queue.
+    struct thread *curr = &current_thread;
+    while (curr->next != NULL){
+        curr = curr->next;
+    }
+    curr->next = t;
+}
 
 /**************************************************************************
  * Assignment 1: Refer to thread.h for the detailed descriptions of the six
@@ -112,29 +123,40 @@ thread_create(void (*fn) (void *), void *parg)
 Tid
 thread_yield(Tid want_tid)
 {
+    struct thread *wanted;
     // If want_tid is THREAD_ANY or THREAD_SELF, set it to an actual TID according to requirements
-    if (want_tid == THREAD_ANY){
+    if (want_tid == THREAD_ANY || (current_thread.next != NULL && want_tid == current_thread.next->TID)){
         if (current_thread.next == NULL) {
             return THREAD_NONE;
         }
         want_tid = current_thread.next->TID;
-    } else if (want_tid == THREAD_SELF){
+        wanted = current_thread.next;
+        add_to_end(&current_thread);
+
+    } else if (want_tid == THREAD_SELF || want_tid == thread_id()){
         want_tid = thread_id();
-    } else {
+        wanted = &current_thread;
+
+    } else { // Find thread with want_tid, return THREAD_INVALID if can't find it in structure
         if ((unsigned int)want_tid >= (unsigned int)THREAD_MAX_THREADS) {
             return THREAD_INVALID;
         }
-    }
 
-    // Find thread with want_tid, return THREAD_INVALID if can't find it in structure
-    struct thread *wanted = &current_thread;
-    if (want_tid != thread_id()) {
-        while (wanted->next != NULL && wanted->next->TID != want_tid) {
-            wanted = wanted->next;
+        struct thread *curr = current_thread.next;
+        while (curr->next != NULL && curr->next->TID != want_tid) {
+            curr = curr->next;
         }
-    }
+        if (curr->next == NULL) {
+            return THREAD_INVALID;
+        }
 
-    // to do: Update queue structure
+        // Update queue structure
+        wanted = curr->next;
+        curr->next = curr->next->next;
+        wanted->next = current_thread.next;
+
+        add_to_end(&current_thread);
+    }
 
     int err = getcontext(&(current_thread.context));
     assert(!err);
@@ -145,7 +167,9 @@ thread_yield(Tid want_tid)
     }
 
     current_thread.setcontext_called = 1;
-    setcontext(&(wanted->context));
+
+    current_thread = *wanted;
+    setcontext(current_thread->context);
 
     /* Shouldn't get here */
 	return THREAD_FAILED;
