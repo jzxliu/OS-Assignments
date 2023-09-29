@@ -138,7 +138,7 @@ thread_yield(Tid want_tid)
         wanted = &current_thread;
 
     } else { // Find thread with want_tid, return THREAD_INVALID if can't find it in structure
-        if ((unsigned int)want_tid >= (unsigned int)THREAD_MAX_THREADS) {
+        if ((unsigned int)want_tid >= (unsigned int)THREAD_MAX_THREADS || current_thread.next == NULL) {
             return THREAD_INVALID;
         }
 
