@@ -119,18 +119,20 @@ thread_create(void (*fn) (void *), void *parg)
 
 
 
-    struct thread new_thread = malloc(sizeof(struct thread));
+    struct thread *new_thread = malloc(sizeof(struct thread));
 
-    new_thread.TID = new_tid;
-    new_thread.setcontext_called = 0;
-    new_thread.next = NULL;
-    new_thread.state = 1;
-    new_thread.thread_stack = malloc(THREAD_MIN_STACK);
-    getcontext(&(new_thread.context));
+    new_thread->TID = new_tid;
+    new_thread->setcontext_called = 0;
+    new_thread->next = NULL;
+    new_thread->state = 1;
+    new_thread->thread_stack = malloc(THREAD_MIN_STACK);
+    getcontext(&(new_thread->context));
 
-    new_thread.context.uc_mcontext.gregs[REG_RSP] = new_thread.thread_stack;
+    new_thread->context.uc_mcontext.gregs[REG_RSP] = new_thread->thread_stack;
 
-    new_thread.context->uc_mcontext.gregs[REG_RIP] = &thread_stub();
+    new_thread->context->uc_mcontext.gregs[REG_RIP] = &thread_stub();
+
+    add_to_end(new_thread);
 
     return new_tid;
 }
