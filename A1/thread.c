@@ -26,7 +26,7 @@ struct thread {
 
     struct thread *next;
 
-    volatile int setcontext_called;
+    int setcontext_called;
 
     int state;
     /* States:
