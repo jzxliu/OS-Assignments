@@ -22,7 +22,7 @@ struct thread {
     Tid TID;
 
     /* Points to the thread stack allocated*/
-    long long int thread_stack;
+    void *thread_stack;
 
     struct thread *next;
 
@@ -84,7 +84,7 @@ thread_id()
 void
 thread_stub(void (*thread_main)(void *), void *arg)
 {
-    printf("calling stub function with fn %lx, arg %lx\n", (unsigned long) thread_main, (unsigned long) arg);
+    printf("calling stub function\n");
         thread_main(arg); // call thread_main() function with arg
         thread_exit(0);
 }
@@ -118,11 +118,11 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->setcontext_called = 0;
     new_thread->next = NULL;
     new_thread->state = 1;
-    new_thread->thread_stack = (long long int) malloc(THREAD_MIN_STACK);
+    new_thread->thread_stack = malloc(THREAD_MIN_STACK);
     getcontext(&(new_thread->context));
 
     // Modify the context of newly created thread
-    new_thread->context.uc_mcontext.gregs[REG_RSP] = new_thread->thread_stack;
+    new_thread->context.uc_mcontext.gregs[REG_RSP] = (long long int) new_thread->thread_stack;
 
     printf("memory address of stub function = 0x%lx\n", (unsigned long)&thread_stub);
     new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
