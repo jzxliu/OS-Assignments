@@ -140,12 +140,12 @@ test_basic()
 	//minfo = mallinfo();
 	//allocated_space = minfo.uordblks;
 	
-	/* create a thread *//*
+	/* create a thread */
 	ret = thread_create((void (*)(void *))hello, "hello from first thread");
 
 	//minfo = mallinfo();
 	//if (minfo.uordblks <= allocated_space) {
-	if (0) { *//*  *//*
+	if (0) { /* TODO: get bytes malloc'd from hooks functions in common.c */
 		printf("it appears that the thread stack is not being"
 		       "allocated dynamically\n");
 		assert(0);
@@ -153,7 +153,7 @@ test_basic()
 	printf("my id is %d\n", thread_id());
 	assert(thread_ret_ok(ret));
 	ret2 = thread_yield(ret);
-	assert(ret2 == ret);*/
+	assert(ret2 == ret);
 
 	/* store address of some variable on stack */
 	stack_array[thread_id()] = (long *)&ret;
