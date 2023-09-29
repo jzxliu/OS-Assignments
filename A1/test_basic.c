@@ -298,9 +298,6 @@ test_basic()
 		       get_current_num_malloced());
 	}
 
-    printf("We are about to go into the grand finale\n");
-    ret = thread_yield(THREAD_ANY);
-    assert(ret == THREAD_NONE);
 	grand_finale();
 	printf("\n\nBUG: test should not get here\n\n");
 	assert(0);

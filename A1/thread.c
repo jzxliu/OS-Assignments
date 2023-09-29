@@ -194,7 +194,8 @@ thread_exit(int exit_code)
         if (current_thread->next == NULL){
             exit(exit_code);
         } else {
-            setcontext(&(current_thread->next->context));
+            current_thread = current_thread->next;
+            setcontext(&(current_thread->context));
         }
     } else {
         void *to_free_1 = current_thread->thread_stack;
