@@ -143,6 +143,7 @@ thread_yield(Tid want_tid)
         }
         want_tid = current_thread->next->TID;
         wanted = current_thread->next;
+        current_thread->next = NULL;
         add_to_end(current_thread);
 
     } else if (want_tid == THREAD_SELF || want_tid == thread_id()){
@@ -166,7 +167,7 @@ thread_yield(Tid want_tid)
         wanted = curr->next;
         curr->next = curr->next->next;
         wanted->next = current_thread->next;
-
+        current_thread->next = NULL;
         add_to_end(current_thread);
     }
 
