@@ -85,7 +85,8 @@ void
 thread_stub(void (*thread_main)(void *), void *arg)
 {
     printf("calling stub function\n");
-        thread_main(arg); // call thread_main() function with arg
+
+    (*thread_main)(arg); // call thread_main() function with arg
         thread_exit(0);
 }
 
@@ -128,10 +129,10 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
 
     printf("memory address of fn = 0x%lx\n", (unsigned long) fn);
-    new_thread->context.uc_mcontext.gregs[REG_RDI] = fn;
+    new_thread->context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
 
     printf("value of parg = 0x%lx\n", (unsigned long) parg);
-    new_thread->context.uc_mcontext.gregs[REG_RSI] = parg;
+    new_thread->context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
 
     add_to_end(new_thread);
 
