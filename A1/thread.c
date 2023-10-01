@@ -64,7 +64,6 @@ thread_init(void)
 	/* Add necessary initialization for your threads library here. */
     /* Initialize the thread control block for the first thread */
 
-    getcontext(&(current_thread->context));
     current_thread->TID = 0;
     current_thread->next = NULL;
     current_thread->state = 1;
