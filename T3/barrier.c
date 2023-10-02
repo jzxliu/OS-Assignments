@@ -62,8 +62,8 @@ struct barrier_s {
 	int num_arrived; /* Number of threads that have arrived at barrier */
 	bool ready;      /* True if barrier is ready for threads to arrive */
 
-    pthread_cond_t cv;
-    pthread_mutex_t mutex;
+    pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
+    pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 };
 
@@ -74,8 +74,6 @@ void barrier_init()
 {
 	bar.num_arrived = 0;
 	bar.ready = false;
-    bar.cv = PTHREAD_COND_INITIALIZER;
-    bar.mutex = PTHREAD_MUTEX_INITIALIZER;
 
 }
 
@@ -92,7 +90,7 @@ void barrier_init()
  */
 void barrier()
 {
-    mutex_lock(bar.mutex);
+    mutex_lock(&(bar.mutex));
     bar.num_arrived ++;
     if (bar.num_arrived == Nthreads) {
         pthread_cond_broadcast(&(bar.cv));
@@ -103,7 +101,8 @@ void barrier()
         pthread_cond_broadcast(&(bar.cv));
     }
     pthread_cond_wait(&(bar.cv), &(bar.mutex));
-    mutex_unlock(bar.mutex);
+    mutex_unlock(&(bar.mutex));
+
 }
 
 /****************************************************************************
