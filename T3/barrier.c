@@ -73,7 +73,7 @@ struct barrier_s bar; /* Global barrier for threads to wait between phases */
 void barrier_init()
 {
 	bar.num_arrived = 0;
-	bar.ready = false;
+	bar.ready = true;
     pthread_cond_init(&(bar.cv), NULL);
     pthread_mutex_init(&(bar.mutex), NULL);
 
