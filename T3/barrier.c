@@ -92,17 +92,20 @@ void barrier_init()
  */
 void barrier()
 {
+    while (!bar.ready) {
+
+    }
     mutex_lock((mutex_t *) &(bar.mutex));
     bar.num_arrived ++;
     if (bar.num_arrived == Nthreads) {
+        bar.ready = false;
         pthread_cond_broadcast(&(bar.cv));
     }
     pthread_cond_wait(&(bar.cv), &(bar.mutex));
     bar.num_arrived --;
     if (bar.num_arrived == 0) {
-        pthread_cond_broadcast(&(bar.cv));
+        bar.ready = true;
     }
-    pthread_cond_wait(&(bar.cv), &(bar.mutex));
     mutex_unlock((mutex_t *) &(bar.mutex));
 
 }
