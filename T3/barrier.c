@@ -74,8 +74,8 @@ void barrier_init()
 {
 	bar.num_arrived = 0;
 	bar.ready = false;
-    pthread_cond_init(&(bar.cv));
-    pthread_mutex_init(&(bar.mutex));
+    pthread_cond_init(&(bar.cv), NULL);
+    pthread_mutex_init(&(bar.mutex), NULL);
 
 }
 
@@ -92,7 +92,7 @@ void barrier_init()
  */
 void barrier()
 {
-    mutex_lock(&(bar.mutex));
+    mutex_lock((mutex_t *) &(bar.mutex));
     bar.num_arrived ++;
     if (bar.num_arrived == Nthreads) {
         pthread_cond_broadcast(&(bar.cv));
@@ -103,7 +103,7 @@ void barrier()
         pthread_cond_broadcast(&(bar.cv));
     }
     pthread_cond_wait(&(bar.cv), &(bar.mutex));
-    mutex_unlock(&(bar.mutex));
+    mutex_unlock((mutex_t *) &(bar.mutex));
 
 }
 
