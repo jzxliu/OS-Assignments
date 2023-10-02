@@ -61,8 +61,9 @@ int Nphases;  /* Number of phases */
 struct barrier_s {
 	int num_arrived; /* Number of threads that have arrived at barrier */
 	bool ready;      /* True if barrier is ready for threads to arrive */
-	/* TODO: Add synchronization variables */
 
+    pthread_cond_t cv;
+    pthread_mutex_t mutex;
 
 };
 
@@ -72,8 +73,9 @@ struct barrier_s bar; /* Global barrier for threads to wait between phases */
 void barrier_init()
 {
 	bar.num_arrived = 0;
-	bar.ready = true;
-	/* TODO: initialize other fields of barrier 'bar' so it is ready to use */
+	bar.ready = false;
+    bar.cv = PTHREAD_COND_INITIALIZER;
+    bar.mutex = PTHREAD_MUTEX_INITIALIZER;
 
 }
 
@@ -90,9 +92,18 @@ void barrier_init()
  */
 void barrier()
 {
-	/* TODO: implement this function. */
-
-
+    mutex_lock(bar.mutex);
+    bar.num_arrived ++;
+    if (bar.num_arrived == Nthreads) {
+        pthread_cond_broadcast(&(bar.cv));
+    }
+    pthread_cond_wait(&(bar.cv), &(bar.mutex));
+    bar.num_arrived --;
+    if (bar.num_arrived == 0) {
+        pthread_cond_broadcast(&(bar.cv));
+    }
+    pthread_cond_wait(&(bar.cv), &(bar.mutex));
+    mutex_unlock(bar.mutex);
 }
 
 /****************************************************************************
