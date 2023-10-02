@@ -100,8 +100,9 @@ void barrier()
     if (bar.num_arrived == Nthreads) {
         bar.ready = false;
         pthread_cond_broadcast(&(bar.cv));
+    } else {
+        pthread_cond_wait(&(bar.cv), &(bar.mutex));
     }
-    pthread_cond_wait(&(bar.cv), &(bar.mutex));
     bar.num_arrived --;
     if (bar.num_arrived == 0) {
         bar.ready = true;
