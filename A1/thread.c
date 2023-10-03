@@ -214,7 +214,7 @@ thread_exit(int exit_code)
 {
     if (current_thread->TID == 0){
         if (current_thread->next == NULL){
-            free_stuff()
+            free_stuff();
             exit(exit_code);
         } else {
             current_thread = current_thread->next;
