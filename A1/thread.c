@@ -42,6 +42,20 @@ struct thread {
 struct thread main_thread;
 struct thread *current_thread = &main_thread;
 
+void *to_free_1 = NULL;
+void *to_free_2 = NULL;
+
+void
+free_stuff(){
+    if (to_free_1 != NULL){
+        free(to_free_1);
+        to_free_1 = NULL;
+    }
+    if (to_free_2 != NULL){
+        free(to_free_2);
+        to_free_2 = NULL;
+    }
+}
 
 void
 add_to_end(struct thread* t){
@@ -176,6 +190,8 @@ thread_yield(Tid want_tid)
 
     int err = getcontext(&(current_thread->context));
     assert(!err);
+    free_stuff();
+
     if (current_thread->state == 3){
         thread_exit(0);
     }
@@ -204,16 +220,12 @@ thread_exit(int exit_code)
             setcontext(&(current_thread->context));
         }
     } else {
-        void *to_free_1 = current_thread->thread_stack;
-        void *to_free_2 = current_thread;
+        to_free_1 = current_thread->thread_stack;
+        to_free_2 = current_thread;
         current_thread = current_thread->next;
         if (current_thread == NULL){
-            free(to_free_2);
-            free(to_free_1);
             exit(exit_code);
         } else {
-            free(to_free_2);
-            free(to_free_1);
             setcontext(&(current_thread->context));
         }
     }
