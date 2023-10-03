@@ -110,12 +110,19 @@ thread_create(void (*fn) (void *), void *parg)
 
     // Allocate stack for new thread
     struct thread *new_thread = malloc(sizeof(struct thread));
+    if (new_thread == NULL){
+        return THREAD_NOMEMORY;
+    }
 
     new_thread->TID = new_tid;
     new_thread->next = NULL;
     new_thread->state = 1;
     new_thread->thread_stack = malloc(THREAD_MIN_STACK);
-    getcontext(&new_thread->context);
+    if (new_thread->thread_stack == NULL){
+        free(new_thread);
+        return THREAD_NOMEMORY;
+    }
+    getcontext((&new_thread->context));
 
     // Modify the context of newly created thread
     new_thread->context.uc_mcontext.gregs[REG_RSP] = ((long long int) new_thread->thread_stack) + THREAD_MIN_STACK - 8;
