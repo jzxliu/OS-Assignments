@@ -96,6 +96,7 @@ thread_id()
 void
 thread_stub(void (*thread_main)(void *), void *arg)
 {
+    free_stuff();
     thread_main(arg); // call thread_main() function with arg
     thread_exit(0);
 }
