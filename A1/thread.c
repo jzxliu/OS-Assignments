@@ -214,6 +214,7 @@ thread_exit(int exit_code)
 {
     if (current_thread->TID == 0){
         if (current_thread->next == NULL){
+            free_stuff()
             exit(exit_code);
         } else {
             current_thread = current_thread->next;
@@ -224,6 +225,7 @@ thread_exit(int exit_code)
         to_free_2 = current_thread;
         current_thread = current_thread->next;
         if (current_thread == NULL){
+            free_stuff();
             exit(exit_code);
         } else {
             setcontext(&(current_thread->context));
