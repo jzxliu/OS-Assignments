@@ -219,7 +219,7 @@ thread_yield(Tid want_tid)
 void
 thread_exit(int exit_code)
 {
-    bool enabled = interrupts_off();
+    interrupts_off();
     in_use[thread_id()] = 0;
     if (current_thread->TID == 0){
         if (current_thread->next == NULL){
@@ -291,7 +291,7 @@ thread_sleep(struct wait_queue *queue)
         return THREAD_INVALID;
     }
     bool enabled = interrupts_off();
-    thread *new_head = current_thread->next;
+    struct thread *new_head = current_thread->next;
     if (new_head == NULL) {
         return THREAD_NONE;
     }
@@ -302,7 +302,7 @@ thread_sleep(struct wait_queue *queue)
         add_to_end(queue->head, current_thread);
     }
     current_thread = new_head;
-    int ret = new_head.tid;
+    int ret = new_head->TID;
     setcontext(&(current_thread->context));
     interrupts_set(enabled);
 	return ret;
