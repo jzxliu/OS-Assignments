@@ -17,6 +17,9 @@ static int nr_sleeping;
 static void
 test_wakeup_thread(int num)
 {
+
+    unintr_printf("in function wakeup_thread for %dl \n", num);
+
 	int i;
 	int ret;
 	struct timeval start, end, diff;
@@ -114,7 +117,6 @@ out:
 		/* spin for 5 ms. this allows testing that the sleeping thread
 		 * sleeps for at least 5 ms. */
 		spin(WAKE_DELAY);
-        unintr_printf("SPIN COMPLETE");
 		/* tests thread_wakeup */
 		assert(interrupts_enabled());
 		ret = thread_wakeup(queue, all);
