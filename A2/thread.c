@@ -315,7 +315,7 @@ thread_sleep(struct wait_queue *queue)
     if (current_thread->state == 2) {
         current_thread->state = 1;
         interrupts_set(enabled);
-        return want_tid;
+        return ret;
     }
 
     current_thread->state = 2;
