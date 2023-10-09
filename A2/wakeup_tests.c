@@ -18,8 +18,6 @@ static void
 test_wakeup_thread(int num)
 {
 
-    unintr_printf("in function wakeup_thread for %dl \n", num);
-
 	int i;
 	int ret;
 	struct timeval start, end, diff;
