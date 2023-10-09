@@ -31,7 +31,7 @@ save_interrupt(void)
 	 * HINT: use sigismember in the print statement below. 
 	 * Look at interrupt.c for examples of using sigismember.
 	 */
-	printf("1. in saved my_context, interrupt is disabled = %d\n", -1);
+	printf("1. in saved my_context, interrupt is disabled = %d\n", sigismember(&my_context.uc_sigmask, SIG_TYPE));
 
 	interrupts_off();
 
@@ -39,7 +39,7 @@ save_interrupt(void)
 	assert(!err);
 	
 	/* QUESTION: Are interrupts masked (i.e., disabled) in my_context now?*/
-	printf("2. in saved my_context, interrupt is disabled = %d\n", -1);
+	printf("2. in saved my_context, interrupt is disabled = %d\n", sigismember(&my_context.uc_sigmask, SIG_TYPE));
 
 	/* QUESTION: What does interrupts_enabled() do? (See interrupt.c)
 	 * QUESTION: How does the process signal mask compare to the saved
