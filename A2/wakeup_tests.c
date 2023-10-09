@@ -82,6 +82,8 @@ test_wakeup(bool all)
 	ret = thread_wakeup(queue, 1);
 	assert(ret == 0);
 
+    assert(interrupts_enabled());
+
 	if (all) {
 		unintr_printf("starting wake_all test, expected duration < 1 second\n");
 	} else {
@@ -107,7 +109,6 @@ out:
 			 * call below so set nr_sleeping to 0 */
 			nr_sleeping = 0;
 		} else {
-            unintr_printf("a\n");
 			/* wait until at least one thread has slept */
 			if (__sync_fetch_and_add(&nr_sleeping, 0) < 1) {
 				goto out;
