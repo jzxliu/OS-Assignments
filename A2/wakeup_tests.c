@@ -93,6 +93,8 @@ test_wakeup(bool all)
 					  (void *)ii);
 		assert(thread_ret_ok(child[ii]));
 	}
+    unintr_printf("all child created, "
+                  "expected duration < %ld seconds\n", exptd_dur);
 out:
 	while (__sync_fetch_and_add(&done, 0) < NTHREADS) {
 		if (all) {
