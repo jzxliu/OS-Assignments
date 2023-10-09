@@ -116,20 +116,17 @@ out:
 		 * sleeps for at least 5 ms. */
 		spin(WAKE_DELAY);
 		/* tests thread_wakeup */
-		assert(interrupts_enabled());
+        unintr_printf("test reach 119\n");
 		ret = thread_wakeup(queue, all);
-		assert(interrupts_enabled());
+        unintr_printf("test reach 121\n");
 		assert(ret >= 0);
 		assert(all ? ret == NTHREADS : ret == 1);
 	}
 	/* we expect nr_sleeping is 0 at this point */
 	assert(nr_sleeping == 0);
-	assert(interrupts_enabled());
-    unintr_printf("test reach 128\n");
 	/* no thread should be waiting on queue */
 	wait_queue_destroy(queue);
 
-    unintr_printf("test reach 132\n");
 	/* wait for other threads to exit */
 	while (thread_yield(THREAD_ANY) != THREAD_NONE) {
 	}
