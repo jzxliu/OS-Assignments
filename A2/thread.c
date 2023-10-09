@@ -313,6 +313,9 @@ thread_sleep(struct wait_queue *queue)
 int
 thread_wakeup(struct wait_queue *queue, int all)
 {
+    if (queue == NULL) {
+        return 0;
+    }
     if (queue->head == NULL) {
         return 0;
     } else if (all) {
