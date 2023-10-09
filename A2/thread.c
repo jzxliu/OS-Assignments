@@ -287,7 +287,6 @@ wait_queue_destroy(struct wait_queue *wq)
 Tid
 thread_sleep(struct wait_queue *queue)
 {
-
     if (queue == NULL) {
         return THREAD_INVALID;
     }
@@ -303,11 +302,27 @@ thread_sleep(struct wait_queue *queue)
     } else {
         add_to_end(queue->head, current_thread);
     }
-    current_thread = new_head;
+
     int ret = new_head->TID;
+    int err = getcontext(&(current_thread->context));
+    assert(!err);
+    free_stuff();
+
+    if (current_thread->state == 3){
+        thread_exit(0);
+    }
+
+    if (current_thread->state == 2) {
+        current_thread->state = 1;
+        interrupts_set(enabled);
+        return want_tid;
+    }
+
+    current_thread->state = 2;
+    current_thread = new_head;
     setcontext(&(current_thread->context));
     interrupts_set(enabled);
-	return ret;
+	return THREAD_FAILED; //Should never get here
 }
 
 /* when the 'all' parameter is 1, wakeup all threads waiting in the queue.
