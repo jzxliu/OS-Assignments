@@ -295,6 +295,7 @@ thread_sleep(struct wait_queue *queue)
     bool enabled = interrupts_off();
     struct thread *new_head = current_thread->next;
     if (new_head == NULL) {
+        interrupts_set(enabled);
         return THREAD_NONE;
     }
     current_thread->next = NULL;
