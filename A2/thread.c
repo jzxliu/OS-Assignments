@@ -84,7 +84,6 @@ thread_init(void)
     current_thread->TID = 0;
     current_thread->next = NULL;
     current_thread->state = 1;
-    register_interrupt_handler(true);
 
 }
 
