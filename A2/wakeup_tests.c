@@ -67,22 +67,22 @@ test_wakeup(bool all)
 
 	queue = wait_queue_create();
 	assert(queue);
-
+    assert(interrupts_enabled());
 	/* initial thread sleep and wake up tests */
 	ret = thread_sleep(NULL);
 	assert(ret == THREAD_INVALID);
 	unintr_printf("initial thread returns from sleep(NULL)\n");
-
+    assert(interrupts_enabled());
 	ret = thread_sleep(queue);
 	assert(ret == THREAD_NONE);
 	unintr_printf("initial thread returns from sleep(NONE)\n");
+
+    assert(interrupts_enabled());
 
 	ret = thread_wakeup(NULL, 0);
 	assert(ret == 0);
 	ret = thread_wakeup(queue, 1);
 	assert(ret == 0);
-
-    assert(interrupts_enabled());
 
 	if (all) {
 		unintr_printf("starting wake_all test, expected duration < 1 second\n");
