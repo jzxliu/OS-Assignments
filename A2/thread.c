@@ -10,7 +10,6 @@
 /* This is the wait queue structure, needed for Assignment 2. */ 
 struct wait_queue {
 	struct thread *head;
-
 };
 
 /* For Assignment 1, you will need a queue structure to keep track of the 
@@ -61,9 +60,9 @@ free_stuff(){
 }
 
 void
-add_to_end(struct thread* t){
-    // Function to add thread to end of queue.
-    struct thread *curr = current_thread;
+add_to_end(struct thread* head, struct thread* t){
+    // Function to add thread to end of linked list queue structure.
+    struct thread *curr = head;
     while (curr->next != NULL){
         curr = curr->next;
     }
@@ -151,7 +150,7 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
     new_thread->context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
 
-    add_to_end(new_thread);
+    add_to_end(current_thread, new_thread);
 
     interrupts_set(enabled);
     return new_tid;
@@ -169,7 +168,7 @@ thread_yield(Tid want_tid)
         }
         want_tid = current_thread->next->TID;
         wanted = current_thread->next;
-        add_to_end(current_thread);
+        add_to_end(current_thread, current_thread);
         current_thread->next = NULL;
 
     } else if (want_tid == THREAD_SELF || want_tid == thread_id()){
@@ -193,7 +192,7 @@ thread_yield(Tid want_tid)
         wanted = curr->next;
         curr->next = curr->next->next;
         wanted->next = current_thread->next;
-        add_to_end(current_thread);
+        add_to_end(current_thread, current_thread);
         current_thread->next = NULL;
     }
 
@@ -223,7 +222,7 @@ thread_yield(Tid want_tid)
 void
 thread_exit(int exit_code)
 {
-    assert(!interrupts_enabled());
+    bool enabled = interrupts_off();
     if (current_thread->TID == 0){
         if (current_thread->next == NULL){
             free_stuff();
@@ -286,11 +285,29 @@ wait_queue_destroy(struct wait_queue *wq)
 	free(wq);
 }
 
+
 Tid
 thread_sleep(struct wait_queue *queue)
 {
-	TBD();
-	return THREAD_FAILED;
+    if (queue == NULL) {
+        return THREAD_INVALID;
+    }
+    bool enabled = interrupts_off();
+    thread *new_head = current_thread->next;
+    if (new_head == NULL) {
+        return THREAD_NONE;
+    }
+    current_thread->next = NULL;
+	if (queue->head == NULL) {
+        queue->head = current_thread;
+    } else {
+        add_to_end(queue->head, current_thread);
+    }
+    current_thread = new_head;
+    int ret = new_head.tid;
+    setcontext(&(current_thread->context));
+    interrupts_set(enabled);
+	return ret;
 }
 
 /* when the 'all' parameter is 1, wakeup all threads waiting in the queue.
@@ -298,7 +315,11 @@ thread_sleep(struct wait_queue *queue)
 int
 thread_wakeup(struct wait_queue *queue, int all)
 {
-	TBD();
+	if (all) {
+
+    } else {
+
+    }
 	return 0;
 }
 
