@@ -313,12 +313,13 @@ thread_sleep(struct wait_queue *queue)
 int
 thread_wakeup(struct wait_queue *queue, int all)
 {
-    if (queue == NULL) {
+    if (queue == NULL || queue->head == NULL) {
         return 0;
     }
-    if (queue->head == NULL) {
-        return 0;
-    } else if (all) {
+
+    bool enabled = interrupts_off();
+
+    if (all) {
         int num = 0;
         add_to_end(current_thread, queue->head);
         struct thread *curr = queue->head;
@@ -326,12 +327,14 @@ thread_wakeup(struct wait_queue *queue, int all)
             curr = curr->next;
             num ++;
         }
+        interrupts_set(enabled);
         return num;
     } else {
         struct thread *new_head = queue->head->next;
         queue->head->next = NULL;
         add_to_end(current_thread, queue->head);
         queue->head = new_head;
+        interrupts_set(enabled);
         return 1;
     }
 }
