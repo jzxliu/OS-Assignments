@@ -49,11 +49,11 @@ void *to_free_2 = NULL;
 void
 free_stuff(){
     if (to_free_1 != NULL){
-        free(to_free_1);
+        free369(to_free_1);
         to_free_1 = NULL;
     }
     if (to_free_2 != NULL){
-        free(to_free_2);
+        free369(to_free_2);
         to_free_2 = NULL;
     }
 }
@@ -125,7 +125,7 @@ thread_create(void (*fn) (void *), void *parg)
     }
 
     // Allocate stack for new thread
-    struct thread *new_thread = malloc(sizeof(struct thread));
+    struct thread *new_thread = malloc369(sizeof(struct thread));
     if (new_thread == NULL){
         return THREAD_NOMEMORY;
     }
@@ -133,9 +133,9 @@ thread_create(void (*fn) (void *), void *parg)
     new_thread->TID = new_tid;
     new_thread->next = NULL;
     new_thread->state = 1;
-    new_thread->thread_stack = malloc(THREAD_MIN_STACK);
+    new_thread->thread_stack = malloc369(THREAD_MIN_STACK);
     if (new_thread->thread_stack == NULL){
-        free(new_thread);
+        free369(new_thread);
         return THREAD_NOMEMORY;
     }
     getcontext((&new_thread->context));
