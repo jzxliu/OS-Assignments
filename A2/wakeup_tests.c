@@ -107,6 +107,7 @@ out:
 			 * call below so set nr_sleeping to 0 */
 			nr_sleeping = 0;
 		} else {
+            unintr_printf("a\n");
 			/* wait until at least one thread has slept */
 			if (__sync_fetch_and_add(&nr_sleeping, 0) < 1) {
 				goto out;
@@ -116,7 +117,6 @@ out:
 		}
 		/* spin for 5 ms. this allows testing that the sleeping thread
 		 * sleeps for at least 5 ms. */
-        unintr_printf("spin\n");
 		spin(WAKE_DELAY);
 		/* tests thread_wakeup */
 		assert(interrupts_enabled());
