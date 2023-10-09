@@ -287,6 +287,8 @@ wait_queue_destroy(struct wait_queue *wq)
 Tid
 thread_sleep(struct wait_queue *queue)
 {
+
+    unintr_printf("sleep called from thread %d\n", thread_id());
     if (queue == NULL) {
         return THREAD_INVALID;
     }
