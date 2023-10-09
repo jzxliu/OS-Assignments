@@ -5,10 +5,12 @@
 #include <stdbool.h>
 #include "thread.h"
 #include "malloc369.h"
+#include "interrupt.h"
 
 /* This is the wait queue structure, needed for Assignment 2. */ 
 struct wait_queue {
-	/* ... Fill this in Assignment 2 ... */
+	struct thread *head;
+
 };
 
 /* For Assignment 1, you will need a queue structure to keep track of the 
@@ -82,6 +84,7 @@ thread_init(void)
     current_thread->TID = 0;
     current_thread->next = NULL;
     current_thread->state = 1;
+    register_interrupt_handler(true);
 
 }
 
@@ -98,13 +101,16 @@ void
 thread_stub(void (*thread_main)(void *), void *arg)
 {
     free_stuff();
+    interrupts_on();
     thread_main(arg); // call thread_main() function with arg
+    interrupts_off();
     thread_exit(0);
 }
 
 Tid
 thread_create(void (*fn) (void *), void *parg)
 {
+    bool enabled = interrupts_off();
 
     // Find an available TID
     Tid new_tid = 0;
@@ -148,12 +154,14 @@ thread_create(void (*fn) (void *), void *parg)
 
     add_to_end(new_thread);
 
+    interrupts_set(enabled);
     return new_tid;
 }
 
 Tid
 thread_yield(Tid want_tid)
 {
+    bool enabled = interrupts_off();
     struct thread *wanted;
     // If want_tid is THREAD_ANY or THREAD_SELF, set it to an actual TID according to requirements
     if (want_tid == THREAD_ANY || (current_thread->next != NULL && want_tid == current_thread->next->TID)){
@@ -200,6 +208,7 @@ thread_yield(Tid want_tid)
 
     if (current_thread->state == 2) {
         current_thread->state = 1;
+        interrupts_set(enabled);
         return want_tid;
     }
 
@@ -208,12 +217,14 @@ thread_yield(Tid want_tid)
     setcontext(&(current_thread->context));
 
     /* Shouldn't get here */
+    interrupts_set(enabled);
 	return THREAD_FAILED;
 }
 
 void
 thread_exit(int exit_code)
 {
+    assert(!interrupts_enabled());
     if (current_thread->TID == 0){
         if (current_thread->next == NULL){
             free_stuff();
@@ -237,14 +248,17 @@ thread_exit(int exit_code)
 Tid
 thread_kill(Tid tid)
 {
+    bool enabled = interrupts_off();
 	struct thread *curr = current_thread->next;
     while (curr != NULL) {
         if (curr->TID == tid) {
             curr->state = 3;
+            interrupts_set(enabled);
             return tid;
         }
         curr = curr->next;
     }
+    interrupts_set(enabled);
     return THREAD_INVALID;
 }
 
@@ -258,10 +272,10 @@ wait_queue_create()
 {
 	struct wait_queue *wq;
 
-	wq = malloc(sizeof(struct wait_queue));
+	wq = malloc369(sizeof(struct wait_queue));
 	assert(wq);
 
-	TBD();
+	wq->head = NULL;
 
 	return wq;
 }
@@ -269,7 +283,7 @@ wait_queue_create()
 void
 wait_queue_destroy(struct wait_queue *wq)
 {
-	TBD();
+	assert(wq->head == NULL);
 	free(wq);
 }
 
