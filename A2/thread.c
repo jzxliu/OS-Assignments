@@ -44,6 +44,8 @@ struct thread {
 struct thread main_thread;
 struct thread *current_thread = &main_thread;
 
+int in_use[THREAD_MAX_THREADS] = { 0 };
+
 void *to_free_1 = NULL;
 void *to_free_2 = NULL;
 
@@ -83,6 +85,7 @@ thread_init(void)
     current_thread->TID = 0;
     current_thread->next = NULL;
     current_thread->state = 1;
+    in_use[0] = 1;
 
 }
 
@@ -112,19 +115,10 @@ thread_create(void (*fn) (void *), void *parg)
 
     // Find an available TID
     Tid new_tid = 0;
-    bool tid_unused = 0;
-    while (!tid_unused){
+    while (in_use[new_tid] == 1){
         new_tid ++;
         if (new_tid == THREAD_MAX_THREADS){
             return THREAD_NOMORE;
-        }
-        tid_unused = 1;
-        struct thread *curr = current_thread;
-        while (curr != NULL && tid_unused){
-            if (curr->TID == new_tid) {
-                tid_unused = 0;
-            }
-            curr = curr->next;
         }
     }
 
@@ -142,6 +136,9 @@ thread_create(void (*fn) (void *), void *parg)
         free369(new_thread);
         return THREAD_NOMEMORY;
     }
+
+    in_use[new_tid] = 1;
+
     getcontext((&new_thread->context));
 
     // Modify the context of newly created thread
@@ -223,6 +220,7 @@ void
 thread_exit(int exit_code)
 {
     bool enabled = interrupts_off();
+    in_use[thread_id()] = 0;
     if (current_thread->TID == 0){
         if (current_thread->next == NULL){
             free_stuff();
@@ -315,11 +313,7 @@ thread_sleep(struct wait_queue *queue)
 int
 thread_wakeup(struct wait_queue *queue, int all)
 {
-	if (all) {
-
-    } else {
-
-    }
+    TBD();
 	return 0;
 }
 
