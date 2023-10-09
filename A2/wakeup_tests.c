@@ -116,6 +116,7 @@ out:
 		}
 		/* spin for 5 ms. this allows testing that the sleeping thread
 		 * sleeps for at least 5 ms. */
+        unintr_printf("spin\n");
 		spin(WAKE_DELAY);
 		/* tests thread_wakeup */
 		assert(interrupts_enabled());
