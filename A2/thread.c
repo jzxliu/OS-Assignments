@@ -378,11 +378,12 @@ thread_sleep(struct wait_queue *queue)
     }
 
     if (threads[current_thread].state == 2) {
+        unintr_printf("thread %d finished sleeping\n", thread_id());
         threads[current_thread].state = 1;
         interrupts_set(enabled);
         return ret;
     }
-
+    unintr_printf("thread %d sleeping to thread %d\n", thread_id(), ret);
     threads[current_thread].state = 2;
     current_thread = ready_head->tid;
     to_free_1 = ready_head;
