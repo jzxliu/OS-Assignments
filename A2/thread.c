@@ -256,7 +256,7 @@ thread_kill(Tid tid)
         interrupts_set(enabled);
         return THREAD_INVALID;
     }
-	threads[tid].state = 0;
+	threads[tid].state = 3;
     interrupts_set(enabled);
     return tid;
 }
