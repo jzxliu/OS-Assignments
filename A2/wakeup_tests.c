@@ -46,7 +46,7 @@ test_wakeup_thread(int num)
 		}
 	}
 out:
-    unintr_printf("thread %d out", num);
+    unintr_printf("thread %d out\n", num);
 	__sync_fetch_and_add(&done, 1);
 }
 
