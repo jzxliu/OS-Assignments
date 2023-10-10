@@ -17,7 +17,7 @@ static int nr_sleeping;
 static void
 test_wakeup_thread(int num)
 {
-
+    unintr_printf("Thread %d running fn", num);
 	int i;
 	int ret;
 	struct timeval start, end, diff;
