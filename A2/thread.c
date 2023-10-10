@@ -346,7 +346,7 @@ wait_remove(struct wait_queue *wq, Tid to_remove)
         }
         struct wait_queue_node *to_free = curr->next;
         curr->next = curr->next->next;
-        free369(curr->next);
+        free369(to_free);
     }
 }
 
