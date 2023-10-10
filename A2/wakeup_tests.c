@@ -115,12 +115,12 @@ out:
 		/* spin for 5 ms. this allows testing that the sleeping thread
 		 * sleeps for at least 5 ms. */
 		spin(WAKE_DELAY);
-        unintr_printf("reached wakeup call");
 		/* tests thread_wakeup */
 		ret = thread_wakeup(queue, all);
 		assert(ret >= 0);
 		assert(all ? ret == NTHREADS : ret == 1);
 	}
+    unintr_printf("reached outside loop");
 	/* we expect nr_sleeping is 0 at this point */
 	assert(nr_sleeping == 0);
 	/* no thread should be waiting on queue */
