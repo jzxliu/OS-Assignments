@@ -9,7 +9,12 @@
 
 /* This is the wait queue structure, needed for Assignment 2. */ 
 struct wait_queue {
-	struct thread *head;
+    struct wait_queue_node *head;
+};
+
+struct wait_queue_node {
+    struct wait_queue_node *next;
+    Tid tid;
 };
 
 /* For Assignment 1, you will need a queue structure to keep track of the 
@@ -274,6 +279,7 @@ wait_queue_create()
 	wq = malloc369(sizeof(struct wait_queue));
 	assert(wq);
 
+
 	wq->head = NULL;
 
 	return wq;
@@ -287,45 +293,76 @@ wait_queue_destroy(struct wait_queue *wq)
 }
 
 
+void
+wait_queue_add(struct wait_queue *wq, Tid tid)
+{
+    struct wait_queue_node *new_node = malloc369(sizeof(wait_queue_node));
+    new_node->next = NULL;
+    new_node->tid = tid;
+    if (wq->head == NULL) {
+        wq->head=new_node;
+    } else {
+        struct wait_queue_node *curr = wq->head;
+        while (curr->next != NULL) {
+            curr = curr->next;
+        }
+        curr->next = new_node;
+    }
+}
+
+
+int
+wait_dequeue(struct wait_queue *wq)
+{
+    if (wq->head == NULL) {
+        return -1;
+    }
+    struct wait_queue_node *head = wq->head;
+    int ret = head->tid;
+    wq->head = wq->head->next;
+    free369(head);
+    return ret;
+}
+
+
 Tid
 thread_sleep(struct wait_queue *queue)
 {
-    TBD();
-//    if (queue == NULL) {
-//        return THREAD_INVALID;
-//    }
-//    bool enabled = interrupts_off();
-//    struct thread *new_head = current_thread->next;
-//    if (new_head == NULL) {
-//        interrupts_set(enabled);
-//        return THREAD_NONE;
-//    }
-//    current_thread->next = NULL;
-//	if (queue->head == NULL) {
-//        queue->head = current_thread;
-//    } else {
-//        add_to_end(queue->head, current_thread);
-//    }
-//
-//    int ret = new_head->TID;
-//    int err = getcontext(&(current_thread->context));
-//    assert(!err);
-//    free_stuff();
-//
-//    if (current_thread->state == 3){
-//        thread_exit(0);
-//    }
-//
-//    if (current_thread->state == 2) {
-//        current_thread->state = 1;
-//        interrupts_set(enabled);
-//        return ret;
-//    }
-//
-//    current_thread->state = 2;
-//    current_thread = new_head;
-//    setcontext(&(current_thread->context));
-//    interrupts_set(enabled);
+    bool enabled = interrupts_off();
+
+    if (queue == NULL) {
+        interrupts_set(enabled);
+        return THREAD_INVALID;
+    }
+
+    if (ready_head == NULL) {
+        interrupts_set(enabled);
+        return THREAD_NONE;
+    }
+
+    wait_queue_add(queue, current_thread);
+
+    int ret = ready_head->tid;
+    int err = getcontext(&(threads[current_thread]->context));
+    assert(!err);
+    free_stuff();
+
+    if (current_thread->state == 3){
+        thread_exit(0);
+    }
+
+    if (current_thread->state == 2) {
+        current_thread->state = 1;
+        interrupts_set(enabled);
+        return ret;
+    }
+
+    current_thread->state = 2;
+    current_thread = ready_head->tid;
+    to_free_1 = ready_head;
+    ready_head = ready_head->next;
+    setcontext(&(threads[current_thread]->context));
+    interrupts_set(enabled);
 	return THREAD_FAILED; //Should never get here
 }
 
@@ -334,31 +371,26 @@ thread_sleep(struct wait_queue *queue)
 int
 thread_wakeup(struct wait_queue *queue, int all)
 {
-    TBD();
-//    if (queue == NULL || queue->head == NULL) {
-//        return 0;
-//    }
-//
-//    bool enabled = interrupts_off();
-//
-//    if (all) {
-//        int num = 0;
-//        add_to_end(current_thread, queue->head);
-//        struct thread *curr = queue->head;
-//        while (curr != NULL) {
-//            curr = curr->next;
-//            num ++;
-//        }
-//        interrupts_set(enabled);
-//        return num;
-//    } else {
-//        struct thread *new_head = queue->head->next;
-//        queue->head->next = NULL;
-//        add_to_end(current_thread, queue->head);
-//        queue->head = new_head;
-//        interrupts_set(enabled);
-//        return 1;
-//    }
+    bool enabled = interrupts_off();
+    if (queue == NULL || queue->head == NULL) {
+        interrupts_set(enabled);
+        return 0;
+    }
+
+    if (all) {
+        int num = 0;
+        int deq = wait_dequeue(queue);
+        while (deq != -1) {
+            ready_enqueue(deq);
+            deq = wait_dequeue(queue);
+            num ++;
+        }
+        interrupts_set(enabled);
+        return num;
+    } else {
+        ready_enqueue(wait_dequeue(queue));
+        return 1;
+    }
 }
 
 /* suspend current thread until Thread tid exits */
