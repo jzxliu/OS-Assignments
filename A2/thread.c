@@ -150,16 +150,16 @@ thread_create(void (*fn) (void *), void *parg)
         return THREAD_NOMEMORY;
     }
 
-    getcontext(&(threads[new_tid]->context));
+    getcontext(&(threads[new_tid].context));
 
     // Modify the context of newly created thread
-    threads[new_tid].context.uc_mcontext.gregs[REG_RSP] = ((long long int) new_thread->thread_stack) + THREAD_MIN_STACK - 8;
+    threads[new_tid].context.uc_mcontext.gregs[REG_RSP] = ((long long int) threads[new_tid].thread_stack) + THREAD_MIN_STACK - 8;
     threads[new_tid].context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
     threads[new_tid].context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
     threads[new_tid].context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
 
     if (ready_enqueue(new_tid)) {
-        free369(threads[new_tid]->thread_stack);
+        free369(threads[new_tid].thread_stack);
         threads[new_tid].state = 0;
         return THREAD_NOMEMORY;
     }
@@ -191,7 +191,7 @@ thread_yield(Tid want_tid)
         }
 
         struct ready_node *curr = ready_head;
-        while (curr->next != NULL && curr->next->TID != want_tid) {
+        while (curr->next != NULL && curr->next->tid != want_tid) {
             curr = curr->next;
         }
         if (curr->next == NULL) {
@@ -254,7 +254,7 @@ thread_kill(Tid tid)
     bool enabled = interrupts_off();
     if (tid == thread_id() || (unsigned int)tid >= (unsigned int)THREAD_MAX_THREADS || threads[tid].state == 0) {
         interrupts_set(enabled);
-        return THREAD_INVALID
+        return THREAD_INVALID;
     }
 	threads[tid].state = 0;
     interrupts_set(enabled);
@@ -290,41 +290,42 @@ wait_queue_destroy(struct wait_queue *wq)
 Tid
 thread_sleep(struct wait_queue *queue)
 {
-    if (queue == NULL) {
-        return THREAD_INVALID;
-    }
-    bool enabled = interrupts_off();
-    struct thread *new_head = current_thread->next;
-    if (new_head == NULL) {
-        interrupts_set(enabled);
-        return THREAD_NONE;
-    }
-    current_thread->next = NULL;
-	if (queue->head == NULL) {
-        queue->head = current_thread;
-    } else {
-        add_to_end(queue->head, current_thread);
-    }
-
-    int ret = new_head->TID;
-    int err = getcontext(&(current_thread->context));
-    assert(!err);
-    free_stuff();
-
-    if (current_thread->state == 3){
-        thread_exit(0);
-    }
-
-    if (current_thread->state == 2) {
-        current_thread->state = 1;
-        interrupts_set(enabled);
-        return ret;
-    }
-
-    current_thread->state = 2;
-    current_thread = new_head;
-    setcontext(&(current_thread->context));
-    interrupts_set(enabled);
+    TBD();
+//    if (queue == NULL) {
+//        return THREAD_INVALID;
+//    }
+//    bool enabled = interrupts_off();
+//    struct thread *new_head = current_thread->next;
+//    if (new_head == NULL) {
+//        interrupts_set(enabled);
+//        return THREAD_NONE;
+//    }
+//    current_thread->next = NULL;
+//	if (queue->head == NULL) {
+//        queue->head = current_thread;
+//    } else {
+//        add_to_end(queue->head, current_thread);
+//    }
+//
+//    int ret = new_head->TID;
+//    int err = getcontext(&(current_thread->context));
+//    assert(!err);
+//    free_stuff();
+//
+//    if (current_thread->state == 3){
+//        thread_exit(0);
+//    }
+//
+//    if (current_thread->state == 2) {
+//        current_thread->state = 1;
+//        interrupts_set(enabled);
+//        return ret;
+//    }
+//
+//    current_thread->state = 2;
+//    current_thread = new_head;
+//    setcontext(&(current_thread->context));
+//    interrupts_set(enabled);
 	return THREAD_FAILED; //Should never get here
 }
 
@@ -333,30 +334,31 @@ thread_sleep(struct wait_queue *queue)
 int
 thread_wakeup(struct wait_queue *queue, int all)
 {
-    if (queue == NULL || queue->head == NULL) {
-        return 0;
-    }
-
-    bool enabled = interrupts_off();
-
-    if (all) {
-        int num = 0;
-        add_to_end(current_thread, queue->head);
-        struct thread *curr = queue->head;
-        while (curr != NULL) {
-            curr = curr->next;
-            num ++;
-        }
-        interrupts_set(enabled);
-        return num;
-    } else {
-        struct thread *new_head = queue->head->next;
-        queue->head->next = NULL;
-        add_to_end(current_thread, queue->head);
-        queue->head = new_head;
-        interrupts_set(enabled);
-        return 1;
-    }
+    TBD();
+//    if (queue == NULL || queue->head == NULL) {
+//        return 0;
+//    }
+//
+//    bool enabled = interrupts_off();
+//
+//    if (all) {
+//        int num = 0;
+//        add_to_end(current_thread, queue->head);
+//        struct thread *curr = queue->head;
+//        while (curr != NULL) {
+//            curr = curr->next;
+//            num ++;
+//        }
+//        interrupts_set(enabled);
+//        return num;
+//    } else {
+//        struct thread *new_head = queue->head->next;
+//        queue->head->next = NULL;
+//        add_to_end(current_thread, queue->head);
+//        queue->head = new_head;
+//        interrupts_set(enabled);
+//        return 1;
+//    }
 }
 
 /* suspend current thread until Thread tid exits */
