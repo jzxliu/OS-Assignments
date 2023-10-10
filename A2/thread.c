@@ -43,7 +43,6 @@ struct thread {
 // Current thread is always head of the queue structure.
 Tid current_thread = 0;
 struct thread threads[THREAD_MAX_THREADS];
-struct thread *current_thread = &main_thread;
 
 
 void *to_free_1 = NULL;
@@ -70,7 +69,7 @@ struct ready_node *ready_head = NULL;
 
 int ready_enqueue(Tid tid){
 
-    struct ready_node *new_node = malloc369(sizeof(ready_node));
+    struct ready_node *new_node = malloc369(sizeof(struct ready_node));
     if (new_node == NULL) {
         return 1;
     }
