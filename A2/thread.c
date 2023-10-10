@@ -416,6 +416,7 @@ thread_wakeup(struct wait_queue *queue, int all)
         return num;
     } else {
         ready_enqueue(wait_dequeue(queue));
+        interrupts_set(enabled);
         return 1;
     }
 }
