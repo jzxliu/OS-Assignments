@@ -17,6 +17,8 @@ struct wait_queue_node {
     Tid tid;
 };
 
+void wait_remove(struct wait_queue *wq, Tid to_remove);
+
 /* For Assignment 1, you will need a queue structure to keep track of the 
  * runnable threads. You can use the tutorial 1 queue implementation if you 
  * like. You will probably find in Assignment 2 that the operations needed
@@ -262,6 +264,10 @@ thread_kill(Tid tid)
         return THREAD_INVALID;
     }
 	threads[tid].state = 3;
+    if (threads[tid].wait_q != NULL) {
+        wait_remove(threads[tid].wait_q, tid);
+        ready_enqueue(tid);
+    }
     interrupts_set(enabled);
     return tid;
 }
@@ -289,12 +295,12 @@ void
 wait_queue_destroy(struct wait_queue *wq)
 {
 	assert(wq->head == NULL);
-	free(wq);
+	free369(wq);
 }
 
 
 void
-wait_queue_add(struct wait_queue *wq, Tid tid)
+wait_enqueue(struct wait_queue *wq, Tid tid)
 {
     struct wait_queue_node *new_node = malloc369(sizeof(struct wait_queue_node));
     new_node->next = NULL;
@@ -308,6 +314,7 @@ wait_queue_add(struct wait_queue *wq, Tid tid)
         }
         curr->next = new_node;
     }
+    threads[tid].wait_q = wq;
 }
 
 
@@ -319,9 +326,28 @@ wait_dequeue(struct wait_queue *wq)
     }
     struct wait_queue_node *head = wq->head;
     int ret = head->tid;
+    threads[head->tid].wait_q = NULL;
     wq->head = wq->head->next;
     free369(head);
     return ret;
+}
+
+
+// Assumes to_remove is in queue. Otherwise it will cause an error
+void
+wait_remove(struct wait_queue *wq, Tid to_remove)
+{
+    if (wq->head->tid == to_remove){
+        wait_dequeue(wq);
+    } else {
+        struct wait_queue_node *curr = wq->head;
+        while (curr->next->tid != to_remove){
+            curr = curr->next;
+        }
+        struct wait_queue_node *to_free = curr->next;
+        curr->next = curr->next->next;
+        free369(curr->next);
+    }
 }
 
 
@@ -340,7 +366,7 @@ thread_sleep(struct wait_queue *queue)
         return THREAD_NONE;
     }
 
-    wait_queue_add(queue, current_thread);
+    wait_enqueue(queue, current_thread);
 
     int ret = ready_head->tid;
     int err = getcontext(&(threads[current_thread].context));
@@ -410,7 +436,7 @@ lock_create()
 {
 	struct lock *lock;
 
-	lock = malloc(sizeof(struct lock));
+	lock = malloc369(sizeof(struct lock));
 	assert(lock);
 
 	TBD();
@@ -425,7 +451,7 @@ lock_destroy(struct lock *lock)
 
 	TBD();
 
-	free(lock);
+	free369(lock);
 }
 
 void
@@ -453,7 +479,7 @@ cv_create()
 {
 	struct cv *cv;
 
-	cv = malloc(sizeof(struct cv));
+	cv = malloc369(sizeof(struct cv));
 	assert(cv);
 
 	TBD();
@@ -468,7 +494,7 @@ cv_destroy(struct cv *cv)
 
 	TBD();
 
-	free(cv);
+	free369(cv);
 }
 
 void

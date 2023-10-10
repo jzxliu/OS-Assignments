@@ -120,7 +120,6 @@ out:
 		assert(ret >= 0);
 		assert(all ? ret == NTHREADS : ret == 1);
 	}
-    unintr_printf("reached outside loop");
 	/* we expect nr_sleeping is 0 at this point */
 	assert(nr_sleeping == 0);
 	/* no thread should be waiting on queue */
