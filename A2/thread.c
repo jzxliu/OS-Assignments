@@ -26,7 +26,7 @@ struct thread {
     /* Points to the thread stack allocated*/
     void *thread_stack;
 
-    struct thread *next;
+    struct wait_queue *wait_q;
 
     int state;
     /* States:
@@ -41,10 +41,10 @@ struct thread {
 };
 
 // Current thread is always head of the queue structure.
-struct thread main_thread;
+Tid current_thread = 0;
+struct thread threads[THREAD_MAX_THREADS];
 struct thread *current_thread = &main_thread;
 
-int in_use[THREAD_MAX_THREADS] = { 0 };
 
 void *to_free_1 = NULL;
 void *to_free_2 = NULL;
@@ -61,14 +61,32 @@ free_stuff(){
     }
 }
 
-void
-add_to_end(struct thread* head, struct thread* t){
-    // Function to add thread to end of linked list queue structure.
-    struct thread *curr = head;
-    while (curr->next != NULL){
-        curr = curr->next;
+struct ready_node {
+    struct ready_node *next;
+    Tid tid;
+};
+
+struct ready_node *ready_head = NULL;
+
+int ready_enqueue(Tid tid){
+
+    struct ready_node *new_node = malloc369(sizeof(ready_node));
+    if (new_node == NULL) {
+        return 1;
     }
-    curr->next = t;
+    new_node->next = NULL;
+    new_node->tid = tid;
+
+    if (ready_head == NULL) {
+        ready_head = new_node;
+    } else {
+        struct ready_node *curr = ready_head;
+        while (curr->next != NULL){
+            curr = curr->next;
+        }
+        curr->next = new_node;
+    }
+    return 0;
 }
 
 /**************************************************************************
@@ -82,17 +100,21 @@ thread_init(void)
 	/* Add necessary initialization for your threads library here. */
     /* Initialize the thread control block for the first thread */
 
-    current_thread->TID = 0;
-    current_thread->next = NULL;
-    current_thread->state = 1;
-    in_use[0] = 1;
+    for (int i = 0; i < THREAD_MAX_THREADS; i++) {
+        threads[i].TID = i;
+        threads[i].state = 0;
+        threads[i].wait_q = NULL;
+    }
+
+    current_thread = 0;
+    threads[0].state = 1;
 
 }
 
 Tid
 thread_id()
 {
-	return current_thread->TID;
+	return current_thread;
 }
 
 /* New thread starts by calling thread_stub. The arguments to thread_stub are
@@ -115,39 +137,33 @@ thread_create(void (*fn) (void *), void *parg)
 
     // Find an available TID
     Tid new_tid = 0;
-    while (in_use[new_tid] == 1){
+    while (threads[new_tid].state != 0){
         new_tid ++;
         if (new_tid == THREAD_MAX_THREADS){
             return THREAD_NOMORE;
         }
     }
 
-    // Allocate stack for new thread
-    struct thread *new_thread = malloc369(sizeof(struct thread));
-    if (new_thread == NULL){
+    threads[new_tid].TID = new_tid;
+    threads[new_tid].state = 1;
+    threads[new_tid].thread_stack = malloc369(THREAD_MIN_STACK);
+    if (threads[new_tid].thread_stack == NULL){
         return THREAD_NOMEMORY;
     }
 
-    new_thread->TID = new_tid;
-    new_thread->next = NULL;
-    new_thread->state = 1;
-    new_thread->thread_stack = malloc369(THREAD_MIN_STACK);
-    if (new_thread->thread_stack == NULL){
-        free369(new_thread);
-        return THREAD_NOMEMORY;
-    }
-
-    in_use[new_tid] = 1;
-
-    getcontext((&new_thread->context));
+    getcontext(&(threads[new_tid]->context));
 
     // Modify the context of newly created thread
-    new_thread->context.uc_mcontext.gregs[REG_RSP] = ((long long int) new_thread->thread_stack) + THREAD_MIN_STACK - 8;
-    new_thread->context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
-    new_thread->context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
-    new_thread->context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
+    threads[new_tid].context.uc_mcontext.gregs[REG_RSP] = ((long long int) new_thread->thread_stack) + THREAD_MIN_STACK - 8;
+    threads[new_tid].context.uc_mcontext.gregs[REG_RIP] = (long long int) &thread_stub;
+    threads[new_tid].context.uc_mcontext.gregs[REG_RDI] = (long long int) fn;
+    threads[new_tid].context.uc_mcontext.gregs[REG_RSI] = (long long int) parg;
 
-    add_to_end(current_thread, new_thread);
+    if (ready_enqueue(new_tid)) {
+        free369(threads[new_tid]->thread_stack);
+        threads[new_tid].state = 0;
+        return THREAD_NOMEMORY;
+    }
 
     interrupts_set(enabled);
     return new_tid;
@@ -157,27 +173,25 @@ Tid
 thread_yield(Tid want_tid)
 {
     bool enabled = interrupts_off();
-    struct thread *wanted;
+    struct ready_node *deleted_node = NULL;
     // If want_tid is THREAD_ANY or THREAD_SELF, set it to an actual TID according to requirements
-    if (want_tid == THREAD_ANY || (current_thread->next != NULL && want_tid == current_thread->next->TID)){
-        if (current_thread->next == NULL) {
+    if (want_tid == THREAD_ANY || (ready_head != NULL && want_tid == ready_head->tid)){
+        if (ready_head == NULL) {
             return THREAD_NONE;
         }
-        want_tid = current_thread->next->TID;
-        wanted = current_thread->next;
-        add_to_end(current_thread, current_thread);
-        current_thread->next = NULL;
+        deleted_node = ready_head;
+        want_tid = ready_head->tid;
+        ready_head = ready_head->next;
+        ready_enqueue(thread_id());
 
     } else if (want_tid == THREAD_SELF || want_tid == thread_id()){
         want_tid = thread_id();
-        wanted = current_thread;
-
     } else { // Find thread with want_tid, return THREAD_INVALID if can't find it in structure
-        if ((unsigned int)want_tid >= (unsigned int)THREAD_MAX_THREADS || current_thread->next == NULL) {
+        if ((unsigned int)want_tid >= (unsigned int)THREAD_MAX_THREADS || ready_head == NULL || threads[want_tid].state == 0) {
             return THREAD_INVALID;
         }
 
-        struct thread *curr = current_thread->next;
+        struct ready_node *curr = ready_head;
         while (curr->next != NULL && curr->next->TID != want_tid) {
             curr = curr->next;
         }
@@ -186,30 +200,31 @@ thread_yield(Tid want_tid)
         }
 
         // Update queue structure
-        wanted = curr->next;
+        deleted_node = curr->next;
         curr->next = curr->next->next;
-        wanted->next = current_thread->next;
-        add_to_end(current_thread, current_thread);
-        current_thread->next = NULL;
+        ready_enqueue(thread_id());
+    }
+    if (deleted_node != NULL){
+        free369(deleted_node);
     }
 
-    int err = getcontext(&(current_thread->context));
+    int err = getcontext(&(threads[current_thread].context));
     assert(!err);
     free_stuff();
 
-    if (current_thread->state == 3){
+    if (threads[current_thread].state == 3){
         thread_exit(0);
     }
 
-    if (current_thread->state == 2) {
-        current_thread->state = 1;
+    if (threads[current_thread].state == 2) {
+        threads[current_thread].state = 1;
         interrupts_set(enabled);
         return want_tid;
     }
 
-    current_thread->state = 2;
-    current_thread = wanted;
-    setcontext(&(current_thread->context));
+    threads[current_thread].state = 2;
+    current_thread = want_tid;
+    setcontext(&(threads[current_thread].context));
 
     /* Shouldn't get here */
     interrupts_set(enabled);
@@ -220,42 +235,31 @@ void
 thread_exit(int exit_code)
 {
     interrupts_off();
-    in_use[thread_id()] = 0;
-    if (current_thread->TID == 0){
-        if (current_thread->next == NULL){
-            free_stuff();
-            exit(exit_code);
-        } else {
-            current_thread = current_thread->next;
-            setcontext(&(current_thread->context));
-        }
-    } else {
-        to_free_1 = current_thread->thread_stack;
-        to_free_2 = current_thread;
-        current_thread = current_thread->next;
-        if (current_thread == NULL){
-            exit(exit_code);
-        } else {
-            setcontext(&(current_thread->context));
-        }
+    threads[current_thread].state = 0;
+    if (ready_head == NULL){
+        free_stuff();
+        exit(exit_code);
     }
+    if (threads[current_thread].TID != 0){
+        to_free_1 = threads[current_thread].thread_stack;
+    }
+    current_thread = ready_head->tid;
+    to_free_2 = ready_head;
+    ready_head = ready_head->next;
+    setcontext(&(threads[current_thread].context));
 }
 
 Tid
 thread_kill(Tid tid)
 {
     bool enabled = interrupts_off();
-	struct thread *curr = current_thread->next;
-    while (curr != NULL) {
-        if (curr->TID == tid) {
-            curr->state = 3;
-            interrupts_set(enabled);
-            return tid;
-        }
-        curr = curr->next;
+    if (tid == thread_id() || (unsigned int)tid >= (unsigned int)THREAD_MAX_THREADS || threads[tid].state == 0) {
+        interrupts_set(enabled);
+        return THREAD_INVALID
     }
+	threads[tid].state = 0;
     interrupts_set(enabled);
-    return THREAD_INVALID;
+    return tid;
 }
 
 /**************************************************************************

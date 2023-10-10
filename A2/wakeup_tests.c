@@ -116,9 +116,7 @@ out:
 		 * sleeps for at least 5 ms. */
 		spin(WAKE_DELAY);
 		/* tests thread_wakeup */
-        unintr_printf("test reach 119\n");
 		ret = thread_wakeup(queue, all);
-        unintr_printf("test reach 121\n");
 		assert(ret >= 0);
 		assert(all ? ret == NTHREADS : ret == 1);
 	}
