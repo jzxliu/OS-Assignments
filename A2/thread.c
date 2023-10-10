@@ -296,7 +296,7 @@ wait_queue_destroy(struct wait_queue *wq)
 void
 wait_queue_add(struct wait_queue *wq, Tid tid)
 {
-    struct wait_queue_node *new_node = malloc369(sizeof(wait_queue_node));
+    struct wait_queue_node *new_node = malloc369(sizeof(struct wait_queue_node));
     new_node->next = NULL;
     new_node->tid = tid;
     if (wq->head == NULL) {
@@ -343,25 +343,25 @@ thread_sleep(struct wait_queue *queue)
     wait_queue_add(queue, current_thread);
 
     int ret = ready_head->tid;
-    int err = getcontext(&(threads[current_thread]->context));
+    int err = getcontext(&(threads[current_thread].context));
     assert(!err);
     free_stuff();
 
-    if (current_thread->state == 3){
+    if (threads[current_thread].state == 3){
         thread_exit(0);
     }
 
-    if (current_thread->state == 2) {
-        current_thread->state = 1;
+    if (threads[current_thread].state == 2) {
+        threads[current_thread].state = 1;
         interrupts_set(enabled);
         return ret;
     }
 
-    current_thread->state = 2;
+    threads[current_thread].state = 2;
     current_thread = ready_head->tid;
     to_free_1 = ready_head;
     ready_head = ready_head->next;
-    setcontext(&(threads[current_thread]->context));
+    setcontext(&(threads[current_thread].context));
     interrupts_set(enabled);
 	return THREAD_FAILED; //Should never get here
 }
