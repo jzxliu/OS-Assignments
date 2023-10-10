@@ -127,7 +127,7 @@ out:
 
 	/* wait for other threads to exit */
 	while (thread_yield(THREAD_ANY) != THREAD_NONE) {
-        unintr_printf("yield complete\n")
+        unintr_printf("yield complete\n");
 	}
 
 	/* No check for memory leaks. At this point, the only thread that should
