@@ -248,7 +248,9 @@ thread_exit(int exit_code)
     threads[current_thread].state = 0;
     exit_codes[thread_id()] = exit_code;
     thread_wakeup(threads[current_thread].self_q, 1);
-    wait_queue_destroy(threads[current_thread].self_q);
+    if (threads[current_thread].self_q != NULL) {
+        wait_queue_destroy(threads[current_thread].self_q);
+    }
     if (ready_head == NULL){
         free_stuff();
         exit(exit_code);
