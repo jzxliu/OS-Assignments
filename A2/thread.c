@@ -250,6 +250,7 @@ thread_exit(int exit_code)
     if (threads[current_thread].self_q != NULL) {
         thread_wakeup(threads[current_thread].self_q, 1);
         wait_queue_destroy(threads[current_thread].self_q);
+        threads[current_thread].self_q = NULL;
     }
     if (ready_head == NULL){
         free_stuff();
