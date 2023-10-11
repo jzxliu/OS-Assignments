@@ -439,8 +439,12 @@ thread_wait(Tid tid, int *exit_code)
         return THREAD_INVALID;
     }
     if (threads[tid].state == 0){
+        if (exit_codes[tid] == -SIGKILL) {
+            return THREAD_INVALID;
+        }
         if (exit_code != NULL) {
             *exit_code = exit_codes[tid];
+            exit_codes[tid] = THREAD_INVALID;
         }
         interrupts_set(enabled);
         return tid;
