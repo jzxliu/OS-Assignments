@@ -223,7 +223,7 @@ thread_yield(Tid want_tid)
     free_stuff();
 
     if (threads[current_thread].state == 3){
-        thread_exit(SIGKILL);
+        thread_exit(-SIGKILL);
     }
 
     if (threads[current_thread].state == 2) {
@@ -383,7 +383,7 @@ thread_sleep(struct wait_queue *queue)
     free_stuff();
 
     if (threads[current_thread].state == 3){
-        thread_exit(SIGKILL);
+        thread_exit(-SIGKILL);
     }
 
     if (threads[current_thread].state == 2) {
