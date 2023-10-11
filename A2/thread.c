@@ -113,7 +113,7 @@ thread_init(void)
         threads[i].state = 0;
         threads[i].sleeping_q = NULL;
         threads[i].self_q = NULL;
-        exit_codes[i] = THREAD_INVALID;
+        exit_codes[i] = -SIGKILL;
     }
 
     current_thread = 0;
@@ -441,7 +441,7 @@ thread_wait(Tid tid, int *exit_code)
     if (threads[tid].state == 0){
         if (exit_code != NULL) {
             *exit_code = exit_codes[tid];
-            exit_codes[tid] = THREAD_INVALID;
+            exit_codes[tid] = -SIGKILL;
         }
         interrupts_set(enabled);
         return tid;
@@ -456,7 +456,7 @@ thread_wait(Tid tid, int *exit_code)
     thread_sleep(threads[tid].self_q);
     if (exit_code != NULL) {
         *exit_code = exit_codes[tid];
-        exit_codes[tid] = THREAD_INVALID;
+        exit_codes[tid] = -SIGKILL;
     }
     interrupts_set(enabled);
 	return tid;
