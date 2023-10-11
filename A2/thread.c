@@ -52,7 +52,7 @@ struct thread {
 // Current thread is always head of the queue structure.
 Tid current_thread = 0;
 struct thread threads[THREAD_MAX_THREADS];
-
+int exit_codes[THREAD_MAX_THREADS];
 
 void *to_free_1 = NULL;
 void *to_free_2 = NULL;
@@ -112,6 +112,8 @@ thread_init(void)
         threads[i].TID = i;
         threads[i].state = 0;
         threads[i].sleeping_q = NULL;
+        threads[i].self_q = NULL;
+        exit_codes[i] = THREAD_INVALID;
     }
 
     current_thread = 0;
@@ -221,7 +223,7 @@ thread_yield(Tid want_tid)
     free_stuff();
 
     if (threads[current_thread].state == 3){
-        thread_exit(0);
+        thread_exit(SIGKILL);
     }
 
     if (threads[current_thread].state == 2) {
@@ -244,6 +246,8 @@ thread_exit(int exit_code)
 {
     interrupts_off();
     threads[current_thread].state = 0;
+    exit_codes[thread_id()] = exit_code;
+    thread_wakeup(threads[current_thread].self_q, 1);
     if (ready_head == NULL){
         free_stuff();
         exit(exit_code);
@@ -376,7 +380,7 @@ thread_sleep(struct wait_queue *queue)
     free_stuff();
 
     if (threads[current_thread].state == 3){
-        thread_exit(0);
+        thread_exit(SIGKILL);
     }
 
     if (threads[current_thread].state == 2) {
@@ -425,8 +429,31 @@ thread_wakeup(struct wait_queue *queue, int all)
 Tid
 thread_wait(Tid tid, int *exit_code)
 {
-	TBD();
-	return 0;
+    bool enabled = interrupts_off();
+    if ((unsigned int) tid >= (unsigned int) THREAD_MAX_THREADS || tid == thread_id()) {
+        interrupts_set(enabled);
+        return THREAD_INVALID;
+    }
+    if (threads[tid].state == 0){
+        if (exit_code != NULL) {
+            *exit_code = exit_codes[tid];
+        }
+        interrupts_set(enabled);
+        return tid;
+    }
+	if (threads[tid].self_q == NULL) {
+        threads[tid].self_q = wait_queue_create();
+    }
+    if (threads[tid].self_q->head != NULL) {
+        interrupts_set(enabled);
+        return THREAD_INVALID;
+    }
+    thread_sleep(threads[tid].self_q);
+    if (exit_code != NULL) {
+        *exit_code = exit_codes[tid];
+    }
+    interrupts_set(enabled);
+	return tid;
 }
 
 struct lock {
