@@ -88,7 +88,7 @@ test_wait_parricide_thread(Tid parent)
 	 * ensure that parent has executed its thread_wait() on the child. */
 	while (thread_yield(THREAD_ANY) != THREAD_NONE)
 		;
-
+    unintr_printf("killing parent\n");
 	ret = thread_kill(parent);	/* ouch */
 	if (ret != parent) {
 		unintr_printf("%s: bad thread_kill expected %d got %d\n",
