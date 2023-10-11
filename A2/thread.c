@@ -301,7 +301,7 @@ wait_queue_create()
 void
 wait_queue_destroy(struct wait_queue *wq)
 {
-	assert(wq->head == NULL);
+	assert(wq == NULL || wq->head == NULL);
 	free369(wq);
 }
 
