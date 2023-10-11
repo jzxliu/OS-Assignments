@@ -33,7 +33,9 @@ struct thread {
     /* Points to the thread stack allocated*/
     void *thread_stack;
 
-    struct wait_queue *wait_q;
+    struct wait_queue *sleeping_q; // This is the queue that the thread is sleeping on. NULL if it isn't waiting.
+
+    struct wait_queue *self_q; // This is the queue that belongs to this thread.
 
     int state;
     /* States:
@@ -109,7 +111,7 @@ thread_init(void)
     for (int i = 0; i < THREAD_MAX_THREADS; i++) {
         threads[i].TID = i;
         threads[i].state = 0;
-        threads[i].wait_q = NULL;
+        threads[i].sleeping_q = NULL;
     }
 
     current_thread = 0;
@@ -264,8 +266,8 @@ thread_kill(Tid tid)
         return THREAD_INVALID;
     }
 	threads[tid].state = 3;
-    if (threads[tid].wait_q != NULL) {
-        wait_remove(threads[tid].wait_q, tid);
+    if (threads[tid].sleeping_q != NULL) {
+        wait_remove(threads[tid].sleeping_q, tid);
         ready_enqueue(tid);
     }
     interrupts_set(enabled);
@@ -314,7 +316,7 @@ wait_enqueue(struct wait_queue *wq, Tid tid)
         }
         curr->next = new_node;
     }
-    threads[tid].wait_q = wq;
+    threads[tid].sleeping_q = wq;
 }
 
 
@@ -326,7 +328,7 @@ wait_dequeue(struct wait_queue *wq)
     }
     struct wait_queue_node *head = wq->head;
     int ret = head->tid;
-    threads[head->tid].wait_q = NULL;
+    threads[head->tid].sleeping_q = NULL;
     wq->head = wq->head->next;
     free369(head);
     return ret;
