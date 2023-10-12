@@ -466,7 +466,7 @@ thread_wait(Tid tid, int *exit_code)
 
 struct lock {
 	struct wait_queue *wq;
-    TID tid;
+    Tid tid;
 };
 
 struct lock *
@@ -477,7 +477,7 @@ lock_create()
 	assert(lock);
 
 	lock->wq = wait_queue_create();
-    lock->TID = -1;
+    lock->tid = -1;
 
 	return lock;
 }
@@ -487,7 +487,7 @@ lock_destroy(struct lock *lock)
 {
 	assert(lock != NULL);
     bool enabled = interrupts_off();
-    if (lock->TID != -1){
+    if (lock->tid != -1){
         interrupts_set(enabled);
         return;
     }
@@ -502,10 +502,10 @@ lock_acquire(struct lock *lock)
 {
 	assert(lock != NULL);
     bool enabled = interrupts_off();
-    while (lock->TID != -1) {
+    while (lock->tid != -1) {
         thread_sleep(lock->wq);
     }
-    lock->TID = thread_id();
+    lock->tid = thread_id();
     interrupts_set(enabled);
 }
 
@@ -516,7 +516,7 @@ lock_release(struct lock *lock)
     assert(lock->tid == current_thread);
     bool enabled = interrupts_off();
     thread_wakeup(lock->wq, 1);
-	lock->TID = -1;
+	lock->tid = -1;
     interrupts_set(enabled);
 }
 
