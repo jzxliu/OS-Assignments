@@ -115,7 +115,7 @@ thread_init(void)
         threads[i].self_q = NULL;
         exit_codes[i] = -SIGKILL;
     }
-
+    exit_codes[0] = 0;
     current_thread = 0;
     threads[0].state = 1;
 
