@@ -502,7 +502,7 @@ lock_acquire(struct lock *lock)
 {
 	assert(lock != NULL);
     bool enabled = interrupts_off();
-    if (lock->acquired) {
+    while (lock->acquired) {
         thread_sleep(lock->wait_q);
     }
     lock->acquired = true;
