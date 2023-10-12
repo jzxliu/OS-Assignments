@@ -175,6 +175,8 @@ thread_create(void (*fn) (void *), void *parg)
         return THREAD_NOMEMORY;
     }
 
+    exit_codes[new_tid] = 0;
+
     interrupts_set(enabled);
     return new_tid;
 }
