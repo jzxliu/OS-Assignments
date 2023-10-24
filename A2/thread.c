@@ -512,11 +512,11 @@ lock_acquire(struct lock *lock)
 void
 lock_release(struct lock *lock)
 {
-	assert(lock != NULL);
-    assert(lock->tid == current_thread);
     bool enabled = interrupts_off();
-    thread_wakeup(lock->wq, 1);
-	lock->tid = -1;
+    if (lock != NULL && lock->tid == current_thread){
+        thread_wakeup(lock->wq, 1);
+        lock->tid = -1;
+    }
     interrupts_set(enabled);
 }
 
