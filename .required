@@ -1,2 +1,3 @@
 T2/examine_ucontext.c false
+T3/barrier.c false
 A1/thread.c true
