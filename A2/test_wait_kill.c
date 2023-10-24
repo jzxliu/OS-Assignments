@@ -166,7 +166,8 @@ test_wait_kill(void)
 	while (__sync_fetch_and_add(&done, 0) == 0)
 		;
 	spin(USEC_PER_SEC);
-	
+
+    unintr_printf("killing victim \n")
 	/* Kill the victim. */
 	ret = thread_kill(victim);
 	assert(thread_ret_ok(ret));
