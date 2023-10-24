@@ -435,8 +435,8 @@ thread_wakeup(struct wait_queue *queue, int all)
 Tid
 thread_wait(Tid tid, int *exit_code)
 {
-    unintr_printf("thread %d calling wait on %d \n",current_thread ,tid);
     bool enabled = interrupts_off();
+    unintr_printf("thread %d calling wait on %d \n",current_thread ,tid);
     if ((unsigned int) tid >= (unsigned int) THREAD_MAX_THREADS || tid == thread_id() || exit_codes[tid] == -SIGKILL) {
         interrupts_set(enabled);
         return THREAD_INVALID;
