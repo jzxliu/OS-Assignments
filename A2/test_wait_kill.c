@@ -167,7 +167,6 @@ test_wait_kill(void)
 		;
 	spin(USEC_PER_SEC);
 
-    unintr_printf("killing victim \n");
 	/* Kill the victim. */
 	ret = thread_kill(victim);
 	assert(thread_ret_ok(ret));

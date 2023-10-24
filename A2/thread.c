@@ -436,7 +436,6 @@ Tid
 thread_wait(Tid tid, int *exit_code)
 {
     bool enabled = interrupts_off();
-    unintr_printf("thread %d calling wait on %d \n",current_thread ,tid);
     if ((unsigned int) tid >= (unsigned int) THREAD_MAX_THREADS || tid == thread_id() || exit_codes[tid] == -SIGKILL) {
         interrupts_set(enabled);
         return THREAD_INVALID;
@@ -457,10 +456,6 @@ thread_wait(Tid tid, int *exit_code)
         return THREAD_INVALID;
     }
     thread_sleep(threads[tid].self_q);
-    if (exit_codes[tid] == -SIGKILL) {
-        interrupts_set(enabled);
-        return THREAD_INVALID;
-    }
     if (exit_code != NULL) {
         *exit_code = exit_codes[tid];
         exit_codes[tid] = -SIGKILL;
