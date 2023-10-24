@@ -460,6 +460,10 @@ thread_wait(Tid tid, int *exit_code)
         *exit_code = exit_codes[tid];
         exit_codes[tid] = -SIGKILL;
     }
+    if (*exit_code == -SIGKILL) {
+        interrupts_set(enabled);
+        return THREAD_INVALID;
+    }
     interrupts_set(enabled);
 	return tid;
 }
