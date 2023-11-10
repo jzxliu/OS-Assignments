@@ -130,15 +130,9 @@ pt_entry_t *pagetable_lookup(vaddr_t vaddr){
 
     pt_entry_t *entry = bot->entries[bottom_index];
     if (!entry) { // If this is the first time initializing page table entry
-        miss_count++;
         bot->entries[bottom_index] = malloc369(sizeof(pt_entry_t));
         entry = bot->entries[bottom_index];
-        entry->valid = 1; // Initialize to not valid
-        entry->dirty = 0; // Initially not dirty
-        entry->referenced = 0;
-        entry->frame_number = allocate_frame(entry);
-        init_frame(entry->frame_number);
-        entry->swap_offset = INVALID_SWAP;
+        memset(entry, 0, sizeof(pt_entry_t)); // Initialize everything to 0 or NULL
     }
 
     return entry;
@@ -176,9 +170,14 @@ int find_frame_number(vaddr_t vaddr, char type)
     if (!entry->valid) {
         miss_count++;
         entry->frame_number = allocate_frame(entry);
-        swap_pagein(entry->frame_number, entry->swap_offset);
         entry->valid = 1;
-    } else if (entry->swap_offset != INVALID_SWAP){
+        if (!entry->swap_offset) {
+            init_frame(entry->frame_number);
+            entry->swap_offset = INVALID_SWAP;
+        } else {
+            swap_pagein(entry->frame_number, entry->swap_offset);
+        }
+    } else {
         hit_count++;
     }
 
