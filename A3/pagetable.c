@@ -138,6 +138,7 @@ pt_entry_t *pagetable_lookup(vaddr_t vaddr){
         bot->entries[bottom_index] = malloc369(sizeof(pt_entry_t));
         entry = bot->entries[bottom_index];
         memset(entry, 0, sizeof(pt_entry_t)); // Initialize everything to 0 or NULL
+        entry->swap_offset = INVALID_SWAP;
     }
 
     return entry;
@@ -176,9 +177,8 @@ int find_frame_number(vaddr_t vaddr, char type)
         miss_count++;
         entry->frame_number = allocate_frame(entry);
         entry->valid = 1;
-        if (!entry->swap_offset) {
+        if (entry->swap_offset == INVALID_SWAP) {
             init_frame(entry->frame_number);
-            entry->swap_offset = INVALID_SWAP;
             entry->dirty = 1;
         } else {
             swap_pagein(entry->frame_number, entry->swap_offset);
