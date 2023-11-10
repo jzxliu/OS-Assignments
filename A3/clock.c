@@ -10,11 +10,12 @@ static int clock_hand;
 int clock_evict(void)
 {
     while (true) {
-        if (get_referenced(coremap[clock_hand].pte)){
-            set_referenced(coremap[clock_hand].pte, 0);
-            clock_hand = (clock_hand + 1) % memsize;
+        int previous = clock_hand;
+        clock_hand = (clock_hand + 1) % memsize;
+        if (get_referenced(coremap[previous].pte)){
+            set_referenced(coremap[previous].pte, 0);
         } else {
-            return clock_hand;
+            return previous;
         }
     }
 }
