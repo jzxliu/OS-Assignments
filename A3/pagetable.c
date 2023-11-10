@@ -213,5 +213,5 @@ void free_pagetable(void)
             free369(top);
         }
     }
-    free(page_directory);
+    free369(page_directory);
 }
