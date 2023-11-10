@@ -92,7 +92,12 @@ void init_pagetable(void)
  */
 void handle_evict(pt_entry_t * pte)
 {
-    pte->swap_offset = swap_pageout(pte->frame_number, INVALID_SWAP);
+    if (pte->dirty) {
+        evict_dirty_count ++;
+        pte->swap_offset = swap_pageout(pte->frame_number, pte->swap_offset);
+    } else {
+        evict_clean_count ++;
+    }
     pte->valid = false;
 }
 
@@ -174,8 +179,10 @@ int find_frame_number(vaddr_t vaddr, char type)
         if (!entry->swap_offset) {
             init_frame(entry->frame_number);
             entry->swap_offset = INVALID_SWAP;
+            entry->dirty = 1;
         } else {
             swap_pagein(entry->frame_number, entry->swap_offset);
+            entry->dirty = 0;
         }
     } else {
         hit_count++;
@@ -183,8 +190,6 @@ int find_frame_number(vaddr_t vaddr, char type)
 
     if ((type == 'S') || (type == 'M')) {
         entry->dirty = 1;
-    } else if ((type == 'L' || type == 'I')) {
-
     }
 
     return entry->frame_number;
