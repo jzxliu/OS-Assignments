@@ -170,12 +170,20 @@ pt_entry_t *pagetable_lookup(vaddr_t vaddr){
  */
 int find_frame_number(vaddr_t vaddr, char type)
 {
+    ref_count ++;
     pt_entry_t *entry = pagetable_lookup(vaddr);
     if (!entry->valid) {
+        miss_count++;
         entry->frame_number = allocate_frame(entry);
         swap_pagein(entry->frame_number, entry->swap_offset);
         entry->valid = 1;
     }
+    if ((type == 'S') || (type == 'M')) {
+        entry->dirty = 1;
+    } else if ((type == 'L' || type == 'I')) {
+
+    }
+
     return entry->frame_number;
 }
 
