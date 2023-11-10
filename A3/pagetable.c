@@ -138,7 +138,7 @@ pt_entry_t *pagetable_lookup(vaddr_t vaddr){
         bot->entries[bottom_index] = malloc369(sizeof(pt_entry_t));
         entry = bot->entries[bottom_index];
         memset(entry, 0, sizeof(pt_entry_t)); // Initialize everything to 0 or NULL
-        entry->swap_offset = INVALID_SWAP;
+        entry->swap_offset = INVALID_SWAP; // This is the only thing initialized to -1
     }
 
     return entry;
@@ -179,17 +179,17 @@ int find_frame_number(vaddr_t vaddr, char type)
         entry->valid = 1;
         if (entry->swap_offset == INVALID_SWAP) {
             init_frame(entry->frame_number);
-            entry->dirty = 1;
+            entry->dirty = 1; // First reference
         } else {
             swap_pagein(entry->frame_number, entry->swap_offset);
-            entry->dirty = 0;
+            entry->dirty = 0; // If we are doing pagein, it should be clean at first
         }
     } else {
         hit_count++;
     }
 
     if ((type == 'S') || (type == 'M')) {
-        entry->dirty = 1;
+        entry->dirty = 1; // Because we have modified it
     }
 
     return entry->frame_number;
@@ -197,6 +197,7 @@ int find_frame_number(vaddr_t vaddr, char type)
 
 void print_pagetable(void)
 {
+    // WHY DO YOU HAVE TO MAKE ME DO THIS... I HATE MYSELF ENOUGH ALREADY
 }
 
 

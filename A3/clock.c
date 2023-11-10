@@ -1,14 +1,22 @@
 #include "sim.h"
 #include "coremap.h"
 
+static int clock_hand;
+
 /* Page to evict is chosen using the CLOCK algorithm.
  * Returns the page frame number (which is also the index in the coremap)
  * for the page that is to be evicted.
  */
 int clock_evict(void)
 {
-	assert(false);
-	return -1;
+    while (true) {
+        if (get_referenced(coremap[clock_hand].pte)){
+            set_referenced(coremap[clock_hand].pte, 0);
+            clock_hand = (clock_hand + 1) % memsize;
+        } else {
+            return clock_hand;
+        }
+    }
 }
 
 /* This function is called on each access to a page to update any information
@@ -18,14 +26,14 @@ int clock_evict(void)
  */
 void clock_ref(int frame, vaddr_t vaddr)
 {
-	(void)frame;
-	(void)vaddr;
+    (void)vaddr;
+    set_referenced(coremap[frame].pte, 1);
 }
 
 /* Initialize any data structures needed for this replacement algorithm. */
 void clock_init(void)
 {
-
+    clock_hand = 0;
 }
 
 /* Cleanup any data structures created in clock_init(). */
