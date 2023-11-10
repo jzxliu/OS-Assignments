@@ -198,6 +198,38 @@ int find_frame_number(vaddr_t vaddr, char type)
 void print_pagetable(void)
 {
     // WHY DO YOU HAVE TO MAKE ME DO THIS... I HATE MYSELF ENOUGH ALREADY
+    printf("Page Directory Contains:\n");
+    for (int i = 0; i < NUM_ENTRIES; i++) {
+        pt_top_t *top = page_directory->entries[i];
+        if (top) {
+            printf("  Top Table at Index %d, Which Contains:\n", i);
+            for (int j = 0; j < NUM_ENTRIES; j++) {
+                pt_middle_t *mid = top->entries[j];
+                if (mid) {
+                    printf("    Mid Table at Index %d, Which Contains:\n", j);
+                    for (int k = 0; k < NUM_ENTRIES; k++) {
+                        pt_bottom_t *bot = mid->entries[k];
+                        if (bot) {
+                            printf("      Bot Table at Index %d, Which Contains:\n", k);
+                            for (int l = 0; l < NUM_ENTRIES; l++) {
+                                pt_entry_t *entry = bot->entries[l];
+                                if (entry) {
+                                    printf("        Entry at Index %d, ", l);
+                                    if (entry->valid) {
+                                        printf("Valid with Frame Number %d\n", entry->frame_number);
+                                    } else if (entry->swap_offset != INVALID_SWAP) {
+                                        printf("Invalid, On Swap\n");
+                                    } else {
+                                        printf("Invalid, Not On Swap\n");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 
@@ -213,6 +245,12 @@ void free_pagetable(void)
                     for (int k = 0; k < NUM_ENTRIES; k++) {
                         pt_bottom_t *bot = mid->entries[k];
                         if (bot) {
+                            for (int l = 0; l < NUM_ENTRIES; l++) {
+                                pt_entry_t *entry = bot->entries[l];
+                                if (entry) {
+                                    free369(entry);
+                                }
+                            }
                             free369(bot);
                         }
                     }
