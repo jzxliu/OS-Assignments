@@ -178,9 +178,10 @@ int find_frame_number(vaddr_t vaddr, char type)
         entry->frame_number = allocate_frame(entry);
         swap_pagein(entry->frame_number, entry->swap_offset);
         entry->valid = 1;
-    } else {
+    } else if (entry->swap_offset != INVALID_SWAP){
         hit_count++;
     }
+
     if ((type == 'S') || (type == 'M')) {
         entry->dirty = 1;
     } else if ((type == 'L' || type == 'I')) {
