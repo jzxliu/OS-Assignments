@@ -22,6 +22,7 @@
 #include "swap.h"
 #include "pagetable.h"
 
+
 // Counters for various events.
 // Your code must increment these when the related events occur.
 size_t hit_count = 0;
@@ -30,6 +31,9 @@ size_t ref_count = 0;
 size_t evict_clean_count = 0;
 size_t evict_dirty_count = 0;
 
+// Define a Page Directory
+pt_directory_t *page_directory;
+
 // Accessor functions for page table entries, to allow replacement
 // algorithms to obtain information from a PTE, without depending
 // on the internal implementation of the structure.
@@ -37,29 +41,25 @@ size_t evict_dirty_count = 0;
 /* Returns true if the pte is marked valid, otherwise false */
 bool is_valid(pt_entry_t *pte)
 {
-	(void)pte;
-	return false;
+	return pte->valid;
 }
 
 /* Returns true if the pte is marked dirty, otherwise false */
 bool is_dirty(pt_entry_t *pte)
 {
-	(void)pte;
-	return false;
+	return pte->dirty;
 }
 
 /* Returns true if the pte is marked referenced, otherwise false */
 bool get_referenced(pt_entry_t *pte)
 {
-	(void)pte;
-	return false;
+	return pte->referenced;
 }
 
 /* Sets the 'referenced' status of the pte to the given val */
 void set_referenced(pt_entry_t *pte, bool val)
 {
-	(void)pte;
-	(void)val;
+	pte->referenced = val;
 }
 
 /*
@@ -76,7 +76,8 @@ void set_referenced(pt_entry_t *pte, bool val)
  */
 void init_pagetable(void)
 {
-
+    page_directory = malloc369(sizeof(pt_directory_t));
+    memset(page_directory, 0, sizeof(pt_directory_t));
 }
 
 /*
@@ -90,8 +91,57 @@ void init_pagetable(void)
  */
 void handle_evict(pt_entry_t * pte)
 {
-	(void)pte;
+    pte->swap_offset = swap_pageout(pte->frame_number, INVALID_SWAP);
+    pte->valid = false;
 }
+
+/*
+ * Looks up the PTE by indexing using the vaddr.
+ * Allocate new page tables & initialize the entry if the entry does not already exist.
+ */
+pt_entry_t *pagetable_lookup(vaddr_t vaddr){
+    // Calculate the indexes for the multi-level page table by shifting and looking at the rightmost 9 bits.
+    size_t directory_index = (vaddr >>39) & 0x1FF;
+    size_t top_index = (vaddr >> 30) & 0x1FF;
+    size_t mid_index = (vaddr >> 21) & 0x1FF;
+    size_t bottom_index = (vaddr >> 12) & 0x1FF;
+
+    pt_top_t *top = page_directory->entries[directory_index];
+    if (!top) { // Initialize top page table
+        page_directory->entries[directory_index] = malloc369(sizeof(pt_top_t));
+        top = page_directory->entries[directory_index];
+        memset(top, 0, sizeof(pt_top_t));
+    }
+
+    pt_middle_t *mid = top->entries[top_index];
+    if (!mid) { // Initialize middle page table
+        top->entries[top_index] = malloc369(sizeof(pt_middle_t));
+        mid = top->entries[top_index];
+        memset(mid, 0, sizeof(pt_middle_t));
+    }
+
+    pt_bottom_t *bot = mid->entries[mid_index];
+    if (!bot) { // Initialize bottom page table
+        mid->entries[mid_index] = malloc369(sizeof(pt_bottom_t));
+        bot = mid->entries[mid_index];
+        memset(bot, 0, sizeof(pt_bottom_t));
+    }
+
+    pt_entry_t *entry = bot->entries[bottom_index];
+    if (!entry) { // If this is the first time initializing page table entry
+        bot->entries[bottom_index] = malloc369(sizeof(pt_entry_t));
+        entry = bot->entries[bottom_index];
+        entry->valid = 1; // Initialize to not valid
+        entry->dirty = 0; // Initially not dirty
+        entry->referenced = 0;
+        entry->frame_number = allocate_frame(entry);
+        init_frame(entry->frame_number);
+        entry->swap_offset = INVALID_SWAP;
+    }
+
+    return entry;
+}
+
 
 /*
  * Locate the physical frame number for the given vaddr using the page table.
@@ -119,11 +169,13 @@ void handle_evict(pt_entry_t * pte)
  */
 int find_frame_number(vaddr_t vaddr, char type)
 {
-	// To keep compiler happy - remove when you have a real use
-	(void)vaddr;
-	(void)type;
-	
-	return -1;
+    pt_entry_t *entry = pagetable_lookup(vaddr);
+    if (!entry->valid) {
+        entry->frame_number = allocate_frame(entry);
+        swap_pagein(entry->frame_number, entry->swap_offset);
+        entry->valid = 1;
+    }
+    return entry->frame_number;
 }
 
 void print_pagetable(void)
@@ -133,4 +185,24 @@ void print_pagetable(void)
 
 void free_pagetable(void)
 {
+    // Iterate through the page table at every level and free them from bottom up.
+    for (int i = 0; i < NUM_ENTRIES; i++) {
+        pt_top_t *top = page_directory->entries[i];
+        if (top) {
+            for (int j = 0; j < NUM_ENTRIES; j++) {
+                pt_middle_t *mid = top->entries[j];
+                if (mid) {
+                    for (int k = 0; k < NUM_ENTRIES; k++) {
+                        pt_bottom_t *bot = mid->entries[k];
+                        if (bot) {
+                            free369(bot);
+                        }
+                    }
+                    free369(mid);
+                }
+            }
+            free369(top);
+        }
+    }
+    free(page_directory);
 }
