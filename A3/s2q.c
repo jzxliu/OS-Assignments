@@ -33,7 +33,7 @@ int s2q_evict(void)
  */
 void s2q_ref(int frame, vaddr_t vaddr)
 {
-    if (coremap[frame].framelist_entry.next == NULL){ // It is not part of a queue yet
+    if (!(list_entry_is_linked(coremap[frame].framelist_entry))){ // It is not part of a queue yet
         list_add_tail(&fifo_queue, &(coremap[frame].framelist_entry));
         fifo_size += 1;
         set_referenced(coremap[frame].pte, 0);
@@ -43,7 +43,7 @@ void s2q_ref(int frame, vaddr_t vaddr)
     } else { // Not yet referenced, should be moved from FIFO to LRU queue
         list_del(&(coremap[frame].framelist_entry));
         list_add_tail(&lru_queue, &coremap[frame].framelist_entry);
-        fifo_threshold -= 1;
+        fifo_size -= 1;
         set_referenced(coremap[frame].pte, 1);
     }
 
