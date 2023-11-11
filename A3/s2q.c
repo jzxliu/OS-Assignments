@@ -3,7 +3,8 @@
 
 list_head lru_queue; // Am queue
 list_head fifo_queue; // A1 queue
-int fifo_threshold;
+int fifo_size = 0;
+int fifo_threshold = memsize / 10;
 
 
 /* Page to evict is chosen using the simplified 2Q algorithm.
@@ -13,9 +14,9 @@ int fifo_threshold;
 int s2q_evict(void)
 {
     list_entry *entry;
-    if (fifo_threshold < 0){
+    if (fifo_size > fifo_threshold){
         entry = list_first_entry(&fifo_queue);
-        fifo_threshold += 1;
+        fifo_size -= 1;
     } else {
         entry = list_first_entry(&lru_queue);
     }
@@ -34,7 +35,7 @@ void s2q_ref(int frame, vaddr_t vaddr)
 {
     if (coremap[frame].framelist_entry.next == NULL){ // It is not part of a queue yet
         list_add_tail(&fifo_queue, &(coremap[frame].framelist_entry));
-        fifo_threshold -= 1;
+        fifo_size += 1;
         set_referenced(coremap[frame].pte, 0);
     } else if (get_referenced(coremap[frame].pte)) { // It has been referenced and moved to Am LRU queue
         list_del(&(coremap[frame].framelist_entry));
@@ -42,7 +43,7 @@ void s2q_ref(int frame, vaddr_t vaddr)
     } else { // Not yet referenced, should be moved from FIFO to LRU queue
         list_del(&(coremap[frame].framelist_entry));
         list_add_tail(&lru_queue, &coremap[frame].framelist_entry);
-        fifo_threshold += 1;
+        fifo_threshold -= 1;
         set_referenced(coremap[frame].pte, 1);
     }
 
@@ -54,7 +55,6 @@ void s2q_init(void)
 {
     list_init(&lru_queue);
     list_init(&fifo_queue);
-    fifo_threshold = memsize / 10;
 }
 
 /* Cleanup any data structures created in s2q_init(). */
