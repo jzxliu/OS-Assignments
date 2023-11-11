@@ -27,7 +27,7 @@ int s2q_evict(void)
     }
     to_evict = frame_of(entry);
     list_del(entry);
-	return (to_evict - coremap) / sizeof(frame);
+	return (to_evict - coremap) / sizeof(struct frame);
 }
 
 /* This function is called on each access to a page to update any information
