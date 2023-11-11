@@ -20,6 +20,7 @@ int s2q_evict(void)
     } else if ((&lru_queue.head != list_first_entry(&lru_queue))){
         entry = list_first_entry(&lru_queue);
     } else {
+        entry = NULL;
         assert("fifo size incorrect\n");
     }
     struct frame *to_evict = container_of(entry, struct frame, framelist_entry);
