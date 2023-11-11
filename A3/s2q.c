@@ -6,10 +6,6 @@ list_head fifo_queue; // A1 queue
 int fifo_size;
 int fifo_threshold;
 
-// Gets the frame of a framelist entry
-struct frame *frame_of(list_entry *entry){
-    return container_of(entry, struct frame, framelist_entry);
-}
 
 /* Page to evict is chosen using the simplified 2Q algorithm.
  * Returns the page frame number (which is also the index in the coremap)
@@ -18,14 +14,13 @@ struct frame *frame_of(list_entry *entry){
 int s2q_evict(void)
 {
     list_entry *entry;
-    struct frame *to_evict;
     if (fifo_size > fifo_threshold){
         entry = list_first_entry(&fifo_queue);
         fifo_size --;
     } else {
         entry = list_first_entry(&lru_queue);
     }
-    to_evict = frame_of(entry);
+    struct frame *to_evict = container_of(entry, struct frame, framelist_entry);
     list_del(entry);
     set_referenced(to_evict->pte, 0);
 	return (to_evict - coremap) / sizeof(struct frame);
