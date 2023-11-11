@@ -47,6 +47,7 @@ void s2q_ref(int frame, vaddr_t vaddr)
         list_del(&coremap[frame].framelist_entry);
         list_add_tail(&lru_queue, &coremap[frame].framelist_entry);
         set_referenced(coremap[frame].pte, 1);
+        fifo_size --;
     }
 
 	(void)vaddr; // To keep the compiler from crying
