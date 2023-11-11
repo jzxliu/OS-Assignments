@@ -16,7 +16,7 @@ int s2q_evict(void)
     list_entry *entry;
     if ((&fifo_queue.head != list_first_entry(&fifo_queue)) && fifo_size > fifo_threshold){
         entry = list_first_entry(&fifo_queue);
-        fifo_size --;
+        fifo_size -= 1;
     } else if ((&lru_queue.head != list_first_entry(&lru_queue))){
         entry = list_first_entry(&lru_queue);
     } else {
@@ -47,7 +47,6 @@ void s2q_ref(int frame, vaddr_t vaddr)
         list_del(&coremap[frame].framelist_entry);
         list_add_tail(&lru_queue, &coremap[frame].framelist_entry);
         set_referenced(coremap[frame].pte, 1);
-        fifo_size --;
     }
 
 	(void)vaddr; // To keep the compiler from crying
