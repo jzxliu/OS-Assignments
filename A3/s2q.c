@@ -3,8 +3,8 @@
 
 list_head lru_queue; // Am queue
 list_head fifo_queue; // A1 queue
-int fifo_size = 0;
-int fifo_threshold = memsize / 10;
+int fifo_size;
+int fifo_threshold;
 
 
 /* Page to evict is chosen using the simplified 2Q algorithm.
@@ -55,6 +55,8 @@ void s2q_init(void)
 {
     list_init(&lru_queue);
     list_init(&fifo_queue);
+    fifo_size = 0;
+    fifo_threshold = memsize / 10;
 }
 
 /* Cleanup any data structures created in s2q_init(). */
