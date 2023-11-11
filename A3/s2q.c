@@ -38,14 +38,14 @@ int s2q_evict(void)
 void s2q_ref(int frame, vaddr_t vaddr)
 {
     if (coremap[frame].framelist_entry.next == NULL){ // It is not part of a queue yet
-        list_add_tail(fifo_queue, coremap[frame].framelist_entry);
+        list_add_tail(fifo_queue, &coremap[frame].framelist_entry);
         fifo_size ++;
     } else if (get_referenced(coremap[frame].pte)) { // It has been referenced and moved to Am LRU queue
-        list_del(coremap[frame].framelist_entry);
-        list_add_tail(lru_queue, coremap[frame].framelist_entry);
+        list_del(&coremap[frame].framelist_entry);
+        list_add_tail(lru_queue, &coremap[frame].framelist_entry);
     } else { // Not yet referenced, should be moved from FIFO to LRU queue
-        list_del(coremap[frame].framelist_entry);
-        list_add_tail(lru_queue, coremap[frame].framelist_entry);
+        list_del(&coremap[frame].framelist_entry);
+        list_add_tail(lru_queue, &coremap[frame].framelist_entry);
         fifo_size -= 1;
         set_referenced(coremap[frame].pte, 1);
     }
