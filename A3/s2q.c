@@ -14,7 +14,7 @@ int fifo_threshold;
 int s2q_evict(void)
 {
     list_entry *entry;
-    if (fifo_queue.head != list_first_entry(fifo_queue)){
+    if (&fifo_queue.head != list_first_entry(fifo_queue)){
         entry = list_first_entry(&fifo_queue);
     } else {
         entry = list_first_entry(&lru_queue);
