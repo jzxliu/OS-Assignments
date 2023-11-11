@@ -3,8 +3,8 @@
 
 list_head lru_queue; // Am queue
 list_head fifo_queue; // A1 queue
-unsigned long fifo_size;
-unsigned long fifo_threshold;
+int fifo_size;
+int fifo_threshold;
 
 
 /* Page to evict is chosen using the simplified 2Q algorithm.
