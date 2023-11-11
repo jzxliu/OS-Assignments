@@ -14,14 +14,14 @@ int fifo_threshold;
 int s2q_evict(void)
 {
     list_entry *entry;
-    if (fifo_size > fifo_threshold){
+    if (fifo_queue.head != list_first_entry(fifo_queue)){
         entry = list_first_entry(&fifo_queue);
-        fifo_size -= 1;
     } else {
         entry = list_first_entry(&lru_queue);
     }
     struct frame *to_evict = container_of(entry, struct frame, framelist_entry);
     list_del(entry);
+    set_referenced(to_evict->pte, 0);
 	return (to_evict - coremap) / sizeof(struct frame);
 }
 
@@ -34,7 +34,6 @@ void s2q_ref(int frame, vaddr_t vaddr)
 {
     if (!(list_entry_is_linked(&coremap[frame].framelist_entry))){ // It is not part of a queue yet
         list_add_tail(&fifo_queue, &coremap[frame].framelist_entry);
-        fifo_size += 1;
         set_referenced(coremap[frame].pte, 0);
     } else if (get_referenced(coremap[frame].pte)) { // It has been referenced and moved to Am LRU queue
         list_del(&coremap[frame].framelist_entry);
@@ -42,7 +41,6 @@ void s2q_ref(int frame, vaddr_t vaddr)
     } else { // Not yet referenced, should be moved from FIFO to LRU queue
         list_del(&coremap[frame].framelist_entry);
         list_add_tail(&lru_queue, &coremap[frame].framelist_entry);
-        fifo_size -= 1;
         set_referenced(coremap[frame].pte, 1);
     }
 
