@@ -1,8 +1,8 @@
 #include "sim.h"
 #include "coremap.h"
 
-list_head *lru_queue; // Am queue
-list_head *fifo_queue; // A1 queue
+list_head lru_queue; // Am queue
+list_head fifo_queue; // A1 queue
 int fifo_size;
 int fifo_threshold;
 
@@ -47,7 +47,7 @@ void s2q_ref(int frame, vaddr_t vaddr)
     } else { // Not yet referenced, should be moved from FIFO to LRU queue
         list_del(&coremap[frame].framelist_entry);
         list_add_tail(lru_queue, &coremap[frame].framelist_entry);
-        fifo_size -= 1;
+        fifo_size --;
         set_referenced(coremap[frame].pte, 1);
     }
 
