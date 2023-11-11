@@ -18,7 +18,7 @@ struct frame *frame_of(list_entry *entry){
 int s2q_evict(void)
 {
     list_entry *entry;
-    frame *to_evict;
+    struct frame *to_evict;
     if (fifo_size > fifo_threshold){
         entry = list_first_entry(fifo_queue);
         fifo_size --;
