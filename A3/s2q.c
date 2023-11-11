@@ -22,7 +22,6 @@ int s2q_evict(void)
     }
     struct frame *to_evict = container_of(entry, struct frame, framelist_entry);
     list_del(entry);
-    set_referenced(to_evict->pte, 0);
 	return (to_evict - coremap) / sizeof(struct frame);
 }
 
