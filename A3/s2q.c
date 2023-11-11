@@ -14,14 +14,11 @@ unsigned long fifo_threshold;
 int s2q_evict(void)
 {
     list_entry *entry;
-    if ((&fifo_queue.head != list_first_entry(&fifo_queue)) && fifo_size > fifo_threshold){
+    if (fifo_size >= fifo_threshold){
         entry = list_first_entry(&fifo_queue);
         fifo_size -= 1;
-    } else if ((&lru_queue.head != list_first_entry(&lru_queue))){
-        entry = list_first_entry(&lru_queue);
     } else {
-        entry = NULL;
-        assert("fifo size incorrect\n");
+        entry = list_first_entry(&lru_queue);
     }
     struct frame *to_evict = container_of(entry, struct frame, framelist_entry);
     list_del(entry);
