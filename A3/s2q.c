@@ -7,6 +7,11 @@ int fifo_size;
 int fifo_threshold;
 
 
+struct frame *get_container(list_entry *entry){
+    return container_of(entry, struct frame, framelist_entry);
+}
+
+
 /* Page to evict is chosen using the simplified 2Q algorithm.
  * Returns the page frame number (which is also the index in the coremap)
  * for the page that is to be evicted.
@@ -20,7 +25,7 @@ int s2q_evict(void)
     } else {
         entry = list_first_entry(&lru_queue);
     }
-    struct frame *to_evict = container_of(entry, struct frame, framelist_entry);
+    struct frame *to_evict = get_container(entry);
     list_del(entry);
     if(list_entry_is_linked(&to_evict->framelist_entry)){
         return -1;
