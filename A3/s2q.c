@@ -31,7 +31,7 @@ int s2q_evict(void)
         return -1;
     }
     set_referenced(to_evict->pte, 0);
-	return (to_evict - coremap) / sizeof(struct frame);
+	return (to_evict - coremap);
 }
 
 /* This function is called on each access to a page to update any information
