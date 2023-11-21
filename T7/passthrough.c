@@ -218,7 +218,7 @@ static int passthrough_rename(const char *from, const char *to)
 static int passthrough_utimens(const char *path, const struct timespec times[2])
 {
 	char abs_path[PATH_MAX];
-    fprintf(stderr, "utimens(%s, %p, %ld)\n", path, times);
+    fprintf(stderr, "utimens(%s, %p)\n", path, times);
 	if (!get_path(abs_path, sizeof(abs_path), path))
 		return -ENAMETOOLONG;
 
@@ -232,7 +232,7 @@ static int passthrough_utimens(const char *path, const struct timespec times[2])
 static int passthrough_truncate(const char *path, off_t size)
 {
 	char abs_path[PATH_MAX];
-    fprintf(stderr, "truncate(%s, %ld)\n", path, offset);
+    fprintf(stderr, "truncate(%s, %ld)\n", path, size);
 	if (!get_path(abs_path, sizeof(abs_path), path))
 		return -ENAMETOOLONG;
 
