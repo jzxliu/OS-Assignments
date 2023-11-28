@@ -36,7 +36,7 @@ void print_inode(struct ext2_inode* inode_table, int index) {
     printf(" blocks: %d\n", inode->i_blocks);
 
     printf("[%d] Blocks:", index);
-    for (int i = 0 ; i < inode->i_blocks / 2 ; i++) {
+    for (int i = 0 ; i < ((inode->i_blocks / 2) & 13) ; i++) {
         printf(" %d", inode->i_block[i]);
     }
     printf("\n");
