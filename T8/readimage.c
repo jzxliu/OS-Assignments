@@ -22,10 +22,10 @@ int in_use(unsigned char *bitmap, int byte, int bit){
 }
 
 
-void print_inode(struct ext2_inode* inode_table, int i_id) {
+void print_inode(struct ext2_inode* inode_table, int index) {
 
-    struct ext2_inode *inode = &inode_table[i_id - 1];
-    printf("[%d]", i_id);
+    struct ext2_inode *inode = &inode_table[index - 1];
+    printf("[%d]", index);
     if (inode->i_mode & EXT2_S_IFREG) {
         printf(" type: f");
     } else {
@@ -35,7 +35,7 @@ void print_inode(struct ext2_inode* inode_table, int i_id) {
     printf(" links: %d", inode->i_links_count);
     printf(" blocks: %d\n", inode->i_blocks);
 
-    printf("[%d] Blocks:", i_id);
+    printf("[%d] Blocks:", index);
     for (int i = 0 ; i < inode->i_blocks / 2 ; i++) {
         printf(" %d", inode->i_block[i]);
     }
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
         int bit = i - (8 * byte);
 
         if (in_use(inode_bitmap, byte, bit)) {
-            print_inode(inode_table, i);
+            print_inode(inode_table, i + 1);
         }
     }
 
