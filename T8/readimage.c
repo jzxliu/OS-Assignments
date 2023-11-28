@@ -105,6 +105,7 @@ int main(int argc, char *argv[])
 
     struct ext2_inode *inode_table = (struct ext2_inode *) (disk + EXT2_BLOCK_SIZE * gd->bg_inode_table);
     printf("Inodes:\n");
+    print_inode(inode_table, EXT2_ROOT_INO);
 
     for (int i = EXT2_GOOD_OLD_FIRST_INO ; i < sb->s_inodes_count ; i++) {
         int byte = i / 8;
