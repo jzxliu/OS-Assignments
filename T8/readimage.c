@@ -50,9 +50,9 @@ int main(int argc, char *argv[])
         for (int bit = 0 ; bit < 8 ; bit++) {
             int in_use = block_bitmap[byte] & (1 << bit);
             if (in_use) {
-                printf("1")
+                printf("1");
             } else {
-                printf("0")
+                printf("0");
             }
         }
         printf(" ");
@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
         for (int bit = 0 ; bit < 8 ; bit++) {
             int in_use = inode_bitmap[byte] & (1 << bit);
             if (in_use) {
-                printf("1")
+                printf("1");
             } else {
-                printf("0")
+                printf("0");
             }
         }
         printf(" ");
