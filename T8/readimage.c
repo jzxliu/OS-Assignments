@@ -49,7 +49,11 @@ int main(int argc, char *argv[])
     for (int byte = 0 ; byte < sb->s_blocks_count / 8 ; byte++) {
         for (int bit = 0 ; bit < 8 ; bit++) {
             int in_use = block_bitmap[byte] & (1 << bit);
-            printf("%d", in_use);
+            if (in_use) {
+                printf("1")
+            } else {
+                printf("0")
+            }
         }
         printf(" ");
     }
@@ -60,7 +64,11 @@ int main(int argc, char *argv[])
     for (int byte = 0 ; byte < sb->s_inodes_count / 8 ; byte++) {
         for (int bit = 0 ; bit < 8 ; bit++) {
             int in_use = inode_bitmap[byte] & (1 << bit);
-            printf("%d", in_use);
+            if (in_use) {
+                printf("1")
+            } else {
+                printf("0")
+            }
         }
         printf(" ");
     }
