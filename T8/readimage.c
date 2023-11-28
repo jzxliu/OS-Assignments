@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     printf("    free inodes: %d\n", gd->bg_free_inodes_count);
     printf("    used_dirs: %d\n", gd->bg_used_dirs_count);
 
-    unsigned char *block_bitmap = (char *)(disk + (EXT2_BLOCK_SIZE * gd->bg_block_bitmap));
+    unsigned char *block_bitmap = (unsigned char *)(disk + (EXT2_BLOCK_SIZE * gd->bg_block_bitmap));
     printf("Block bitmap: ");
     for (int byte = 0 ; byte < sb->s_blocks_count / 8 ; byte++) {
         for (int bit = 0 ; bit < 8 ; bit++) {
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     }
     printf("\n");
 
-    unsigned char *inode_bitmap = (char *)(disk + (EXT2_BLOCK_SIZE * gd->bg_inode_bitmap));
+    unsigned char *inode_bitmap = (unsigned char *)(disk + (EXT2_BLOCK_SIZE * gd->bg_inode_bitmap));
     printf("Inode bitmap: ");
     for (int byte = 0 ; byte < sb->s_inodes_count / 8 ; byte++) {
         for (int bit = 0 ; bit < 8 ; bit++) {
