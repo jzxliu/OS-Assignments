@@ -35,7 +35,38 @@ int main(int argc, char *argv[])
 	printf("Inodes: %d\n", sb->s_inodes_count);
 	printf("Blocks: %d\n", sb->s_blocks_count);
 
-	//TODO
+    const struct ext2_group_desc *gd = (struct ext2_group_desc *)(disk + (EXT2_BLOCK_SIZE * 2));
+    printf("Block group:\n");
+    printf("    block bitmap: %d\n", gd->bg_block_bitmap);
+    printf("    inode bitmap: %d\n", gd->bg_inode_bitmap);
+    printf("    inode table: %d\n", gd->bg_inode_table);
+    printf("    free blocks: %d\n", gd->bg_free_blocks_count);
+    printf("    free inodes: %d\n", gd->bg_free_inodes_count);
+    printf("    used_dirs: %d\n", gd->bg_used_dirs_count);
+
+    unsigned char *block_bitmap = (char *)(disk + (EXT2_BLOCK_SIZE * gd->bg_block_bitmap));
+    printf("Block bitmap: ");
+    for (int byte = 0 ; byte < sb->s_blocks_count / 8 ; byte++) {
+        for (int bit = 0 ; bit < 8 ; bit++) {
+            int in_use = block_bitmap[byte] & (1 << bit);
+            printf("%d", in_use);
+        }
+        printf(" ");
+    }
+    printf("\n");
+
+    unsigned char *inode_bitmap = (char *)(disk + (EXT2_BLOCK_SIZE * gd->bg_inode_bitmap));
+    printf("Inode bitmap: ");
+    for (int byte = 0 ; byte < sb->s_inodes_count / 8 ; byte++) {
+        for (int bit = 0 ; bit < 8 ; bit++) {
+            int in_use = inode_bitmap[byte] & (1 << bit);
+            printf("%d", in_use);
+        }
+        printf(" ");
+    }
+    printf("\n");
+
+
 
 	return 0;
 }
