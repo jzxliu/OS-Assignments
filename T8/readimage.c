@@ -12,7 +12,7 @@
 // Pointer to the beginning of the disk (byte 0)
 static const unsigned char *disk = NULL;
 
-bool in_use(unsigned char *bitmap, int byte, int bit){
+int in_use(unsigned char *bitmap, int byte, int bit){
     int in_use = (bitmap[byte] & (1 << bit));
     if (in_use) {
         return 1;
