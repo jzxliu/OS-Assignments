@@ -12,6 +12,37 @@
 // Pointer to the beginning of the disk (byte 0)
 static const unsigned char *disk = NULL;
 
+bool in_use(unsigned char *bitmap, int byte, int bit){
+    int in_use = (bitmap[byte] & (1 << bit));
+    if (in_use) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+
+void print_inode(struct ext2_inode* inode_table, int i_id) {
+
+    struct ext2_inode *inode = &inode_table[i_id - 1];
+    printf("[%d]", i_id);
+    if (inode->i_mode & EXT2_S_IFREG) {
+        printf(" type: f");
+    } else {
+        printf(" type: d");
+    }
+    printf(" size: %d", inode->i_size);
+    printf(" links: %d", inode->i_links_count);
+    printf(" blocks: %d\n", inode->i_blocks);
+
+    printf("[%d] Blocks: ", i_id);
+    for (int i = 0 ; i < inode->i_blocks / 2 ; i++) {
+        printf(" %d", inode->i_block[i]);
+    }
+    printf("\n");
+}
+
+
 int main(int argc, char *argv[])
 {
 	if (argc != 2) {
@@ -48,8 +79,7 @@ int main(int argc, char *argv[])
     printf("Block bitmap: ");
     for (int byte = 0 ; byte < sb->s_blocks_count / 8 ; byte++) {
         for (int bit = 0 ; bit < 8 ; bit++) {
-            int in_use = block_bitmap[byte] & (1 << bit);
-            if (in_use) {
+            if (in_use(block_bitmap, byte, bit)) {
                 printf("1");
             } else {
                 printf("0");
@@ -63,8 +93,7 @@ int main(int argc, char *argv[])
     printf("Inode bitmap: ");
     for (int byte = 0 ; byte < sb->s_inodes_count / 8 ; byte++) {
         for (int bit = 0 ; bit < 8 ; bit++) {
-            int in_use = inode_bitmap[byte] & (1 << bit);
-            if (in_use) {
+            if (in_use(inode_bitmap, byte, bit)) {
                 printf("1");
             } else {
                 printf("0");
@@ -72,9 +101,19 @@ int main(int argc, char *argv[])
         }
         printf(" ");
     }
-    printf("\n");
+    printf("\n\n");
 
+    struct ext2_inode *inode_table = (struct ext2_inode *) (disk + EXT2_BLOCK_SIZE * gd->bg_inode_table);
+    printf("Inodes:\n");
 
+    for (int i = EXT2_GOOD_OLD_FIRST_INO ; i < sb->s_inodes_count ; i++) {
+        int byte = i / 8;
+        int bit = i - (8 * byte);
+
+        if (in_use(inode_bitmap, byte, bit)) {
+            print_inode(inode_table, i);
+        }
+    }
 
 	return 0;
 }
