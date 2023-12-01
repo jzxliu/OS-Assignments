@@ -120,9 +120,6 @@ static bool vsfs_is_present(void *image)
  */
 static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 {
-	//TODO: initialize the superblock and create an empty root directory
-	//NOTE: the mode of the root directory inode should be set
-	//      to S_IFDIR | 0777
 
 	vsfs_superblock *sb;       // ptr to superblock in mmap'd disk image
 	bitmap_t        *ibmap;    // ptr to inode bitmap in mmap'd disk image
@@ -147,7 +144,6 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 	// Initialize inode bitmap in memory (write to disk happens at munmap).
 	// First set all bits to 1, then use bitmap_init to clear the bits
 	// for the given number of inodes in the file system.
-	
 	ibmap = (bitmap_t *)(image + VSFS_IMAP_BLKNUM * VSFS_BLOCK_SIZE);	
 	memset(ibmap, 0xff, VSFS_BLOCK_SIZE);
 	bitmap_init(ibmap, opts->n_inodes);
@@ -156,7 +152,6 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 	// Initialize data bitmap in memory (write to disk happens at munmap).
 	// First set all bits to 1, then use bitmap_init to clear the bits
 	// for the given number of blocks in the file system.
-	
 	dbmap = (bitmap_t *)(image + VSFS_DMAP_BLKNUM * VSFS_BLOCK_SIZE);
 	memset(dbmap, 0xff, VSFS_BLOCK_SIZE);
 	bitmap_init(dbmap, nblks);
@@ -166,18 +161,26 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 	bitmap_set(dbmap, nblks, VSFS_IMAP_BLKNUM, true); // inode bitmap block
 	bitmap_set(dbmap, nblks, VSFS_DMAP_BLKNUM, true); // data bitmap block
 	
-	// TODO: Calculate size of inode table and mark inode table blocks allocated.
-	(void)inodes_per_block;
-	
+	// Calculate size of inode table
+    size_t inode_table_size = div_round_up(opts->n_inodes, inodes_per_block);
 
-	// TODO: Initialize the root directory.
+    // Mark inode table blocks allocated.
+    for (vsfs_blk_t i = 0; i < inode_table_size; i++) {
+        bitmap_set(dbmap, nblks, VSFS_ITBL_BLKNUM + i, true);
+    }
+
+    // Initialize the root directory.
 	// 1. Mark root directory inode allocated in inode bitmap
-
-	
+    bitmap_set(ibmap, opts->n_inodes, VSFS_ROOT_INO, true);
 
 	// 2. Initialize fields of root dir inode (the mtime is done for you)
 	itable = (vsfs_inode *)(image + VSFS_ITBL_BLKNUM * VSFS_BLOCK_SIZE);	
 	root_ino = &itable[VSFS_ROOT_INO];
+    root_ino->i_mode = S_IFDIR | 0777; // According to note
+    root_ino->i_nlink = 2; // . and ..
+    root_ino->i_size = VSFS_BLOCK_SIZE;
+    root_ino->i_blocks = 1;
+    root_ino->i_direct[0] = VSFS_ITBL_BLKNUM + inode_table_size;
 	
 	if (clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime)) != 0) {
 		perror("clock_gettime");
@@ -185,24 +188,33 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 	}
 	
 	// 3. Allocate a data block for root directory; record it in root inode
-	(void)root_entries;
-
+    bitmap_set(dbmap, nblks, root_ino->i_direct[0], true);
+    root_entries = (vsfs_dentry *)(image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
 
 	
 	// 4. Create '.' and '..' entries in root dir data block.
-
+    root_entries[0].ino = VSFS_ROOT_INO;
+    strcpy(root_entries[0].name, ".");
+    root_entries[1].ino = VSFS_ROOT_INO;
+    strcpy(root_entries[1].name, "..");
 
 	
 	// 5. Initialize other dir entries in block to invalid / unused state
 	//    Since 0 is a valid inode, use VSFS_INO_MAX to indicate invalid.
+    for (int i = 2; i < (VSFS_BLOCK_SIZE / sizeof(vsfs_dentry)); i++) {
+        root_entries[i].ino = VSFS_INO_MAX;
+    }
 
-
-	
-	
-	// TODO: Initialize fields of superblock after everything else succeeds.
-	// Set start of data region to first block after inode table.
-	sb = (vsfs_superblock *)image;
-	(void)sb;
+	// Initialize fields of superblock after everything else succeeds.
+    sb = (vsfs_superblock *)(image + VSFS_SB_BLKNUM * VSFS_BLOCK_SIZE);
+    sb->sb_magic = VSFS_MAGIC;
+    sb->sb_size = size;
+    sb->sb_num_inodes = opts->n_inodes;
+    sb->sb_free_inodes = opts->n_inodes - 1;
+    sb->sb_num_blocks = nblks;
+    // Set start of data region to first block after inode table.
+    sb->sb_data_region = VSFS_ITBL_BLKNUM + inode_table_size;
+    sb->sb_free_blocks = nblks - sb->sb_data_region;
 	
 	ret = true;
  out:
