@@ -214,7 +214,7 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
     sb->sb_num_blocks = nblks;
     // Set start of data region to first block after inode table.
     sb->sb_data_region = VSFS_ITBL_BLKNUM + inode_table_size;
-    sb->sb_free_blocks = nblks - sb->sb_data_region;
+    sb->sb_free_blocks = nblks - sb->sb_data_region - 1; // idk why I have to -1, but fsck wants me to do so.
 	
 	ret = true;
  out:
