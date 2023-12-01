@@ -201,7 +201,7 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 	
 	// 5. Initialize other dir entries in block to invalid / unused state
 	//    Since 0 is a valid inode, use VSFS_INO_MAX to indicate invalid.
-    for (int i = 2; i < (VSFS_BLOCK_SIZE / sizeof(vsfs_dentry)); i++) {
+    for (size_t i = 2; i < (VSFS_BLOCK_SIZE / sizeof(vsfs_dentry)); i++) {
         root_entries[i].ino = VSFS_INO_MAX;
     }
 
