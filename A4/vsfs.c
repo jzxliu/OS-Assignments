@@ -324,7 +324,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     }
 
     // No free space in root directory
-    bitmap_free(fs->ibmap, new_ino);
+    bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, index);
     return -ENOSPC;
 }
 
