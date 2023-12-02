@@ -1,0 +1,26 @@
+Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_bfree=250, 
+                f_bavail=250, f_files=64, f_ffree=62, f_favail=62, f_flag=4102, f_namemax=252)
+Exception occurred during pwrite on existing file onefile.txt at offset 8224: [Errno 38] Function not implemented
+Traceback (most recent call last):
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/test.py", line 28, in run_test
+    test_function(submission, log)
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 1058, in test
+    s.run(fn, timeout=5)
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 312, in run
+    return self._run(timeout, cwd, fn, *args, **kwargs)
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 247, in _run
+    raise exception_chain(fn_exc, vsfs_exc, timeout_exc)
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 235, in _run
+    return future.result(timeout)
+  File "/local/packages/python-3.10/lib/python3.10/concurrent/futures/_base.py", line 458, in result
+    return self.__get_result()
+  File "/local/packages/python-3.10/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+    raise self._exception
+  File "/local/packages/python-3.10/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 1043, in fn
+    raise e
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 1037, in fn
+    os.pwrite(fd, text, offset)
+OSError: [Errno 38] Function not implemented
+
