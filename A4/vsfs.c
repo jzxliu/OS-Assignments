@@ -238,6 +238,7 @@ static int vsfs_getattr(const char *path, struct stat *st)
  *
  * Errors:
  *   ENOMEM  not enough memory (e.g. a filler() call failed).
+ *   ENOTDIR if path is not the root directory.
  *
  * @param path    path to the directory.
  * @param buf     buffer that receives the result.
@@ -252,20 +253,23 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 {
 	(void)offset;// unused
 	(void)fi;// unused
-	fs_ctx *fs = get_fs();
+    fs_ctx *fs = get_fs();
+    vsfs_inode *ino = &fs->itable[VSFS_ROOT_INO];
 
-	//NOTE: This is just a placeholder that allows the file system to be mounted
-	// without errors. You should remove this from your implementation.
-	if (strcmp(path, "/") == 0) {
-		filler(buf, "." , NULL, 0);
-		filler(buf, "..", NULL, 0);
-		return 0;
-	}
+    if (strcmp(path, "/") != 0) {
+        return -ENOTDIR; // VSFS only has the root directory, so we dont have to implement for other cases
+    }
 
-	//TODO: lookup the directory inode for the given path and iterate 
-	//      through its directory entries
-	(void)fs;
-	return -ENOSYS;
+    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    // Iterate through every entry in root directory
+    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (entries[i].ino != VSFS_INO_MAX) {
+            if (filler(buf, entries[i].name, NULL, 0)) {
+                return -ENOMEM;
+            }
+        }
+    }
+    return 0;
 }
 
 
