@@ -269,6 +269,7 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
             }
         }
     }
+
     return 0;
 }
 
