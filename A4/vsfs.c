@@ -262,7 +262,7 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
     vsfs_dentry *entries = (vsfs_dentry *)(fs->image + ino->i_direct[0] * VSFS_BLOCK_SIZE);
     // Iterate through every entry in root directory
-    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+    for (size_t i = 0; i < ino->i_size / sizeof(vsfs_dentry); i++) {
         if (entries[i].ino != VSFS_INO_MAX) {
             if (filler(buf, entries[i].name, NULL, 0)) {
                 return -ENOMEM;
