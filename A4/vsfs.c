@@ -260,7 +260,7 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
         return -ENOTDIR; // VSFS only has the root directory, so we dont have to implement for other cases
     }
 
-    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + ino->i_direct[0] * VSFS_BLOCK_SIZE);
     // Iterate through every entry in root directory
     for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
         if (entries[i].ino != VSFS_INO_MAX) {
