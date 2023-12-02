@@ -298,12 +298,34 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 	(void)fi;// unused
 	assert(S_ISREG(mode));
 	fs_ctx *fs = get_fs();
+    vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
+    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
 
-	//TODO: create a file at given path with given mode
-	(void)path;
-	(void)mode;
-	(void)fs;
-	return -ENOSYS;
+    unsigned int index;
+    int ret = bitmap_alloc(fs->ibmap, fs->sb->sb_num_inodes, &index);
+    if (ret) { // No free inodes
+        return -ENOSPC;
+    }
+
+    // Create a new inode
+    vsfs_inode *new_inode = &fs->itable[index];
+    new_inode->i_mode = S_IFREG | mode;
+    new_inode->i_nlink = 1;
+    new_inode->i_size = 0;
+    new_inode->i_blocks = 0;
+
+    // Find a space in root directory to put new inode
+    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (root_entries[i].ino == VSFS_INO_MAX) {
+            root_entries[i].ino = index;
+            strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
+            return 0;
+        }
+    }
+
+    // No free space in root directory
+    bitmap_free(fs->ibmap, new_ino);
+    return -ENOSPC;
 }
 
 /**
@@ -322,11 +344,18 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 static int vsfs_unlink(const char *path)
 {
 	fs_ctx *fs = get_fs();
+    vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
+    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
 
-	//TODO: remove the file at given path
-	(void)path;
-	(void)fs;
-	return -ENOSYS;
+    // Look for the file in root directory
+    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (strcmp(root_entries[i].name, path + 1) == 0) {
+            bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, root_entries[i].ino);
+            root_entries[i].ino = VSFS_INO_MAX;
+            return 0;
+        }
+    }
+	return 0; // Shouldn't get here since path exists by assumption
 }
 
 
