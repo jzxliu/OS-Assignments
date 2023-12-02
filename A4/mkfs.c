@@ -193,9 +193,9 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 
 	
 	// 4. Create '.' and '..' entries in root dir data block.
-    root_entries[0].ino = VSFS_ROOT_INO;
+    root_entries[0].ino = VSFS_ROOT_INO; // Points to self
     strcpy(root_entries[0].name, ".");
-    root_entries[1].ino = VSFS_ROOT_INO;
+    root_entries[1].ino = VSFS_ROOT_INO; // Root is its own parnet
     strcpy(root_entries[1].name, "..");
 
 	

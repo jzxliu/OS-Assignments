@@ -97,8 +97,8 @@ static fs_ctx *get_fs(void)
 }
 
 
-/* Returns the inode number for the element at the end of the path
- * if it exists.  If there is any error, return -1.
+/* Returns stores the inode number for the element at the end of the path to the pointer pointed by ino if it exists.
+ * Returns 0 if successful. If there is any error, return -1.
  * Possible errors include:
  *   - The path is not an absolute path
  *   - An element on the path cannot be found
@@ -106,17 +106,26 @@ static fs_ctx *get_fs(void)
 static int path_lookup(const char *path,  vsfs_ino_t *ino) {
 	if(path[0] != '/') {
 		fprintf(stderr, "Not an absolute path\n");
-		return -ENOSYS;
+		return -ENOTDIR;
 	} 
 
-	// TODO: complete this function and any helper functions
 	if (strcmp(path, "/") == 0) {
 		*ino = VSFS_ROOT_INO;
 		return 0;
 	}
 
+    // Since only one directory (root dir), no need to do parsing yay
+    fs_ctx *fs = get_fs();
+    vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
+    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (strcmp(entries[i].name, path + 1) == 0) {
+            *ino = entries[i].ino;
+            return 0;
+        }
+    }
 	
-	return -ENOSYS;
+	return -ENOENT; // Not found
 }
 
 /**
@@ -187,26 +196,35 @@ static int vsfs_getattr(const char *path, struct stat *st)
 
 	memset(st, 0, sizeof(*st));
 
-	//NOTE: This is just a placeholder that allows the file system to be 
-	//      mounted without errors.
-	//      You should remove this from your implementation.
-	if (strcmp(path, "/") == 0) {		
-		//NOTE: all the fields set below are required and must be set 
-		// using the information stored in the corresponding inode
-		st->st_ino = 0;
-		st->st_mode = S_IFDIR | 0777;
-		st->st_nlink = 2;
-		st->st_size = 0;
-		st->st_blocks = 0 * VSFS_BLOCK_SIZE / 512;
-		st->st_mtim = (struct timespec){0};
-		return 0;
-	}
+//	//NOTE: This is just a placeholder that allows the file system to be
+//	//      mounted without errors.
+//	//      You should remove this from your implementation.
+//	if (strcmp(path, "/") == 0) {
+//		//NOTE: all the fields set below are required and must be set
+//		// using the information stored in the corresponding inode
+//		st->st_ino = 0;
+//		st->st_mode = S_IFDIR | 0777;
+//		st->st_nlink = 2;
+//		st->st_size = 0;
+//		st->st_blocks = 0 * VSFS_BLOCK_SIZE / 512;
+//		st->st_mtim = (struct timespec){0};
+//		return 0;
+//	}
 
-	//TODO: lookup the inode for given path and, if it exists, fill in the
-	// required fields based on the information stored in the inode
-	(void)fs;
-	(void)path_lookup;
-	return -ENOSYS;
+    vsfs_ino_t ino;
+    int ret = path_lookup(path, &ino);
+    if (ret) { // Path lookup did not succeed
+        return ret; // Return the respective error code
+    }
+    vsfs_inode *inode = &fs->itable[ino];
+    st->st_ino = ino;
+    st->st_mode = inode->i_mode;
+    st->st_nlink = inode->i_nlink;
+    st->st_size = inode->i_size;
+    st->st_blocks = inode->i_blocks * (VSFS_BLOCK_SIZE / 512); // in 512-byte units
+    st->st_mtim = inode->i_mtime;
+
+    return 0;
 }
 
 /**
