@@ -387,9 +387,6 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
 
 	// path with either the time passed as argument or the current time,
 	// according to the utimensat man page
-	(void)path;
-	(void)fs;
-	(void)ino;
 
 	// 0. Check if there is actually anything to be done.
 	if (times[1].tv_nsec == UTIME_OMIT) {
