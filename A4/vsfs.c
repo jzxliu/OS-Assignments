@@ -466,6 +466,8 @@ static int vsfs_truncate(const char *path, off_t size)
             }
             inode->i_direct[i] = blk;
             inode->i_blocks += 1;
+            // zero out the new block
+            memset((char *)(fs->image + block_num * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
             fs->sb->sb_free_blocks -= 1;
         }
     } else if (new_blocks < cur_blocks) {
@@ -511,9 +513,9 @@ static int vsfs_read(const char *path, char *buf, size_t size, off_t offset,
 	(void)fi;// unused
     fs_ctx *fs = get_fs();
     vsfs_ino_t ino;
-    int res = path_lookup(path, &ino);
-    if (res != 0) {
-        return res; // path lookup failed
+    int ret = path_lookup(path, &ino);
+    if (ret != 0) {
+        return ret;
     }
     vsfs_inode *inode = &fs->itable[ino];
 
@@ -567,15 +569,30 @@ static int vsfs_write(const char *path, const char *buf, size_t size,
 {
 	(void)fi;// unused
 	fs_ctx *fs = get_fs();
+    vsfs_ino_t ino;
+    int ret = path_lookup(path, &ino);
+    if (ret != 0) {
+        return ret;
+    }
+    vsfs_inode *inode = &fs->itable[ino];
 
-	//TODO: write data from the buffer into the file at given offset, possibly
-	// "zeroing out" the uninitialized range
-	(void)path;
-	(void)buf;
-	(void)size;
-	(void)offset;
-	(void)fs;
-	return -ENOSYS;
+    int block_index = offset / VSFS_BLOCK_SIZE;
+    int block_offset = offset % VSFS_BLOCK_SIZE;
+    if (block_index >= VSFS_NUM_DIRECT) {
+        return -ENOSPC; // to do use indirect
+    }
+
+    // Extend the file if offset is beyond current size
+    if (offset + size > inode->i_size) {
+        int ret = vsfs_truncate(path, offset + size);
+        // truncate takes care of zeroing out new blocks
+        if (ret != 0) {
+            return ret;
+        }
+    }
+    char *block = (char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
+    memcpy(block + block_offset, buf, size);
+	return size;
 }
 
 
