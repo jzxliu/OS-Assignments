@@ -313,18 +313,21 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     new_inode->i_nlink = 1;
     new_inode->i_size = 0;
     new_inode->i_blocks = 0;
+    fs->sb->sb_free_inodes -= 1;
 
     // Find a space in root directory to put new inode
     for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
         if (root_entries[i].ino == VSFS_INO_MAX) {
             root_entries[i].ino = index;
             strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
+            root_ino->i_direct += 1;
             return 0;
         }
     }
 
     // No free space in root directory
     bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, index);
+    fs->sb->sb_free_inodes += 1;
     return -ENOSPC;
 }
 
@@ -346,12 +349,14 @@ static int vsfs_unlink(const char *path)
 	fs_ctx *fs = get_fs();
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
     vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    fs->sb->sb_free_inodes += 1;
 
     // Look for the file in root directory
     for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
         if (strcmp(root_entries[i].name, path + 1) == 0) {
             bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, root_entries[i].ino);
             root_entries[i].ino = VSFS_INO_MAX;
+            root_ino->i_nlink -= 1;
             return 0;
         }
     }
