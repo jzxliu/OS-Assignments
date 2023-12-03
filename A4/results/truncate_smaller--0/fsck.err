@@ -1,0 +1,13 @@
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: inode size and blocks fields are inconsistent. Need 0 blocks to store 0 bytes, but i_blocks is 5
+ERROR: block pointer 0 -> 0 is unreasonable.
+ERROR: block pointer 1 -> 0 is unreasonable.
+ERROR: block pointer 2 -> 0 is unreasonable.
+ERROR: block pointer 3 -> 0 is unreasonable.
+ERROR: block pointer 4 -> 0 is unreasonable.
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: superblock free_blocks 3045 is inconsistent with on-disk data bitmap state (1046 allocated, 3050 free).
+DONE CHECKING DATA BITMAP. ERRORS FOUND.

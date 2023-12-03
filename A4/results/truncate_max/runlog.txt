@@ -19,5 +19,5 @@ Traceback (most recent call last):
     result = self.fn(*self.args, **self.kwargs)
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 744, in grow
     os.truncate(fname, 1029*4096)
-OSError: [Errno 38] Function not implemented: 'truncate_me'
+OSError: [Errno 27] File too large: 'truncate_me'
 

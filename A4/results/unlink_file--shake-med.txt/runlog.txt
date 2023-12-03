@@ -7,4 +7,4 @@ Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_
 After removing shake-med.txt, root dir listing is: ['shake-short.txt', 'shake-long.txt', 'truncate_me']
 Root directory listing after unlink appears to be correct.
 Freed 0 blocks, but should have freed 10.
-Elapsed time: 0.36615181784145534 seconds
+Elapsed time: 0.32550254301168025 seconds
