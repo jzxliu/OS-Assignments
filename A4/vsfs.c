@@ -467,7 +467,7 @@ static int vsfs_truncate(const char *path, off_t size)
             inode->i_direct[i] = blk;
             inode->i_blocks += 1;
             // zero out the new block
-            memset((char *)(fs->image + block_num * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
+            memset((char *)(fs->image + blk * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
             fs->sb->sb_free_blocks -= 1;
         }
     } else if (new_blocks < cur_blocks) {
