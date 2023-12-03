@@ -414,7 +414,7 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
 			assert(false);
 		}
 	} else {
-		ino->i_mtime = times[1];
+		inode->i_mtime = times[1];
 	}
 
 	return 0;
