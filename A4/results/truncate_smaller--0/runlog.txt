@@ -2,5 +2,9 @@ Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_
                 f_bavail=3045, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
 Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_bfree=3050, 
                 f_bavail=3050, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
-after truncate, file system free blocks matches expected.
-Elapsed time: 0.5381068291608244 seconds
+Points:
+	2/2 - stat st_size matches requested size 0
+	0/0.5 - stat st_mtime not updated
+	2.5/2.5 - after truncate, file system free blocks matches expected.
+	1.0/1 - fsck result
+Elapsed time: 0.30395193211734295 seconds

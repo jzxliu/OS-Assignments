@@ -3,7 +3,7 @@ Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_b
 Traceback (most recent call last):
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/test.py", line 28, in run_test
     test_function(submission, log)
-  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 529, in test
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 539, in test
     s.run(fn, timeout=5)
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 312, in run
     return self._run(timeout, cwd, fn, *args, **kwargs)
@@ -17,9 +17,9 @@ Traceback (most recent call last):
     raise self._exception
   File "/local/packages/python-3.10/lib/python3.10/concurrent/futures/thread.py", line 58, in run
     result = self.fn(*self.args, **self.kwargs)
-  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 506, in fn
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 512, in fn
     raise e
-  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 500, in fn
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 506, in fn
     Path(fname).touch()
   File "/local/packages/python-3.10/lib/python3.10/pathlib.py", line 1168, in touch
     self._accessor.touch(self, mode, exist_ok)

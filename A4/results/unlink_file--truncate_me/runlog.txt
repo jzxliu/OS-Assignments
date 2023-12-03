@@ -1,10 +1,12 @@
 Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_bfree=3045, 
                 f_bavail=3045, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
-stat(truncate_me) got unexpected exception after unlink: [Errno 5] Input/output error: 'truncate_me'
-Root directory mtime not updated after unlink.
 Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_bfree=3045, 
                 f_bavail=3045, f_files=128, f_ffree=124, f_favail=124, f_flag=4102, f_namemax=252)
+Points:
+	0.0/0.5 - stat(truncate_me) got unexpected exception after unlink: [Errno 5] Input/output error: 'truncate_me'
+	0.0/0.5 - Root directory mtime not updated after unlink.
+	0.8/1 - fsck result
 After removing truncate_me, root dir listing is: ['shake-short.txt', 'shake-med.txt', 'shake-long.txt']
-Root directory listing after unlink appears to be correct.
-Freed expected number of blocks (0).
-Elapsed time: 0.46573452092707157 seconds
+	1/1 - Root directory listing after unlink appears to be correct.
+	2/2 - Freed expected number of blocks (0).
+Elapsed time: 0.3980998930055648 seconds

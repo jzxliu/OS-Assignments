@@ -2,4 +2,10 @@ Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_
                 f_bavail=3045, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
 Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_bfree=3043, 
                 f_bavail=3043, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
-Elapsed time: 0.2809658399783075 seconds
+Points:
+	4/4 - stat st_size matches requested size 5440
+	0/1 - stat st_mtime not updated
+	1/1 - successful read of added bytes
+	1/1 - all added bytes were 0
+	1.0/1 - fsck result
+Elapsed time: 0.22698779217898846 seconds
