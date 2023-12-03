@@ -384,9 +384,7 @@ static int vsfs_unlink(const char *path)
 static int vsfs_utimens(const char *path, const struct timespec times[2])
 {
 	fs_ctx *fs = get_fs();
-	vsfs_inode *ino = NULL;
 
-	//TODO: update the modification timestamp (mtime) in the inode for given
 	// path with either the time passed as argument or the current time,
 	// according to the utimensat man page
 	(void)path;
@@ -399,24 +397,27 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
 		return 0;
 	}
 
-	// 1. TODO: Find the inode for the final component in path
-
+	// 1. Find the inode for the final component in path
+    vsfs_ino_t ino;
+    int ret = path_lookup(path, &ino);
+    if (ret != 0) {
+        return ret;
+    }
+    vsfs_inode *inode = &fs->itable[ino];
 
 	// 2. Update the mtime for that inode.
 	//    This code is commented out to avoid failure until you have set
 	//    'ino' to point to the inode structure for the inode to update.
 	if (times[1].tv_nsec == UTIME_NOW) {
-		//if (clock_gettime(CLOCK_REALTIME, &(ino->i_mtime)) != 0) {
-			// clock_gettime should not fail, unless you give it a
-			// bad pointer to a timespec.
-		//	assert(false);
-		//}
+		if (clock_gettime(CLOCK_REALTIME, &(inode->i_mtime)) != 0) {
+            // clock_gettime should not fail, unless you give it a bad pointer to a timespec.
+			assert(false);
+		}
 	} else {
-		//ino->i_mtime = times[1];
+		ino->i_mtime = times[1];
 	}
 
-	//return 0;
-	return -ENOSYS;
+	return 0;
 }
 
 /**
