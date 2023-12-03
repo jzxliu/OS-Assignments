@@ -509,15 +509,34 @@ static int vsfs_read(const char *path, char *buf, size_t size, off_t offset,
                      struct fuse_file_info *fi)
 {
 	(void)fi;// unused
-	fs_ctx *fs = get_fs();
+    fs_ctx *fs = get_fs();
+    vsfs_ino_t ino;
+    int res = path_lookup(path, &ino);
+    if (res != 0) {
+        return res; // path lookup failed
+    }
+    vsfs_inode *inode = &fs->itable[ino];
 
-	//TODO: read data from the file at given offset into the buffer
-	(void)path;
-	(void)buf;
-	(void)size;
-	(void)offset;
-	(void)fs;
-	return -ENOSYS;
+    if (offset >= inode->i_size) {
+        return 0; // offset beyond eof
+    }
+
+    if (offset + size > inode->i_size) { // shouldn't happen by assumption but just to be safe
+        size = inode->i_size - offset; // only read until end of block
+    }
+
+    int block_index = offset / VSFS_BLOCK_SIZE; // index of block to read from
+    int block_offset = offset % VSFS_BLOCK_SIZE; // offset within block to start the read
+
+    if (block_num == VSFS_BLK_UNASSIGNED) {
+        memset(buf, 0, size);
+    } else {
+        // read the data
+        const char *block = (const char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
+        memcpy(buf, block + block_offset, size);
+    }
+
+	return size;
 }
 
 /**
