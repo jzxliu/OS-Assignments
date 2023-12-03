@@ -97,8 +97,8 @@ static fs_ctx *get_fs(void)
 }
 
 
-/* Returns the inode number for the element at the end of the path
- * if it exists.  If there is any error, return -1.
+/* Returns stores the inode number for the element at the end of the path to the pointer pointed by ino if it exists.
+ * Returns 0 if successful. If there is any error, return -1.
  * Possible errors include:
  *   - The path is not an absolute path
  *   - An element on the path cannot be found
@@ -106,17 +106,26 @@ static fs_ctx *get_fs(void)
 static int path_lookup(const char *path,  vsfs_ino_t *ino) {
 	if(path[0] != '/') {
 		fprintf(stderr, "Not an absolute path\n");
-		return -ENOSYS;
-	} 
+		return -ENOTDIR;
+	}
 
-	// TODO: complete this function and any helper functions
 	if (strcmp(path, "/") == 0) {
 		*ino = VSFS_ROOT_INO;
 		return 0;
 	}
 
-	
-	return -ENOSYS;
+    // Since only one directory (root dir), no need to do parsing yay
+    fs_ctx *fs = get_fs();
+    vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
+    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (strcmp(entries[i].name, path + 1) == 0) {
+            *ino = entries[i].ino;
+            return 0;
+        }
+    }
+
+	return -ENOENT; // Not found
 }
 
 /**
@@ -139,11 +148,11 @@ static int vsfs_statfs(const char *path, struct statvfs *st)
 	(void)path;// unused
 	fs_ctx *fs = get_fs();
 	vsfs_superblock *sb = fs->sb; /* Get ptr to superblock from context */
-	
+
 	memset(st, 0, sizeof(*st));
 	st->f_bsize   = VSFS_BLOCK_SIZE;   /* Filesystem block size */
 	st->f_frsize  = VSFS_BLOCK_SIZE;   /* Fragment size */
-	// The rest of required fields are filled based on the information 
+	// The rest of required fields are filled based on the information
 	// stored in the superblock.
         st->f_blocks = sb->sb_num_blocks;     /* Size of fs in f_frsize units */
         st->f_bfree  = sb->sb_free_blocks;    /* Number of free blocks */
@@ -166,8 +175,8 @@ static int vsfs_statfs(const char *path, struct statvfs *st)
  * All remaining fields are required.
  *
  * NOTE: the st_blocks field is measured in 512-byte units (disk sectors);
- *       it should include any metadata blocks that are allocated to the 
- *       inode (for vsfs, that is the indirect block). 
+ *       it should include any metadata blocks that are allocated to the
+ *       inode (for vsfs, that is the indirect block).
  *
  * NOTE2: the st_mode field must be set correctly for files and directories.
  *
@@ -187,26 +196,35 @@ static int vsfs_getattr(const char *path, struct stat *st)
 
 	memset(st, 0, sizeof(*st));
 
-	//NOTE: This is just a placeholder that allows the file system to be 
-	//      mounted without errors.
-	//      You should remove this from your implementation.
-	if (strcmp(path, "/") == 0) {		
-		//NOTE: all the fields set below are required and must be set 
-		// using the information stored in the corresponding inode
-		st->st_ino = 0;
-		st->st_mode = S_IFDIR | 0777;
-		st->st_nlink = 2;
-		st->st_size = 0;
-		st->st_blocks = 0 * VSFS_BLOCK_SIZE / 512;
-		st->st_mtim = (struct timespec){0};
-		return 0;
-	}
+//	//NOTE: This is just a placeholder that allows the file system to be
+//	//      mounted without errors.
+//	//      You should remove this from your implementation.
+//	if (strcmp(path, "/") == 0) {
+//		//NOTE: all the fields set below are required and must be set
+//		// using the information stored in the corresponding inode
+//		st->st_ino = 0;
+//		st->st_mode = S_IFDIR | 0777;
+//		st->st_nlink = 2;
+//		st->st_size = 0;
+//		st->st_blocks = 0 * VSFS_BLOCK_SIZE / 512;
+//		st->st_mtim = (struct timespec){0};
+//		return 0;
+//	}
 
-	//TODO: lookup the inode for given path and, if it exists, fill in the
-	// required fields based on the information stored in the inode
-	(void)fs;
-	(void)path_lookup;
-	return -ENOSYS;
+    vsfs_ino_t ino;
+    int ret = path_lookup(path, &ino);
+    if (ret) { // Path lookup did not succeed
+        return ret; // Return the respective error code
+    }
+    vsfs_inode *inode = &fs->itable[ino];
+    st->st_ino = ino;
+    st->st_mode = inode->i_mode;
+    st->st_nlink = inode->i_nlink;
+    st->st_size = inode->i_size;
+    st->st_blocks = inode->i_blocks * (VSFS_BLOCK_SIZE / 512); // in 512-byte units
+    st->st_mtim = inode->i_mtime;
+
+    return 0;
 }
 
 /**
@@ -220,6 +238,7 @@ static int vsfs_getattr(const char *path, struct stat *st)
  *
  * Errors:
  *   ENOMEM  not enough memory (e.g. a filler() call failed).
+ *   ENOTDIR if path is not the root directory.
  *
  * @param path    path to the directory.
  * @param buf     buffer that receives the result.
@@ -234,20 +253,24 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 {
 	(void)offset;// unused
 	(void)fi;// unused
-	fs_ctx *fs = get_fs();
+    fs_ctx *fs = get_fs();
+    vsfs_inode *ino = &fs->itable[VSFS_ROOT_INO];
 
-	//NOTE: This is just a placeholder that allows the file system to be mounted
-	// without errors. You should remove this from your implementation.
-	if (strcmp(path, "/") == 0) {
-		filler(buf, "." , NULL, 0);
-		filler(buf, "..", NULL, 0);
-		return 0;
-	}
+    if (strcmp(path, "/") != 0) {
+        return -ENOTDIR; // VSFS only has the root directory, so we dont have to implement for other cases
+    }
 
-	//TODO: lookup the directory inode for the given path and iterate 
-	//      through its directory entries
-	(void)fs;
-	return -ENOSYS;
+    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    // Iterate through every entry in root directory
+    for (size_t i = 0; i < ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (entries[i].ino != VSFS_INO_MAX) {
+            if (filler(buf, entries[i].name, NULL, 0)) {
+                return -ENOMEM;
+            }
+        }
+    }
+
+    return 0;
 }
 
 
@@ -275,12 +298,37 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 	(void)fi;// unused
 	assert(S_ISREG(mode));
 	fs_ctx *fs = get_fs();
+    vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
+    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
 
-	//TODO: create a file at given path with given mode
-	(void)path;
-	(void)mode;
-	(void)fs;
-	return -ENOSYS;
+    unsigned int index;
+    int ret = bitmap_alloc(fs->ibmap, fs->sb->sb_num_inodes, &index);
+    if (ret) { // No free inodes
+        return -ENOSPC;
+    }
+
+    // Create a new inode
+    vsfs_inode *new_inode = &fs->itable[index];
+    new_inode->i_mode = S_IFREG | mode;
+    new_inode->i_nlink = 1;
+    new_inode->i_size = 0;
+    new_inode->i_blocks = 0;
+    fs->sb->sb_free_inodes -= 1;
+
+    // Find a space in root directory to put new inode
+    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (root_entries[i].ino == VSFS_INO_MAX) {
+            root_entries[i].ino = index;
+            strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
+            root_ino->i_nlink += 1;
+            return 0;
+        }
+    }
+
+    // No free space in root directory
+    bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, index);
+    fs->sb->sb_free_inodes += 1;
+    return -ENOSPC;
 }
 
 /**
@@ -299,11 +347,20 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 static int vsfs_unlink(const char *path)
 {
 	fs_ctx *fs = get_fs();
+    vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
+    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    fs->sb->sb_free_inodes += 1;
 
-	//TODO: remove the file at given path
-	(void)path;
-	(void)fs;
-	return -ENOSYS;
+    // Look for the file in root directory
+    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        if (strcmp(root_entries[i].name, path + 1) == 0) {
+            bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, root_entries[i].ino);
+            root_entries[i].ino = VSFS_INO_MAX;
+            root_ino->i_nlink -= 1;
+            return 0;
+        }
+    }
+	return 0; // Shouldn't get here since path exists by assumption
 }
 
 
@@ -313,7 +370,7 @@ static int vsfs_unlink(const char *path)
  * Implements the utimensat() system call. See "man 2 utimensat" for details.
  *
  * NOTE: You only need to implement the setting of modification time (mtime).
- *       Timestamp modifications are not recursive. 
+ *       Timestamp modifications are not recursive.
  *
  * Assumptions (already verified by FUSE using getattr() calls):
  *   "path" exists.
@@ -328,14 +385,14 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
 {
 	fs_ctx *fs = get_fs();
 	vsfs_inode *ino = NULL;
-	
+
 	//TODO: update the modification timestamp (mtime) in the inode for given
 	// path with either the time passed as argument or the current time,
 	// according to the utimensat man page
 	(void)path;
 	(void)fs;
 	(void)ino;
-	
+
 	// 0. Check if there is actually anything to be done.
 	if (times[1].tv_nsec == UTIME_OMIT) {
 		// Nothing to do.
@@ -344,7 +401,7 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
 
 	// 1. TODO: Find the inode for the final component in path
 
-	
+
 	// 2. Update the mtime for that inode.
 	//    This code is commented out to avoid failure until you have set
 	//    'ino' to point to the inode structure for the inode to update.
@@ -375,7 +432,7 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
  * Errors:
  *   ENOMEM  not enough memory (e.g. a malloc() call failed).
  *   ENOSPC  not enough free space in the file system.
- *   EFBIG   write would exceed the maximum file size. 
+ *   EFBIG   write would exceed the maximum file size.
  *
  * @param path  path to the file to set the size.
  * @param size  new file size in bytes.
@@ -384,12 +441,46 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
 static int vsfs_truncate(const char *path, off_t size)
 {
 	fs_ctx *fs = get_fs();
+    vsfs_ino_t ino;
+    int ret = path_lookup(path, &ino);
+    if (ret) { // Path lookup did not succeed
+        return ret; // Return the respective error code
+    }
 
-	//TODO: set new file size, possibly "zeroing out" the uninitialized range
-	(void)path;
-	(void)size;
-	(void)fs;
-	return -ENOSYS;
+    vsfs_inode *inode = &fs->itable[ino];
+
+    // Calculate number of blocks before and after truncate
+    int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
+    int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
+
+    if (new_blocks > cur_blocks) {
+        // Need to add blocks
+        for (int i = cur_blocks; i < new_blocks; i++) {
+            if (i >= VSFS_NUM_DIRECT) {
+                return -EFBIG; // to do: use indirect blocks
+            }
+            unsigned int blk;
+            int alloc = bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &blk);
+            if (alloc) {
+                return -ENOSPC; // No more blocks in image
+            }
+            inode->i_direct[i] = blk;
+            inode->i_blocks += 1;
+            fs->sb->sb_free_blocks -= 1;
+        }
+    } else if (new_blocks < cur_blocks) {
+        // Need to remove blocks
+        for (int i = new_blocks; i < cur_blocks; i++) {
+            bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, inode->i_direct[i]);
+            inode->i_direct[i] = VSFS_BLK_UNASSIGNED;
+            inode->i_blocks -= 1;
+            fs->sb->sb_free_blocks += 1;
+        }
+    }
+
+    inode->i_size = size;
+
+    return 0;
 }
 
 
@@ -418,15 +509,34 @@ static int vsfs_read(const char *path, char *buf, size_t size, off_t offset,
                      struct fuse_file_info *fi)
 {
 	(void)fi;// unused
-	fs_ctx *fs = get_fs();
+    fs_ctx *fs = get_fs();
+    vsfs_ino_t ino;
+    int res = path_lookup(path, &ino);
+    if (res != 0) {
+        return res; // path lookup failed
+    }
+    vsfs_inode *inode = &fs->itable[ino];
 
-	//TODO: read data from the file at given offset into the buffer
-	(void)path;
-	(void)buf;
-	(void)size;
-	(void)offset;
-	(void)fs;
-	return -ENOSYS;
+    if (offset >= inode->i_size) {
+        return 0; // offset beyond eof
+    }
+
+    if (offset + size > inode->i_size) { // shouldn't happen by assumption but just to be safe
+        size = inode->i_size - offset; // only read until end of block
+    }
+
+    int block_index = offset / VSFS_BLOCK_SIZE; // index of block to read from
+    int block_offset = offset % VSFS_BLOCK_SIZE; // offset within block to start the read
+
+    if (block_num == VSFS_BLK_UNASSIGNED) {
+        memset(buf, 0, size);
+    } else {
+        // read the data
+        const char *block = (const char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
+        memcpy(buf, block + block_offset, size);
+    }
+
+	return size;
 }
 
 /**
