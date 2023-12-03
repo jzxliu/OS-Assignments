@@ -436,12 +436,41 @@ static int vsfs_utimens(const char *path, const struct timespec times[2])
 static int vsfs_truncate(const char *path, off_t size)
 {
 	fs_ctx *fs = get_fs();
+    vsfs_ino_t ino;
+    int ret = path_lookup(path, &ino);
+    if (ret) { // Path lookup did not succeed
+        return ret; // Return the respective error code
+    }
 
-	//TODO: set new file size, possibly "zeroing out" the uninitialized range
-	(void)path;
-	(void)size;
-	(void)fs;
-	return -ENOSYS;
+    vsfs_inode *inode = &fs->itable[ino];
+
+    // Calculate number of blocks before and after truncate
+    int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
+    int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
+
+    if (new_blocks > cur_blocks) {
+        // Need to add blocks
+        for (int i = cur_blocks; i < new_blocks; i++) {
+            if (i >= VSFS_NUM_DIRECT) {
+                return -EFBIG; // to do: use indirect blocks
+            }
+            int blk = bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks);
+            if (blk < 0) {
+                return -ENOSPC; // No more blocks in image
+            }
+            inode->i_direct[i] = blk;
+        }
+    } else if (new_blocks < cur_blocks) {
+        // Need to remove blocks
+        for (int i = new_blocks; i < cur_blocks; i++) {
+            bitmap_free(fs->dbmap, inode->i_direct[i]);
+            inode->i_direct[i] = VSFS_BLK_UNASSIGNED;
+        }
+    }
+
+    inode->i_size = size;
+
+    return 0;
 }
 
 
