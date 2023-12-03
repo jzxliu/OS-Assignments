@@ -35,3 +35,40 @@ unique: 16, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 1726
    unique: 16, error: -38 (Function not implemented), outsize: 16
 unique: 18, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
    unique: 18, success, outsize: 16
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 25106
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 24199
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 6, success, outsize: 144
+unique: 8, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 24199
+   unique: 8, success, outsize: 32
+unique: 10, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 24199
+   unique: 10, success, outsize: 32
+unique: 12, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 24199
+   unique: 12, success, outsize: 32
+unique: 14, opcode: READ (15), nodeid: 2, insize: 80, pid: 24199
+read[0] 4096 bytes from 0 flags: 0x8000
+   read[0] 81 bytes from 0
+   unique: 14, success, outsize: 97
+unique: 16, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 24199
+   unique: 16, error: -38 (Function not implemented), outsize: 16
+unique: 18, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 18, success, outsize: 16
