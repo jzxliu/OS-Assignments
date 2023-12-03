@@ -133,3 +133,48 @@ getattr /
 unique: 20, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 6386
 statfs /
    unique: 20, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 34446
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 33556
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 34448
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 56, pid: 34448
+LOOKUP /shake-short.txt
+getattr /shake-short.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: UNLINK (10), nodeid: 1, insize: 56, pid: 34448
+unlink /shake-short.txt
+   unique: 12, success, outsize: 16
+unique: 14, opcode: FORGET (2), nodeid: 2, insize: 48, pid: 0
+FORGET 2/1
+DELETE: 2
+unique: 16, opcode: LOOKUP (1), nodeid: 1, insize: 56, pid: 34448
+LOOKUP /shake-short.txt
+getattr /shake-short.txt
+   NODEID: 3
+   unique: 16, success, outsize: 144
+unique: 18, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 34448
+getattr /
+   unique: 18, success, outsize: 120
+unique: 20, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 34448
+statfs /
+   unique: 20, success, outsize: 96

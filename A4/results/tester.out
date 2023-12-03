@@ -6,4 +6,4 @@ accumulated_create_score, 3.9, 10.0
 accumulated_read_score, 0.0, 10.0
 accumulated_truncate_score, 2.5, 10.0
 accumulated_write_score, 0.0, 10.0
-accumulated_unlink_score, 4.5, 10.0
+accumulated_unlink_score, 4.9, 10.0

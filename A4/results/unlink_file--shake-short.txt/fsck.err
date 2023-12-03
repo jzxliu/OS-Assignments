@@ -22,3 +22,11 @@ File system is inconsistent, but checking bitmaps anyway.
 ERROR: superblock free_inodes 123 is inconsistent with on-disk inode bitmap state (4 allocated, 124 free).
 DONE CHECKING INODE BITMAP. ERRORS FOUND.
 DONE CHECKING DATA BITMAP. NO ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: directory should have link count of 2, not 1 (subdirectories are not supported)
+	ERROR: inode 1's link count 1 and inode bitmap status free are inconsistent.
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+DONE CHECKING DATA BITMAP. NO ERRORS FOUND.

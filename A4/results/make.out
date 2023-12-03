@@ -34,3 +34,15 @@ gcc fs_ctx.c -o fs_ctx.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 
 gcc options.c -o options.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 -Wall -Wextra -Werror 
 gcc vsfs.o fs_ctx.o options.o bitmap.o map.o -o vsfs -lfuse -pthread 
 make: Leaving directory '/h/u15/c1/00/liuzexi3/liuzexi3/A4/testdir'
+make: Entering directory '/h/u15/c1/00/liuzexi3/liuzexi3/A4/testdir'
+gcc mkfs.c -o mkfs.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 -Wall -Wextra -Werror 
+gcc bitmap.c -o bitmap.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 -Wall -Wextra -Werror 
+gcc map.c -o map.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 -Wall -Wextra -Werror 
+gcc mkfs.o bitmap.o map.o -o mkfs.vsfs -lfuse -pthread 
+make: Leaving directory '/h/u15/c1/00/liuzexi3/liuzexi3/A4/testdir'
+make: Entering directory '/h/u15/c1/00/liuzexi3/liuzexi3/A4/testdir'
+gcc vsfs.c -o vsfs.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 -Wall -Wextra -Werror 
+gcc fs_ctx.c -o fs_ctx.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 -Wall -Wextra -Werror 
+gcc options.c -o options.o -c -MMD -D_FILE_OFFSET_BITS=64 -I/usr/include/fuse -g3 -Wall -Wextra -Werror 
+gcc vsfs.o fs_ctx.o options.o bitmap.o map.o -o vsfs -lfuse -pthread 
+make: Leaving directory '/h/u15/c1/00/liuzexi3/liuzexi3/A4/testdir'
