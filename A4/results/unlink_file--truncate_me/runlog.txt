@@ -7,4 +7,4 @@ Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_
 After removing truncate_me, root dir listing is: ['shake-short.txt', 'shake-med.txt', 'shake-long.txt']
 Root directory listing after unlink appears to be correct.
 Freed expected number of blocks (0).
-Elapsed time: 0.322718997951597 seconds
+Elapsed time: 0.3571386239491403 seconds
