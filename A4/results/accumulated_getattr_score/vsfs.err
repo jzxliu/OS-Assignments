@@ -174,3 +174,47 @@ unique: 16, opcode: LOOKUP (1), nodeid: 1, insize: 60, pid: 33556
 LOOKUP /file_does_not_exist
 getattr /file_does_not_exist
    unique: 16, error: -2 (No such file or directory), outsize: 16
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 25709
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: LOOKUP (1), nodeid: 1, insize: 56, pid: 25620
+LOOKUP /smallfile.00.00
+getattr /smallfile.00.00
+   NODEID: 2
+   unique: 6, success, outsize: 144
+unique: 8, opcode: LOOKUP (1), nodeid: 1, insize: 56, pid: 25620
+LOOKUP /smallfile.00.09
+getattr /smallfile.00.09
+   NODEID: 3
+   unique: 8, success, outsize: 144
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 56, pid: 25620
+LOOKUP /smallfile.03.04
+getattr /smallfile.03.04
+   unique: 10, error: -2 (No such file or directory), outsize: 16
+unique: 12, opcode: LOOKUP (1), nodeid: 1, insize: 56, pid: 25620
+LOOKUP /smallfile.05.00
+getattr /smallfile.05.00
+   unique: 12, error: -2 (No such file or directory), outsize: 16
+unique: 14, opcode: LOOKUP (1), nodeid: 1, insize: 56, pid: 25620
+LOOKUP /smallfile.07.15
+getattr /smallfile.07.15
+   unique: 14, error: -2 (No such file or directory), outsize: 16
+unique: 16, opcode: LOOKUP (1), nodeid: 1, insize: 60, pid: 25620
+LOOKUP /file_does_not_exist
+getattr /file_does_not_exist
+   unique: 16, error: -2 (No such file or directory), outsize: 16
