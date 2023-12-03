@@ -454,8 +454,9 @@ static int vsfs_truncate(const char *path, off_t size)
             if (i >= VSFS_NUM_DIRECT) {
                 return -EFBIG; // to do: use indirect blocks
             }
-            int blk = bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks);
-            if (blk < 0) {
+            unsigned int blk;
+            int alloc = bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &blk);
+            if (alloc) {
                 return -ENOSPC; // No more blocks in image
             }
             inode->i_direct[i] = blk;
@@ -463,7 +464,7 @@ static int vsfs_truncate(const char *path, off_t size)
     } else if (new_blocks < cur_blocks) {
         // Need to remove blocks
         for (int i = new_blocks; i < cur_blocks; i++) {
-            bitmap_free(fs->dbmap, inode->i_direct[i]);
+            bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, inode->i_direct[i]);
             inode->i_direct[i] = VSFS_BLK_UNASSIGNED;
         }
     }
