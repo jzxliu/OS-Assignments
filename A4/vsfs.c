@@ -517,7 +517,7 @@ static int vsfs_read(const char *path, char *buf, size_t size, off_t offset,
     }
     vsfs_inode *inode = &fs->itable[ino];
 
-    if (offset >= inode->i_size) {
+    if ((long unsigned int)offset >= inode->i_size) {
         return 0; // offset beyond eof
     }
 
@@ -527,8 +527,7 @@ static int vsfs_read(const char *path, char *buf, size_t size, off_t offset,
 
     int block_index = offset / VSFS_BLOCK_SIZE; // index of block to read from
     int block_offset = offset % VSFS_BLOCK_SIZE; // offset within block to start the read
-
-    if (block_num == VSFS_BLK_UNASSIGNED) {
+    if (inode->i_direct[block_index] == VSFS_BLK_UNASSIGNED) {
         memset(buf, 0, size);
     } else {
         // read the data
