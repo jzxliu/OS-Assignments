@@ -481,7 +481,7 @@ static int vsfs_truncate(const char *path, off_t size)
 
     if (new_blocks > cur_blocks) {
         // Need to add blocks
-        for (int i = cur_blocks; i < new_blocks; i++) {
+        for (unsigned int i = cur_blocks; i < new_blocks; i++) {
 
             unsigned int blk;
             bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &blk);
