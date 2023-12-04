@@ -530,6 +530,7 @@ static int vsfs_truncate(const char *path, off_t size)
     }
 
     inode->i_size = size;
+    clock_gettime(CLOCK_REALTIME, &(inode->i_mtime));
 
     return 0;
 }
@@ -567,6 +568,7 @@ static int vsfs_read(const char *path, char *buf, size_t size, off_t offset,
         return ret;
     }
     vsfs_inode *inode = &fs->itable[ino];
+
 
     if ((long unsigned int)offset >= inode->i_size) {
         return 0; // offset beyond eof
@@ -624,6 +626,7 @@ static int vsfs_write(const char *path, const char *buf, size_t size,
         return ret;
     }
     vsfs_inode *inode = &fs->itable[ino];
+    clock_gettime(CLOCK_REALTIME, &(inode->i_mtime));
 
     int block_index = offset / VSFS_BLOCK_SIZE;
     int block_offset = offset % VSFS_BLOCK_SIZE;
@@ -641,6 +644,7 @@ static int vsfs_write(const char *path, const char *buf, size_t size,
     }
     char *block = (char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
     memcpy(block + block_offset, buf, size);
+
 	return size;
 }
 
