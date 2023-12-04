@@ -320,11 +320,9 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 	assert(S_ISREG(mode));
 	fs_ctx *fs = get_fs();
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
-    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
 
     unsigned int index;
-    int ret = bitmap_alloc(fs->ibmap, fs->sb->sb_num_inodes, &index);
-    if (ret) { // No free inodes
+    if (bitmap_alloc(fs->ibmap, fs->sb->sb_num_inodes, &index)) { // No free inodes
         return -ENOSPC;
     }
 
@@ -336,16 +334,30 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     new_inode->i_blocks = 0;
     fs->sb->sb_free_inodes -= 1;
 
-    // Find a space in root directory to put new inode
-    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
-        if (root_entries[i].ino == VSFS_INO_MAX) {
-            root_entries[i].ino = index;
-            strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
-            root_ino->i_nlink += 1;
-            return 0;
+    // Find a space in root directory direct blocks to put new inode
+    for (unsigned int n = 0; n < VSFS_NUM_DIRECT; n++){
+        if (root_ino->i_direct[n] < fs->sb->sb_data_region || root_ino->i_direct[n] >= VSFS_BLK_MAX) {
+            // Allocate new block
+            if (bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &root_ino->i_direct[n])){
+                goto out;
+            }
+
+            fs->sb->sb_free_blocks -= 1;
+        }
+        vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
+        for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+            if (root_entries[i].ino == VSFS_INO_MAX) {
+                root_entries[i].ino = index;
+                strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
+                root_ino->i_nlink += 1;
+                return 0;
+            }
         }
     }
 
+    // to do : Find a space in root directory indirect blocks to put new inode
+
+    out:
     // No free space in root directory
     bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, index);
     fs->sb->sb_free_inodes += 1;
@@ -491,6 +503,7 @@ static int vsfs_truncate(const char *path, off_t size)
             if (i >= VSFS_NUM_DIRECT) {
                 if (inode->i_indirect < fs->sb->sb_data_region || inode->i_indirect >= VSFS_BLK_MAX){
                     bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &inode->i_indirect);
+                    fs->sb->sb_free_blocks -= 1;
                     // DO NOT COUNT INDIRECT in i_block
                     vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
                     indirect_entries[i - VSFS_NUM_DIRECT] = blk;
