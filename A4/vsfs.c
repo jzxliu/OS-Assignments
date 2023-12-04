@@ -335,13 +335,12 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     fs->sb->sb_free_inodes -= 1;
 
     // Find a space in root directory direct blocks to put new inode
-    for (unsigned int n = 0; n < VSFS_NUM_DIRECT; n++){
-        if (root_ino->i_direct[n] < fs->sb->sb_data_region || root_ino->i_direct[n] >= VSFS_BLK_MAX) {
-            // Allocate new block
-            if (bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &root_ino->i_direct[n])){
+    for (int n = 0; n < VSFS_NUM_DIRECT; n++){
+        if (!root_ino->i_direct[n]) {
+            // Allocate new directory block
+            if (bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &(root_ino->i_direct[n]))){
                 goto out;
             }
-
             fs->sb->sb_free_blocks -= 1;
         }
         vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);

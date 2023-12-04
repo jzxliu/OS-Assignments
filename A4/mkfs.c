@@ -182,9 +182,9 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
     root_ino->i_blocks = 1;
     root_ino->i_direct[0] = VSFS_ITBL_BLKNUM + inode_table_size;
     for (int i = 1; i < VSFS_NUM_DIRECT; i++){
-        root_ino->i_direct[i] = VSFS_BLK_MAX; // Invalid index for now
+        root_ino->i_direct[i] = 0; // Invalid for now
     }
-    root_ino->i_indirect = VSFS_BLK_MAX; // Also invalid
+    root_ino->i_indirect = 0; // Also invalid
 
 	if (clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime)) != 0) {
 		perror("clock_gettime");
