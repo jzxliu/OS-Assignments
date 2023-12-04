@@ -122,7 +122,7 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
     for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
         if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
             vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
-            for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+            for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                 if (strcmp(direct_entries[i].name, path + 1) == 0) {
                     *ino = direct_entries[i].ino;
                     return 0;
@@ -139,7 +139,7 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
         for (size_t n = 0; n < VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t); n++){
             if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
                 vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
-                for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+                for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                     if (strcmp(indirect_entries[i].name, path + 1) == 0) {
                         *ino = indirect_entries[i].ino;
                         return 0;
@@ -289,10 +289,10 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
     }
 
     // Search in direct entries first
-    for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
+    for (size_t n = 0; n < VSFS_NUM_DIRECT; n++) {
         if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
             vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
-            for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+            for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                 if (direct_entries[i].ino != VSFS_INO_MAX) {
                     if (filler(buf, direct_entries[i].name, NULL, 0)) {
                         return -ENOMEM;
@@ -309,7 +309,7 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
         for (size_t n = 0; n < VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t); n++){
             if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
                 vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
-                for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+                for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                     if (indirect_entries[i].ino != VSFS_INO_MAX) {
                         if (filler(buf, indirect_entries[i].name, NULL, 0)) {
                             return -ENOMEM;
@@ -374,9 +374,15 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
             }
             memset((char *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
             fs->sb->sb_free_blocks -= 1;
+            root_ino->i_size += VSFS_BLOCK_SIZE;
+            root_ino->i_blocks += 1;
+            vsfs_dentry *new_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
+            for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
+                new_entries[i].ino = VSFS_INO_MAX; // Initialize all new inodes in this block
+            }
         }
         vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
-        for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
             if (root_entries[i].ino == VSFS_INO_MAX) {
                 root_entries[i].ino = index;
                 strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
@@ -386,6 +392,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
             }
         }
     }
+
 
     // Find a space in indirect blocks to put new inode
 
@@ -405,14 +412,31 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     }
 
     // Search in indirect for spot
-    vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
-    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
-        if (indirect_entries[i].ino == VSFS_INO_MAX) {
-            indirect_entries[i].ino = index;
-            strncpy(indirect_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
-            root_ino->i_nlink += 1;
-            clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-            return 0;
+    vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+    for (size_t n = 0; n < VSFS_BLOCK_SIZE / sizeof(vsfs_blk_t)){
+        if (!indirect_blocks[n]){
+            // Allocate new indirect block
+            if (bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &(indirect_blocks[n]))){
+                goto out;
+            }
+            memset((char *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
+            fs->sb->sb_free_blocks -= 1;
+            root_ino->i_size += VSFS_BLOCK_SIZE;
+            root_ino->i_blocks += 1;
+            vsfs_dentry *new_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
+            for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
+                new_entries[i].ino = VSFS_INO_MAX; // Initialize all new inodes in this block
+            }
+        }
+        vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
+        for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
+            if (indirect_entries[i].ino == VSFS_INO_MAX) {
+                indirect_entries[i].ino = index;
+                strncpy(indirect_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
+                root_ino->i_nlink += 1;
+                clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
+                return 0;
+            }
         }
     }
 
