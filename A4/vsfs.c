@@ -488,7 +488,7 @@ static int vsfs_truncate(const char *path, off_t size)
 
             if (i >= VSFS_NUM_DIRECT) {
                 if (inode->i_indirect < fs->sb->sb_data_region || inode->i_indirect >= VSFS_BLK_MAX){
-                    bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &inode_indirect);
+                    bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &inode->i_indirect);
                     // DO NOT COUNT INDIRECT in i_block
                     vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
                     indirect_entries[i - VSFS_NUM_DIRECT] = blk;
