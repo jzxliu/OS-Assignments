@@ -1,3 +1,3 @@
 Accumulated 50.800000000000004 points out of 65.0 for the preceding truncate tests.
 Scaled to 7.8 out of 10.
-Elapsed time: 0.0002867928706109524 seconds
+Elapsed time: 0.0002086979802697897 seconds

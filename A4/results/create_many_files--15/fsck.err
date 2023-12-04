@@ -1,0 +1,9 @@
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: directory should have link count of 2, not 17 (subdirectories are not supported)
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+ERROR: Found 1 bit mismatches.
+DONE CHECKING INODE BITMAP. ERRORS FOUND.
+ERROR: Found 5 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.

@@ -1,7 +1,7 @@
 Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_bfree=251, 
                 f_bavail=251, f_files=64, f_ffree=63, f_favail=63, f_flag=4102, f_namemax=252)
 Stat file: 
-	os.stat_result(st_mode=33152, st_ino=1, st_dev=149, st_nlink=1, st_uid=0, st_gid=0, st_size=0, st_atime=0, st_mtime=1701670837, st_ctime=0) [Type: File]
+	os.stat_result(st_mode=33152, st_ino=1, st_dev=148, st_nlink=1, st_uid=0, st_gid=0, st_size=0, st_atime=0, st_mtime=1701676151, st_ctime=0) [Type: File]
 Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_bfree=251, 
                 f_bavail=251, f_files=64, f_ffree=62, f_favail=62, f_flag=4102, f_namemax=252)
 Points:
@@ -9,4 +9,4 @@ Points:
 	2.0/2 - stat fields for new file earned 6.0/6 raw points from check_stat
 	1/1 - Parent directory mtime updated when new file created.
 	0.7999999999999998/1 - fsck result
-Elapsed time: 0.16190146980807185 seconds
+Elapsed time: 0.1616754881106317 seconds

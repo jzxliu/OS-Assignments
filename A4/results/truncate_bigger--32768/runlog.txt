@@ -8,4 +8,4 @@ Points:
 	1/1 - successful read of added bytes
 	0/1 - found non-zero bytes in data read from truncated part of file
 	0.5999999999999996/1 - fsck result
-Elapsed time: 0.2680617179721594 seconds
+Elapsed time: 0.26008539693430066 seconds
