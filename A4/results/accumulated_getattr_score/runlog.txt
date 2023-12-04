@@ -20,4 +20,4 @@ Earned 6.0 raw points from stat root directory.
 stat returned correct error for non-existent file.
 fsck.vsfs reports: All checks passed. File system appears to be consistent.
 Earned 10.0 / 10.0 marks for getattr.
-Elapsed time: 0.2165203308686614 seconds
+Elapsed time: 0.15250604203902185 seconds

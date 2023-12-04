@@ -8,4 +8,4 @@ Points:
 	1/1 - successful read of added bytes
 	1/1 - all added bytes were 0
 	1.0/1 - fsck result
-Elapsed time: 0.2580293870996684 seconds
+Elapsed time: 0.21362597099505365 seconds

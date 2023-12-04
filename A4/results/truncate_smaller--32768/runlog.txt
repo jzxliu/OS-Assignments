@@ -6,5 +6,5 @@ Points:
 	2/2 - stat st_size matches requested size 32768
 	0.5/0.5 - stat st_mtime updated
 	2.5/2.5 - after truncate, file system free blocks matches expected.
-	0.5999999999999996/1 - fsck result
-Elapsed time: 0.4750662019941956 seconds
+	0.7999999999999998/1 - fsck result
+Elapsed time: 0.21493974118493497 seconds
