@@ -25,5 +25,5 @@ Traceback (most recent call last):
     self._accessor.touch(self, mode, exist_ok)
   File "/local/packages/python-3.10/lib/python3.10/pathlib.py", line 331, in touch
     fd = os.open(path, flags, mode)
-OSError: [Errno 28] No space left on device: 'file.30'
+FileNotFoundError: [Errno 2] No such file or directory: 'file.14'
 
