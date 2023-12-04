@@ -392,6 +392,7 @@ static int vsfs_unlink(const char *path)
             bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, root_entries[i].ino);
             root_entries[i].ino = VSFS_INO_MAX;
             root_ino->i_nlink -= 1;
+            clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
             return 0;
         }
     }
