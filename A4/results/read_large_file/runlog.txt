@@ -1,1 +1,1 @@
-Elapsed time: 0.27726340806111693 seconds
+Elapsed time: 0.23038368695415556 seconds
