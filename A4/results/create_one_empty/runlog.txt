@@ -9,4 +9,4 @@ Points:
 	1.6666666666666667/2 - stat fields for new file earned 5.0/6 raw points from check_stat
 	0/1 - Parent directory mtime does not appear to be updated when a new file is created.
 	0.7999999999999998/1 - fsck result
-Elapsed time: 0.1604107089806348 seconds
+Elapsed time: 0.158304758137092 seconds

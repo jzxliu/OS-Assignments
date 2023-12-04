@@ -2,4 +2,4 @@ checking if mtime of directfile.00.00 matches given time.
 checking if mtime of directfile.00.10 matches given time.
 checking if mtime of directfile.00.13 matches given time.
 checking if mtime of directfile.01.07 matches given time.
-Elapsed time: 0.14080280298367143 seconds
+Elapsed time: 0.13747927802614868 seconds
