@@ -182,7 +182,7 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
     root_ino->i_blocks = 1;
     root_ino->i_direct[0] = VSFS_ITBL_BLKNUM + inode_table_size;
     for (int i = 1; i < VSFS_NUM_DIRECT; i++){
-        root_ino->i_direct[i] = VSFS_BLK_MAX; // Invalid for now
+        root_ino->i_direct[i] = VSFS_BLK_MAX; // Invalid index for now
     }
     root_ino->i_indirect = VSFS_BLK_MAX; // Also invalid
 
