@@ -3,4 +3,4 @@ Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_
 Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_bfree=3045, 
                 f_bavail=3045, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
 Success: read new content written by submission vsfs using solution vsfs. Read content = That sounds like a really good and safe idea.
-Elapsed time: 0.3675205809995532 seconds
+Elapsed time: 0.32380422693677247 seconds
