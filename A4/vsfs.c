@@ -753,12 +753,6 @@ static int vsfs_write(const char *path, const char *buf, size_t size,
     vsfs_inode *inode = &fs->itable[ino];
     clock_gettime(CLOCK_REALTIME, &(inode->i_mtime));
 
-    int block_index = offset / VSFS_BLOCK_SIZE;
-    int block_offset = offset % VSFS_BLOCK_SIZE;
-    if (block_index >= VSFS_NUM_DIRECT) {
-        return -ENOSPC; // to do use indirect
-    }
-
     // Extend the file if offset is beyond current size
     if (offset + size > inode->i_size) {
         int ret = vsfs_truncate(path, offset + size);
@@ -767,8 +761,17 @@ static int vsfs_write(const char *path, const char *buf, size_t size,
             return ret;
         }
     }
-    char *block = (char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
-    memcpy(block + block_offset, buf, size);
+
+    int block_index = offset / VSFS_BLOCK_SIZE;
+    int block_offset = offset % VSFS_BLOCK_SIZE;
+    if (block_index >= VSFS_NUM_DIRECT) {
+        vsfs_blk_t *block_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
+        char *block = (char *)(fs->image + block_entries[block_index - VSFS_NUM_DIRECT] * VSFS_BLOCK_SIZE);
+        memcpy(block + block_offset, buf, size);
+    } else {
+        char *block = (char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
+        memcpy(block + block_offset, buf, size);
+    }
 
 	return size;
 }
