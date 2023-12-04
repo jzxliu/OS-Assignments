@@ -354,6 +354,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     if (bitmap_alloc(fs->ibmap, fs->sb->sb_num_inodes, &index)) { // No free inodes
         return -ENOSPC;
     }
+    fs->sb->sb_free_inodes -= 1;
 
     // Create a new inode
     vsfs_inode *new_inode = &fs->itable[index];
@@ -362,8 +363,6 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     new_inode->i_size = 0;
     new_inode->i_blocks = 0;
     clock_gettime(CLOCK_REALTIME, &(new_inode->i_mtime));
-
-    fs->sb->sb_free_inodes -= 1;
 
     // Find a space in root directory direct blocks to put new inode
     for (int n = 0; n < VSFS_NUM_DIRECT; n++){
@@ -464,19 +463,41 @@ static int vsfs_unlink(const char *path)
 {
 	fs_ctx *fs = get_fs();
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
-    fs->sb->sb_free_inodes += 1;
 
-    // Look for the file in direct blocks
-    for (int n = 0; n < VSFS_NUM_DIRECT; n++){
-        if (root_ino->i_direct[n]) {
-            vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
-            for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
-                if (strcmp(root_entries[i].name, path + 1) == 0) {
-                    bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, root_entries[i].ino);
-                    root_entries[i].ino = VSFS_INO_MAX;
+    // Search in direct entries first
+    for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
+        if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
+            vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
+            for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
+                if (strcmp(direct_entries[i].name, path + 1) == 0) {
+                    bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, direct_entries[i].ino);
+                    fs->sb->sb_free_inodes += 1;
+                    direct_entries[i].ino = VSFS_INO_MAX;
                     root_ino->i_nlink -= 1;
                     clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
                     return 0;
+                }
+            }
+        }
+    }
+
+    // Search in indirect entries if it exists
+    if (root_ino->i_indirect >= fs->sb->sb_data_region && root_ino->i_indirect < VSFS_BLK_MAX){
+        vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+
+        // Search in every indirect block that exists
+        for (size_t n = 0; n < VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t); n++){
+            if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
+                vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
+                for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
+                    if (strcmp(indirect_entries[i].name, path + 1) == 0) {
+                        bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, indirect_entries[i].ino);
+                        fs->sb->sb_free_inodes += 1;
+                        indirect_entries[i].ino = VSFS_INO_MAX;
+                        root_ino->i_nlink -= 1;
+                        clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
+                        return 0;
+                    }
                 }
             }
         }
