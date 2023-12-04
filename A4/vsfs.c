@@ -332,7 +332,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     new_inode->i_nlink = 1;
     new_inode->i_size = 0;
     new_inode->i_blocks = 0;
-    clock_gettime(CLOCK_REALTIME, &(new_inode->i_mtime);
+    clock_gettime(CLOCK_REALTIME, &(new_inode->i_mtime));
 
     fs->sb->sb_free_inodes -= 1;
 
@@ -351,7 +351,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
                 root_entries[i].ino = index;
                 strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
                 root_ino->i_nlink += 1;
-                clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime);
+                clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
                 return 0;
             }
         }
