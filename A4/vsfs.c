@@ -121,10 +121,10 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
     // Search in direct entries first
     for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
         if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
-            vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
+            vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
             for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
-                if (strcmp(entries[i].name, path + 1) == 0) {
-                    *ino = entries[i].ino;
+                if (strcmp(direct_entries[i].name, path + 1) == 0) {
+                    *ino = direct_entries[i].ino;
                     return 0;
                 }
             }
@@ -281,11 +281,11 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
         return -ENOTDIR; // VSFS only has the root directory, so we dont have to implement for other cases
     }
 
-    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + ino->i_direct[0] * VSFS_BLOCK_SIZE);
+    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + ino->i_direct[0] * VSFS_BLOCK_SIZE);
     // Iterate through every entry in root directory
     for (size_t i = 0; i < ino->i_size / sizeof(vsfs_dentry); i++) {
-        if (entries[i].ino != VSFS_INO_MAX) {
-            if (filler(buf, entries[i].name, NULL, 0)) {
+        if (root_entries[i].ino != VSFS_INO_MAX) {
+            if (filler(buf, root_entries[i].name, NULL, 0)) {
                 return -ENOMEM;
             }
         }
@@ -472,18 +472,31 @@ static int vsfs_truncate(const char *path, off_t size)
     int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
     int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
 
+    if (new_blocks > VSFS_NUM_DIRECT + VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t)) {
+        return -EFBIG; // Need more blocks than maximum amount an inode can have
+    }
+    if (new_blocks - cur_blocks > fs->sb->sb_free_blocks){
+        return -ENOSPC; // Not enough free blocks in fs
+    }
+
     if (new_blocks > cur_blocks) {
         // Need to add blocks
         for (int i = cur_blocks; i < new_blocks; i++) {
-            if (i >= VSFS_NUM_DIRECT) {
-                return -EFBIG; // to do: use indirect blocks
-            }
+
             unsigned int blk;
-            int alloc = bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &blk);
-            if (alloc) {
-                return -ENOSPC; // No more blocks in image
+            bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &blk);
+
+            if (i >= VSFS_NUM_DIRECT) {
+                if (inode->i_indirect < fs->sb->sb_data_region || inode->i_indirect >= VSFS_BLK_MAX){
+                    bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &inode_indirect);
+                    // DO NOT COUNT INDIRECT in i_block
+                    vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
+                    indirect_entries[i - VSFS_NUM_DIRECT] = blk;
+
+                }
+            } else {
+                inode->i_direct[i] = blk;
             }
-            inode->i_direct[i] = blk;
             inode->i_blocks += 1;
             // zero out the new block
             memset((char *)(fs->image + blk * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
