@@ -383,19 +383,24 @@ static int vsfs_unlink(const char *path)
 {
 	fs_ctx *fs = get_fs();
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
-    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
     fs->sb->sb_free_inodes += 1;
 
-    // Look for the file in root directory
-    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
-        if (strcmp(root_entries[i].name, path + 1) == 0) {
-            bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, root_entries[i].ino);
-            root_entries[i].ino = VSFS_INO_MAX;
-            root_ino->i_nlink -= 1;
-            clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-            return 0;
+    // Look for the file in direct blocks
+    for (int n = 0; n < VSFS_NUM_DIRECT; n++){
+        if (!root_ino->i_direct[n]) {
+            vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
+            for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+                if (strcmp(root_entries[i].name, path + 1) == 0) {
+                    bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, root_entries[i].ino);
+                    root_entries[i].ino = VSFS_INO_MAX;
+                    root_ino->i_nlink -= 1;
+                    clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
+                    return 0;
+                }
+            }
         }
     }
+
 	return 0; // Shouldn't get here since path exists by assumption
 }
 
