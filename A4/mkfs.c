@@ -161,7 +161,7 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
 	bitmap_set(dbmap, nblks, VSFS_IMAP_BLKNUM, true); // inode bitmap block
 	bitmap_set(dbmap, nblks, VSFS_DMAP_BLKNUM, true); // data bitmap block
 
-	// Calculate size of inode table
+	// Calculate size of inode table (in blocks)
     size_t inode_table_size = div_round_up(opts->n_inodes, inodes_per_block);
 
     // Mark inode table blocks allocated.
@@ -181,6 +181,10 @@ static bool mkfs(void *image, size_t size, mkfs_opts *opts)
     root_ino->i_size = VSFS_BLOCK_SIZE;
     root_ino->i_blocks = 1;
     root_ino->i_direct[0] = VSFS_ITBL_BLKNUM + inode_table_size;
+    for (int i = 1; i < VSFS_NUM_DIRECT; i++){
+        root_ino->i_direct[i] = VSFS_BLK_MAX; // Invalid for now
+    }
+    root_ino->i_indirect = VSFS_BLK_MAX; // Also invalid
 
 	if (clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime)) != 0) {
 		perror("clock_gettime");

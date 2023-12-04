@@ -117,6 +117,8 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
     // Since only one directory (root dir), no need to do parsing yay
     fs_ctx *fs = get_fs();
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
+
+    // Search in direct entries first
     vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
     for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
         if (strcmp(entries[i].name, path + 1) == 0) {
@@ -124,6 +126,10 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
             return 0;
         }
     }
+
+    // Search in indirect entries if it exists
+    // if (root_ino->i_indirect != )
+    entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
 
 	return -ENOENT; // Not found
 }
