@@ -494,6 +494,7 @@ static int vsfs_unlink(const char *path)
                         bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, indirect_entries[i].ino);
                         fs->sb->sb_free_inodes += 1;
                         indirect_entries[i].ino = VSFS_INO_MAX;
+
                         root_ino->i_nlink -= 1;
                         clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
                         return 0;
@@ -688,12 +689,23 @@ static int vsfs_read(const char *path, char *buf, size_t size, off_t offset,
 
     int block_index = offset / VSFS_BLOCK_SIZE; // index of block to read from
     int block_offset = offset % VSFS_BLOCK_SIZE; // offset within block to start the read
-    if (inode->i_direct[block_index] == VSFS_BLK_UNASSIGNED) {
-        memset(buf, 0, size);
-    } else {
-        // read the data
-        const char *block = (const char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
-        memcpy(buf, block + block_offset, size);
+    if (block_index < VSFS_NUM_DIRECT) {
+        if (inode->i_direct[block_index] == VSFS_BLK_UNASSIGNED) {
+            memset(buf, 0, size);
+        } else {
+            // read the data
+            const char *block = (const char *)(fs->image + inode->i_direct[block_index] * VSFS_BLOCK_SIZE);
+            memcpy(buf, block + block_offset, size);
+        }
+    } else if (inode->i_indirect) {
+        vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
+        if (indirect_blocks[block_index - VSFS_NUM_DIRECT] == VSFS_BLK_UNASSIGNED) {
+            memset(buf, 0, size);
+        } else {
+            // read the data
+            const char *block = (const char *)(fs->image + indirect_blocks[block_index - VSFS_NUM_DIRECT] * VSFS_BLOCK_SIZE);
+            memcpy(buf, block + block_offset, size);
+        }
     }
 
 	return size;
