@@ -4,6 +4,6 @@ accumulated_utimens_score, 2.0, 2.0
 accumulated_readdir_score, 8.0, 8.0
 accumulated_create_score, 8.1, 10.0
 accumulated_read_score, 10.0, 10.0
-accumulated_truncate_score, 6.8, 10.0
+accumulated_truncate_score, 8.1, 10.0
 accumulated_write_score, 6.8, 10.0
 accumulated_unlink_score, 5.9, 10.0
