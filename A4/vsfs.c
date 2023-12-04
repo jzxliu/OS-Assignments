@@ -616,10 +616,9 @@ static int vsfs_truncate(const char *path, off_t size)
                     bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &inode->i_indirect);
                     fs->sb->sb_free_blocks -= 1;
                     // DO NOT COUNT INDIRECT in i_block
-                    vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
-                    indirect_entries[i - VSFS_NUM_DIRECT] = blk;
-
                 }
+                vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
+                indirect_entries[i - VSFS_NUM_DIRECT] = blk;
             } else {
                 inode->i_direct[i] = blk;
             }
