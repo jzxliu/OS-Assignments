@@ -1,22 +1,32 @@
+Stat: /tmp/liuzexi3-vsfstest/smallfile.00.00 - check blocks.
+1 != 8
+stat st_blocks appears to return VSFS blocks, not 512-byte sectors (0.5 pts deducted).
 Stat /tmp/liuzexi3-vsfstest/smallfile.00.00: 
-	os.stat_result(st_mode=33188, st_ino=1, st_dev=77, st_nlink=1, st_uid=0, st_gid=0, st_size=42, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
-Earned 6.0 raw points from stat smallfile.00.00.
+	os.stat_result(st_mode=33188, st_ino=1, st_dev=79, st_nlink=1, st_uid=0, st_gid=0, st_size=42, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
+Earned 5.5 raw points from stat smallfile.00.00.
+Stat: /tmp/liuzexi3-vsfstest/smallfile.00.09 - check blocks.
+1 != 8
+stat st_blocks appears to return VSFS blocks, not 512-byte sectors (0.5 pts deducted).
 Stat /tmp/liuzexi3-vsfstest/smallfile.00.09: 
-	os.stat_result(st_mode=33188, st_ino=10, st_dev=77, st_nlink=1, st_uid=0, st_gid=0, st_size=51, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
-Earned 6.0 raw points from stat smallfile.00.09.
-stat raised an exception: [Errno 2] No such file or directory: '/tmp/liuzexi3-vsfstest/smallfile.03.04'.
-	 (Remaining tests may have trouble if getattr does not work.)
+	os.stat_result(st_mode=33188, st_ino=10, st_dev=79, st_nlink=1, st_uid=0, st_gid=0, st_size=51, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
+Earned 5.5 raw points from stat smallfile.00.09.
+Stat: /tmp/liuzexi3-vsfstest/smallfile.03.04 - check blocks.
+4 != 32
+stat st_blocks appears to return VSFS blocks, not 512-byte sectors (0.5 pts deducted).
+Stat /tmp/liuzexi3-vsfstest/smallfile.03.04: 
+	os.stat_result(st_mode=33188, st_ino=53, st_dev=79, st_nlink=1, st_uid=0, st_gid=0, st_size=12334, st_atime=0, st_mtime=1651001723, st_ctime=0) [Type: File]
+Earned 5.5 raw points from stat smallfile.03.04.
 stat raised an exception: [Errno 2] No such file or directory: '/tmp/liuzexi3-vsfstest/smallfile.05.00'.
 	 (Remaining tests may have trouble if getattr does not work.)
 stat raised an exception: [Errno 2] No such file or directory: '/tmp/liuzexi3-vsfstest/smallfile.07.15'.
 	 (Remaining tests may have trouble if getattr does not work.)
 Stat: /tmp/liuzexi3-vsfstest - check blocks.
-72 != 80
-stat st_blocks appears to not include metadata (indirect block). Check submitted vsfs.c to see if inode i_blocks includes indirect block. (0.5 pts deducted)
+9 != 80
+stat st_blocks appears to return VSFS blocks, not 512-byte sectors and does not include indirect block (1.0 pts deducted).
 Stat /tmp/liuzexi3-vsfstest: 
-	os.stat_result(st_mode=16895, st_ino=0, st_dev=77, st_nlink=2, st_uid=0, st_gid=0, st_size=36864, st_atime=0, st_mtime=1651001725, st_ctime=0) [Type: Dir]
-Earned 5.5 raw points from stat root directory.
+	os.stat_result(st_mode=16895, st_ino=0, st_dev=79, st_nlink=2, st_uid=0, st_gid=0, st_size=36864, st_atime=0, st_mtime=1651001725, st_ctime=0) [Type: Dir]
+Earned 5.0 raw points from stat root directory.
 stat returned correct error for non-existent file.
 fsck.vsfs reports: All checks passed. File system appears to be consistent.
-Earned 4.875 / 10.0 marks for getattr.
-Elapsed time: 0.16037335898727179 seconds
+Earned 5.875 / 10.0 marks for getattr.
+Elapsed time: 0.16730115213431418 seconds
