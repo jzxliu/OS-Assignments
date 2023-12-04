@@ -133,11 +133,16 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
 
     // Search in indirect entries if it exists
     if (root_ino->i_indirect >= fs->sb->sb_data_region && root_ino->i_indirect < VSFS_BLK_MAX){
-        vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
-        for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
-            if (strcmp(indirect_entries[i].name, path + 1) == 0) {
-                *ino = indirect_entries[i].ino;
-                return 0;
+        vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+        for (size_t n = 0; n < VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t); n++){
+            if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
+                vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
+                for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+                    if (strcmp(indirect_entries[i].name, path + 1) == 0) {
+                        *ino = indirect_entries[i].ino;
+                        return 0;
+                    }
+                }
             }
         }
     }
@@ -359,17 +364,23 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     }
 
     // Find a space in indirect blocks to put new inode
+
+    // Initiate an indirect block if we dont have one
     if (!root_ino->i_indirect){
         if (bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &(root_ino->i_indirect))){
             goto out;
         }
         memset((char *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
         fs->sb->sb_free_blocks -= 1;
+
+        // Set all the entries
         vsfs_dentry *new_indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
         for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
             new_indirect_entries[i].ino = VSFS_INO_MAX;
         }
     }
+
+    // Search in indirect for spot
     vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
     for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
         if (indirect_entries[i].ino == VSFS_INO_MAX) {
