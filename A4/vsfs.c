@@ -620,7 +620,6 @@ static int vsfs_truncate(const char *path, off_t size)
             } else {
                 inode->i_direct[i] = blk;
             }
-            inode->i_blocks += 1;
             // zero out the new block
             memset((char *)(fs->image + blk * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
             fs->sb->sb_free_blocks -= 1;
@@ -636,11 +635,16 @@ static int vsfs_truncate(const char *path, off_t size)
                 bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, inode->i_direct[i]);
                 inode->i_direct[i] = VSFS_BLK_UNASSIGNED;
             }
-            inode->i_blocks -= 1;
             fs->sb->sb_free_blocks += 1;
         }
-    }
 
+        if (inode->i_indirect && new_blocks < VSFS_NUM_DIRECT){ // Don't need indirect anymore
+            bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, inode->i_indirect);
+            inode->i_indirect = 0;
+            fs->sb->sb_free_inodes += 1;
+        }
+    }
+    inode->i_blocks = new_blocks;
     inode->i_size = size;
     clock_gettime(CLOCK_REALTIME, &(inode->i_mtime));
 
