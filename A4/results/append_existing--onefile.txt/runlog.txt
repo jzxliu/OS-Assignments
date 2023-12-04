@@ -3,4 +3,4 @@ Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_b
 Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_bfree=250, 
                 f_bavail=250, f_files=64, f_ffree=62, f_favail=62, f_flag=4102, f_namemax=252)
 Success: read new content written by submission vsfs using solution vsfs. Read content = Congratulations again! You appended to a file.
-Elapsed time: 0.2663363139145076 seconds
+Elapsed time: 0.2707581059075892 seconds

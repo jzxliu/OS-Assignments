@@ -1343,3 +1343,187 @@ getattr /onefile.txt
 unique: 24, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 53666
 statfs /
    unique: 24, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 62698
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 61884
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 62701
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 62701
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 62701
+   unique: 12, success, outsize: 32
+unique: 14, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 62701
+   unique: 14, error: -38 (Function not implemented), outsize: 16
+unique: 16, opcode: WRITE (16), nodeid: 2, insize: 138, pid: 62701
+write[0] 58 bytes to 8224 flags: 0x8002
+   write[0] 58 bytes to 8224
+   unique: 16, success, outsize: 24
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 62701
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 62701
+getattr /onefile.txt
+   unique: 22, success, outsize: 120
+unique: 24, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 62701
+statfs /
+   unique: 24, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 5548
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 4901
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 5550
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 5550
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 5550
+   unique: 12, success, outsize: 32
+unique: 14, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 5550
+   unique: 14, error: -38 (Function not implemented), outsize: 16
+unique: 16, opcode: WRITE (16), nodeid: 2, insize: 138, pid: 5550
+write[0] 58 bytes to 8224 flags: 0x8002
+   write[0] 58 bytes to 8224
+   unique: 16, success, outsize: 24
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 5550
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 5550
+getattr /onefile.txt
+   unique: 22, success, outsize: 120
+unique: 24, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 5550
+statfs /
+   unique: 24, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 8508
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 8005
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 8510
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 8510
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 8510
+   unique: 12, success, outsize: 32
+unique: 14, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 8510
+   unique: 14, error: -38 (Function not implemented), outsize: 16
+unique: 16, opcode: WRITE (16), nodeid: 2, insize: 138, pid: 8510
+write[0] 58 bytes to 8224 flags: 0x8002
+   write[0] 58 bytes to 8224
+   unique: 16, success, outsize: 24
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 8510
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 8510
+getattr /onefile.txt
+   unique: 22, success, outsize: 120
+unique: 24, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 8510
+statfs /
+   unique: 24, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 40094
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 39638
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 40096
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 40096
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 40096
+   unique: 12, success, outsize: 32
+unique: 14, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 40096
+   unique: 14, error: -38 (Function not implemented), outsize: 16
+unique: 16, opcode: WRITE (16), nodeid: 2, insize: 138, pid: 40096
+write[0] 58 bytes to 8224 flags: 0x8002
+   write[0] 58 bytes to 8224
+   unique: 16, success, outsize: 24
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 40096
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 40096
+getattr /onefile.txt
+   unique: 22, success, outsize: 120
+unique: 24, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 40096
+statfs /
+   unique: 24, success, outsize: 96

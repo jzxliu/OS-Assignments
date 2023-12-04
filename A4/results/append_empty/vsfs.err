@@ -1478,3 +1478,203 @@ getattr /truncate_me
 unique: 28, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 53648
 statfs /
    unique: 28, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 62672
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 61884
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 62674
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 62674
+LOOKUP /truncate_me
+getattr /truncate_me
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 62674
+   unique: 12, success, outsize: 32
+unique: 14, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 62674
+   unique: 14, success, outsize: 32
+unique: 16, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 62674
+   unique: 16, success, outsize: 32
+unique: 18, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 62674
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: WRITE (16), nodeid: 2, insize: 125, pid: 62674
+write[0] 45 bytes to 0 flags: 0x8401
+   write[0] 45 bytes to 0
+   unique: 20, success, outsize: 24
+unique: 22, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 62674
+   unique: 22, error: -38 (Function not implemented), outsize: 16
+unique: 24, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 24, success, outsize: 16
+unique: 26, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 62674
+getattr /truncate_me
+   unique: 26, success, outsize: 120
+unique: 28, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 62674
+statfs /
+   unique: 28, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 5530
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 4901
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 5532
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 5532
+LOOKUP /truncate_me
+getattr /truncate_me
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 5532
+   unique: 12, success, outsize: 32
+unique: 14, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 5532
+   unique: 14, success, outsize: 32
+unique: 16, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 5532
+   unique: 16, success, outsize: 32
+unique: 18, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 5532
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: WRITE (16), nodeid: 2, insize: 125, pid: 5532
+write[0] 45 bytes to 0 flags: 0x8401
+   write[0] 45 bytes to 0
+   unique: 20, success, outsize: 24
+unique: 22, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 5532
+   unique: 22, error: -38 (Function not implemented), outsize: 16
+unique: 24, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 24, success, outsize: 16
+unique: 26, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 5532
+getattr /truncate_me
+   unique: 26, success, outsize: 120
+unique: 28, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 5532
+statfs /
+   unique: 28, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 8481
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 8005
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 8483
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 8483
+LOOKUP /truncate_me
+getattr /truncate_me
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 8483
+   unique: 12, success, outsize: 32
+unique: 14, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 8483
+   unique: 14, success, outsize: 32
+unique: 16, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 8483
+   unique: 16, success, outsize: 32
+unique: 18, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 8483
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: WRITE (16), nodeid: 2, insize: 125, pid: 8483
+write[0] 45 bytes to 0 flags: 0x8401
+   write[0] 45 bytes to 0
+   unique: 20, success, outsize: 24
+unique: 22, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 8483
+   unique: 22, error: -38 (Function not implemented), outsize: 16
+unique: 24, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 24, success, outsize: 16
+unique: 26, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 8483
+getattr /truncate_me
+   unique: 26, success, outsize: 120
+unique: 28, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 8483
+statfs /
+   unique: 28, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 40067
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 39638
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 40069
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 40069
+LOOKUP /truncate_me
+getattr /truncate_me
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 40069
+   unique: 12, success, outsize: 32
+unique: 14, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 40069
+   unique: 14, success, outsize: 32
+unique: 16, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 40069
+   unique: 16, success, outsize: 32
+unique: 18, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 40069
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: WRITE (16), nodeid: 2, insize: 125, pid: 40069
+write[0] 45 bytes to 0 flags: 0x8401
+   write[0] 45 bytes to 0
+   unique: 20, success, outsize: 24
+unique: 22, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 40069
+   unique: 22, error: -38 (Function not implemented), outsize: 16
+unique: 24, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 24, success, outsize: 16
+unique: 26, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 40069
+getattr /truncate_me
+   unique: 26, success, outsize: 120
+unique: 28, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 40069
+statfs /
+   unique: 28, success, outsize: 96

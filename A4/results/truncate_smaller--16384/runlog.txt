@@ -7,4 +7,4 @@ Points:
 	0.5/0.5 - stat st_mtime updated
 	2.5/2.5 - after truncate, file system free blocks matches expected.
 	1.0/1 - fsck result
-Elapsed time: 0.238522405968979 seconds
+Elapsed time: 0.22635206999257207 seconds
