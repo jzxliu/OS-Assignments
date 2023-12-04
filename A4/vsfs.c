@@ -134,6 +134,8 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
     // Search in indirect entries if it exists
     if (root_ino->i_indirect >= fs->sb->sb_data_region && root_ino->i_indirect < VSFS_BLK_MAX){
         vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+
+        // Search in every indirect block that exists
         for (size_t n = 0; n < VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t); n++){
             if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
                 vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
@@ -280,18 +282,40 @@ static int vsfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	(void)offset;// unused
 	(void)fi;// unused
     fs_ctx *fs = get_fs();
-    vsfs_inode *ino = &fs->itable[VSFS_ROOT_INO];
+    vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
 
     if (strcmp(path, "/") != 0) {
         return -ENOTDIR; // VSFS only has the root directory, so we dont have to implement for other cases
     }
 
-    vsfs_dentry *root_entries = (vsfs_dentry *)(fs->image + ino->i_direct[0] * VSFS_BLOCK_SIZE);
-    // Iterate through every entry in root directory
-    for (size_t i = 0; i < ino->i_size / sizeof(vsfs_dentry); i++) {
-        if (root_entries[i].ino != VSFS_INO_MAX) {
-            if (filler(buf, root_entries[i].name, NULL, 0)) {
-                return -ENOMEM;
+    // Search in direct entries first
+    for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
+        if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
+            vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
+            for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+                if (direct_entries[i].ino != VSFS_INO_MAX) {
+                    if (filler(buf, direct_entries[i].name, NULL, 0)) {
+                        return -ENOMEM;
+                    }
+                }
+            }
+        }
+    }
+
+    // Search in indirect entries if it exists
+    if (root_ino->i_indirect >= fs->sb->sb_data_region && root_ino->i_indirect < VSFS_BLK_MAX){
+        vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+        // Search in every indirect block that exists
+        for (size_t n = 0; n < VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t); n++){
+            if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
+                vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
+                for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+                    if (indirect_entries[i].ino != VSFS_INO_MAX) {
+                        if (filler(buf, indirect_entries[i].name, NULL, 0)) {
+                            return -ENOMEM;
+                        }
+                    }
+                }
             }
         }
     }
