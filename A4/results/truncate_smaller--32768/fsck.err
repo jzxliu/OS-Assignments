@@ -120,3 +120,19 @@ File system is inconsistent, but checking bitmaps anyway.
 DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
 ERROR: Found 1030 bit mismatches.
 DONE CHECKING DATA BITMAP. ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: inode size and blocks fields are inconsistent. Need 1029 blocks to store 4214784 bytes, but i_blocks is 0
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: Found 1030 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: inode size and blocks fields are inconsistent. Need 1029 blocks to store 4214784 bytes, but i_blocks is 0
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: Found 1030 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.

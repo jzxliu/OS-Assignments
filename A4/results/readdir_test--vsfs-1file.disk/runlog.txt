@@ -1,2 +1,2 @@
 checking if submission listing of vsfs-1file.disk matches expected.
-Elapsed time: 0.1925544450059533 seconds
+Elapsed time: 0.1372749749571085 seconds

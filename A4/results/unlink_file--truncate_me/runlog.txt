@@ -9,4 +9,4 @@ Points:
 After removing truncate_me, root dir listing is: ['shake-short.txt', 'shake-med.txt', 'shake-long.txt']
 	1/1 - Root directory listing after unlink appears to be correct.
 	2/2 - Freed expected number of blocks (0).
-Elapsed time: 0.3806363439653069 seconds
+Elapsed time: 0.3885156388860196 seconds

@@ -897,3 +897,115 @@ unique: 22, opcode: SETATTR (4), nodeid: 5, insize: 128, pid: 21252
 utimens /directfile.01.07 1701669322.000000000 1701669322.000000000
 getattr /directfile.01.07
    unique: 22, success, outsize: 120
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 30901
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 30711
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 30903
+LOOKUP /directfile.00.00
+getattr /directfile.00.00
+   NODEID: 2
+   unique: 8, success, outsize: 144
+unique: 10, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 30903
+utimens /directfile.00.00 1701670778.000000000 1701670778.000000000
+getattr /directfile.00.00
+   unique: 10, success, outsize: 120
+unique: 12, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 30903
+LOOKUP /directfile.00.10
+getattr /directfile.00.10
+   NODEID: 3
+   unique: 12, success, outsize: 144
+unique: 14, opcode: SETATTR (4), nodeid: 3, insize: 128, pid: 30903
+utimens /directfile.00.10 1500000000.000000000 1500000000.000000000
+getattr /directfile.00.10
+   unique: 14, success, outsize: 120
+unique: 16, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 30903
+LOOKUP /directfile.00.13
+getattr /directfile.00.13
+   NODEID: 4
+   unique: 16, success, outsize: 144
+unique: 18, opcode: SETATTR (4), nodeid: 4, insize: 128, pid: 30903
+utimens /directfile.00.13 2000000000.000000000 2000000000.000000000
+getattr /directfile.00.13
+   unique: 18, success, outsize: 120
+unique: 20, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 30903
+LOOKUP /directfile.01.07
+getattr /directfile.01.07
+   NODEID: 5
+   unique: 20, success, outsize: 144
+unique: 22, opcode: SETATTR (4), nodeid: 5, insize: 128, pid: 30903
+utimens /directfile.01.07 1701670778.000000000 1701670778.000000000
+getattr /directfile.01.07
+   unique: 22, success, outsize: 120
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 33596
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 33447
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 33598
+LOOKUP /directfile.00.00
+getattr /directfile.00.00
+   NODEID: 2
+   unique: 8, success, outsize: 144
+unique: 10, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 33598
+utimens /directfile.00.00 1701670836.000000000 1701670836.000000000
+getattr /directfile.00.00
+   unique: 10, success, outsize: 120
+unique: 12, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 33598
+LOOKUP /directfile.00.10
+getattr /directfile.00.10
+   NODEID: 3
+   unique: 12, success, outsize: 144
+unique: 14, opcode: SETATTR (4), nodeid: 3, insize: 128, pid: 33598
+utimens /directfile.00.10 1500000000.000000000 1500000000.000000000
+getattr /directfile.00.10
+   unique: 14, success, outsize: 120
+unique: 16, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 33598
+LOOKUP /directfile.00.13
+getattr /directfile.00.13
+   NODEID: 4
+   unique: 16, success, outsize: 144
+unique: 18, opcode: SETATTR (4), nodeid: 4, insize: 128, pid: 33598
+utimens /directfile.00.13 2000000000.000000000 2000000000.000000000
+getattr /directfile.00.13
+   unique: 18, success, outsize: 120
+unique: 20, opcode: LOOKUP (1), nodeid: 1, insize: 57, pid: 33598
+LOOKUP /directfile.01.07
+getattr /directfile.01.07
+   NODEID: 5
+   unique: 20, success, outsize: 144
+unique: 22, opcode: SETATTR (4), nodeid: 5, insize: 128, pid: 33598
+utimens /directfile.01.07 1701670836.000000000 1701670836.000000000
+getattr /directfile.01.07
+   unique: 22, success, outsize: 120
