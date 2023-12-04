@@ -4,9 +4,9 @@ Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_
                 f_bavail=3045, f_files=128, f_ffree=124, f_favail=124, f_flag=4102, f_namemax=252)
 Points:
 	0.0/0.5 - stat(shake-short.txt) got unexpected exception after unlink: [Errno 5] Input/output error: 'shake-short.txt'
-	0.0/0.5 - Root directory mtime not updated after unlink.
+	0.5/0.5 - Root directory mtime correctly updated after unlink.
 	0.8/1 - fsck result
 After removing shake-short.txt, root dir listing is: ['shake-med.txt', 'shake-long.txt', 'truncate_me']
 	1/1 - Root directory listing after unlink appears to be correct.
 	0/2 - Freed 0 blocks, but should have freed 5.
-Elapsed time: 0.3730736458674073 seconds
+Elapsed time: 0.3864131779409945 seconds

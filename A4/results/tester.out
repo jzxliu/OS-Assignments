@@ -2,8 +2,8 @@ accumulated_mkfs_score, 15.0, 15
 accumulated_getattr_score, 7.0, 10.0
 accumulated_utimens_score, 2.0, 2.0
 accumulated_readdir_score, 4.0, 8.0
-accumulated_create_score, 3.9, 10.0
+accumulated_create_score, 4.8, 10.0
 accumulated_read_score, 7.0, 10.0
-accumulated_truncate_score, 7.0, 10.0
-accumulated_write_score, 6.1, 10.0
-accumulated_unlink_score, 4.9, 10.0
+accumulated_truncate_score, 7.8, 10.0
+accumulated_write_score, 6.8, 10.0
+accumulated_unlink_score, 5.9, 10.0

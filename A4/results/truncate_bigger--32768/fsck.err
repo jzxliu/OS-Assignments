@@ -17,3 +17,30 @@ File system is inconsistent, but checking bitmaps anyway.
 DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
 ERROR: Found 2 bit mismatches.
 DONE CHECKING DATA BITMAP. ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: block pointer 6 -> 1482184792 is unreasonable.
+ERROR: block pointer 7 -> 1482184792 is unreasonable.
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: Found 2 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: block pointer 6 -> 1482184792 is unreasonable.
+ERROR: block pointer 7 -> 1482184792 is unreasonable.
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: Found 2 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: block pointer 6 -> 1482184792 is unreasonable.
+ERROR: block pointer 7 -> 1482184792 is unreasonable.
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: Found 2 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.

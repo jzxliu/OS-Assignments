@@ -1,11 +1,11 @@
 Stat /tmp/liuzexi3-vsfstest/smallfile.00.00: 
-	os.stat_result(st_mode=33188, st_ino=1, st_dev=132, st_nlink=1, st_uid=0, st_gid=0, st_size=42, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
+	os.stat_result(st_mode=33188, st_ino=1, st_dev=146, st_nlink=1, st_uid=0, st_gid=0, st_size=42, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
 Earned 6.0 raw points from stat smallfile.00.00.
 Stat /tmp/liuzexi3-vsfstest/smallfile.00.09: 
-	os.stat_result(st_mode=33188, st_ino=10, st_dev=132, st_nlink=1, st_uid=0, st_gid=0, st_size=51, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
+	os.stat_result(st_mode=33188, st_ino=10, st_dev=146, st_nlink=1, st_uid=0, st_gid=0, st_size=51, st_atime=0, st_mtime=1651001722, st_ctime=0) [Type: File]
 Earned 6.0 raw points from stat smallfile.00.09.
 Stat /tmp/liuzexi3-vsfstest/smallfile.03.04: 
-	os.stat_result(st_mode=33188, st_ino=53, st_dev=132, st_nlink=1, st_uid=0, st_gid=0, st_size=12334, st_atime=0, st_mtime=1651001723, st_ctime=0) [Type: File]
+	os.stat_result(st_mode=33188, st_ino=53, st_dev=146, st_nlink=1, st_uid=0, st_gid=0, st_size=12334, st_atime=0, st_mtime=1651001723, st_ctime=0) [Type: File]
 Earned 6.0 raw points from stat smallfile.03.04.
 Adding 2 raw points for correct stat using inodes in direct blocks.
 stat raised an exception: [Errno 2] No such file or directory: '/tmp/liuzexi3-vsfstest/smallfile.05.00'.
@@ -13,9 +13,9 @@ stat raised an exception: [Errno 2] No such file or directory: '/tmp/liuzexi3-vs
 stat raised an exception: [Errno 2] No such file or directory: '/tmp/liuzexi3-vsfstest/smallfile.07.15'.
 	 (Remaining tests may have trouble if getattr does not work.)
 Stat /tmp/liuzexi3-vsfstest: 
-	os.stat_result(st_mode=16895, st_ino=0, st_dev=132, st_nlink=2, st_uid=0, st_gid=0, st_size=36864, st_atime=0, st_mtime=1651001725, st_ctime=0) [Type: Dir]
+	os.stat_result(st_mode=16895, st_ino=0, st_dev=146, st_nlink=2, st_uid=0, st_gid=0, st_size=36864, st_atime=0, st_mtime=1651001725, st_ctime=0) [Type: Dir]
 Earned 6.0 raw points from stat root directory.
 stat returned correct error for non-existent file.
 fsck.vsfs reports: All checks passed. File system appears to be consistent.
 Earned 7.0 / 10.0 marks for getattr.
-Elapsed time: 0.1690720389597118 seconds
+Elapsed time: 0.18293824885040522 seconds

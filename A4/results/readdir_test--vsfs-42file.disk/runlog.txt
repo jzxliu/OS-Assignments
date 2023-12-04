@@ -1,2 +1,2 @@
 exception occurred when listing root directory in vsfs-42file.disk: [Errno 5] Input/output error: '/tmp/liuzexi3-vsfstest'
-Elapsed time: 0.19198380503803492 seconds
+Elapsed time: 0.15504322899505496 seconds
