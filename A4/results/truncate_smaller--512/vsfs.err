@@ -691,3 +691,102 @@ unique: 12, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 12330
 unique: 14, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 12330
 truncate /shake-long.txt 512
 vsfs: bitmap.c:90: bitmap_free: Assertion `index < nbits' failed.
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 37783
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 37326
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 37785
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 55, pid: 37785
+LOOKUP /shake-long.txt
+getattr /shake-long.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 37785
+   unique: 12, error: -38 (Function not implemented), outsize: 16
+unique: 14, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 37785
+truncate /shake-long.txt 512
+vsfs: bitmap.c:90: bitmap_free: Assertion `index < nbits' failed.
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 41430
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 40782
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 41432
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 55, pid: 41432
+LOOKUP /shake-long.txt
+getattr /shake-long.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 41432
+   unique: 12, error: -38 (Function not implemented), outsize: 16
+unique: 14, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 41432
+truncate /shake-long.txt 512
+vsfs: bitmap.c:90: bitmap_free: Assertion `index < nbits' failed.
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 5710
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 5358
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 5712
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 55, pid: 5712
+LOOKUP /shake-long.txt
+getattr /shake-long.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 5712
+   unique: 12, error: -38 (Function not implemented), outsize: 16
+unique: 14, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 5712
+truncate /shake-long.txt 512
+vsfs: bitmap.c:90: bitmap_free: Assertion `index < nbits' failed.

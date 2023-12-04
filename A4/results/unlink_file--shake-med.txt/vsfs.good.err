@@ -628,3 +628,93 @@ unique: 12, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
 unique: 14, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 11887
 statfs /
    unique: 14, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 37956
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 37326
+   unique: 6, success, outsize: 32
+unique: 8, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 37326
+readdir[0] from 0
+   unique: 8, success, outsize: 200
+unique: 10, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 37326
+   unique: 10, success, outsize: 16
+unique: 12, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 12, success, outsize: 16
+unique: 14, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 37326
+statfs /
+   unique: 14, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 41754
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 40782
+   unique: 6, success, outsize: 32
+unique: 8, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 40782
+readdir[0] from 0
+   unique: 8, success, outsize: 200
+unique: 10, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 40782
+   unique: 10, success, outsize: 16
+unique: 12, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 12, success, outsize: 16
+unique: 14, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 40782
+statfs /
+   unique: 14, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 5862
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 5358
+   unique: 6, success, outsize: 32
+unique: 8, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 5358
+readdir[0] from 0
+   unique: 8, success, outsize: 200
+unique: 10, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 5358
+   unique: 10, success, outsize: 16
+unique: 12, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 12, success, outsize: 16
+unique: 14, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 5358
+statfs /
+   unique: 14, success, outsize: 96

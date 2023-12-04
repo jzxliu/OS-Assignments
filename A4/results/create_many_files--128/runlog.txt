@@ -1,6 +1,17 @@
 Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_bfree=248, 
                 f_bavail=248, f_files=256, f_ffree=255, f_favail=255, f_flag=4102, f_namemax=252)
 Traceback (most recent call last):
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 242, in _run
+    self.unmount(abort=timeout_exc is not None, cwd=unmount_cwd)
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 210, in unmount
+    wait_or_kill(self.vsfs_proc, check=check, timeout=10,
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/util.py", line 66, in wait_or_kill
+    raise exception_chain(subprocess.CalledProcessError(ret, proc.args,
+subprocess.CalledProcessError: Command '['./vsfs', '/h/u15/c1/00/liuzexi3/liuzexi3/A4/testdir/_img_', '/tmp/liuzexi3-vsfstest', '-f', '-d']' died with <Signals.SIGSEGV: 11>.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/test.py", line 28, in run_test
     test_function(submission, log)
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 539, in test
@@ -25,5 +36,5 @@ Traceback (most recent call last):
     self._accessor.touch(self, mode, exist_ok)
   File "/local/packages/python-3.10/lib/python3.10/pathlib.py", line 331, in touch
     fd = os.open(path, flags, mode)
-FileNotFoundError: [Errno 2] No such file or directory: 'file.14'
+ConnectionAbortedError: [Errno 103] Software caused connection abort: 'file.78'
 
