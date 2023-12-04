@@ -472,14 +472,16 @@ static int vsfs_truncate(const char *path, off_t size)
     unsigned int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
     unsigned int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
 
-    if (new_blocks > VSFS_NUM_DIRECT + VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t)) {
-        return -EFBIG; // Need more blocks than maximum amount an inode can have
-    }
-    if (new_blocks - cur_blocks > fs->sb->sb_free_blocks){
-        return -ENOSPC; // Not enough free blocks in fs
-    }
-
     if (new_blocks > cur_blocks) {
+
+        if (new_blocks > VSFS_NUM_DIRECT + VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t)) {
+            return -EFBIG; // Need more blocks than maximum amount an inode can have
+        }
+
+        if (new_blocks - cur_blocks > fs->sb->sb_free_blocks){
+            return -ENOSPC; // Not enough free blocks in fs
+        }
+
         // Need to add blocks
         for (unsigned int i = cur_blocks; i < new_blocks; i++) {
 
