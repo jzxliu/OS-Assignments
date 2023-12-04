@@ -238,7 +238,8 @@ static int vsfs_getattr(const char *path, struct stat *st)
     st->st_mode = inode->i_mode;
     st->st_nlink = inode->i_nlink;
     st->st_size = inode->i_size;
-    st->st_blocks = (inode->i_blocks) * (VSFS_BLOCK_SIZE / 512); // in 512-byte units
+    st->st_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE) * (VSFS_BLOCK_SIZE / 512); // in 512-byte units
+
     st->st_mtim = inode->i_mtime;
 
     return 0;
