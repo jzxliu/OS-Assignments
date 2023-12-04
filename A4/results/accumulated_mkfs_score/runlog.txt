@@ -4,4 +4,4 @@ line: MARKS EARNED: 10.00 / 10.00, marks earned: 10.00, total now 20.0
 line: MARKS EARNED: 10.00 / 10.00, marks earned: 10.00, total now 30.0
 line: MARKS EARNED: 10.00 / 10.00, marks earned: 10.00, total now 40.0
 Earned 10.0 / 10.0 marks for mkfs --> 15.0/15.
-Elapsed time: 0.0018226918764412403 seconds
+Elapsed time: 0.002358444966375828 seconds
