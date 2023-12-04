@@ -413,7 +413,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 
     // Search in indirect for spot
     vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
-    for (size_t n = 0; n < VSFS_BLOCK_SIZE / sizeof(vsfs_blk_t)){
+    for (size_t n = 0; n < VSFS_BLOCK_SIZE / sizeof(vsfs_blk_t); n++){
         if (!indirect_blocks[n]){
             // Allocate new indirect block
             if (bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &(indirect_blocks[n]))){
