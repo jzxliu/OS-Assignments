@@ -1,2 +1,2 @@
-Accumulated 7.0 points out of 10.0 for the preceding read tests.
-Elapsed time: 0.00029244995675981045 seconds
+Accumulated 10.0 points out of 10.0 for the preceding read tests.
+Elapsed time: 0.00034166197292506695 seconds

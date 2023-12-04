@@ -9,4 +9,4 @@ Points:
 After removing shake-med.txt, root dir listing is: ['shake-short.txt', 'shake-long.txt', 'truncate_me']
 	1/1 - Root directory listing after unlink appears to be correct.
 	0/2 - Freed 0 blocks, but should have freed 10.
-Elapsed time: 0.373945141909644 seconds
+Elapsed time: 0.3196269429754466 seconds
