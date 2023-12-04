@@ -469,8 +469,8 @@ static int vsfs_truncate(const char *path, off_t size)
     vsfs_inode *inode = &fs->itable[ino];
 
     // Calculate number of blocks before and after truncate
-    int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
-    int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
+    unsigned int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
+    unsigned int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
 
     if (new_blocks > VSFS_NUM_DIRECT + VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t)) {
         return -EFBIG; // Need more blocks than maximum amount an inode can have
