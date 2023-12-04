@@ -630,11 +630,12 @@ static int vsfs_truncate(const char *path, off_t size)
     } else if (new_blocks < cur_blocks) {
         // Need to remove blocks
         for (unsigned int i = new_blocks; i < cur_blocks; i++) {
-            bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, inode->i_direct[i]);
             if (i >= VSFS_NUM_DIRECT) {
                 vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
                 indirect_entries[i - VSFS_NUM_DIRECT] = VSFS_BLK_UNASSIGNED;
+                bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, indirect_entries[i - VSFS_NUM_DIRECT]);
             } else {
+                bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, inode->i_direct[i]);
                 inode->i_direct[i] = VSFS_BLK_UNASSIGNED;
             }
             inode->i_blocks -= 1;
