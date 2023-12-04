@@ -385,7 +385,6 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
             if (root_entries[i].ino == VSFS_INO_MAX) {
                 root_entries[i].ino = index;
                 strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
-                root_ino->i_nlink += 1;
                 clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
                 return 0;
             }
@@ -432,7 +431,6 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
             if (indirect_entries[i].ino == VSFS_INO_MAX) {
                 indirect_entries[i].ino = index;
                 strncpy(indirect_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
-                root_ino->i_nlink += 1;
                 clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
                 return 0;
             }
