@@ -1,6 +1,17 @@
 Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_bfree=3045, 
                 f_bavail=3045, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
 Traceback (most recent call last):
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 242, in _run
+    self.unmount(abort=timeout_exc is not None, cwd=unmount_cwd)
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/submission.py", line 210, in unmount
+    wait_or_kill(self.vsfs_proc, check=check, timeout=10,
+  File "/h/u2/csc369h/fall/pub/a4/testing/scripts/util.py", line 66, in wait_or_kill
+    raise exception_chain(subprocess.CalledProcessError(ret, proc.args,
+subprocess.CalledProcessError: Command '['./vsfs', '/h/u15/c1/00/liuzexi3/liuzexi3/A4/testdir/_img_', '/tmp/liuzexi3-vsfstest', '-f', '-d']' died with <Signals.SIGABRT: 6>.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/test.py", line 28, in run_test
     test_function(submission, log)
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 855, in test
@@ -19,5 +30,5 @@ Traceback (most recent call last):
     result = self.fn(*self.args, **self.kwargs)
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/tests.py", line 824, in shrink
     os.truncate(fname, newsize)
-OSError: [Errno 28] No space left on device: 'shake-med.txt'
+ConnectionAbortedError: [Errno 103] Software caused connection abort: 'shake-med.txt'
 

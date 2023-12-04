@@ -3378,3 +3378,263 @@ getattr /file.14
 unique: 128, opcode: CREATE (35), nodeid: 1, insize: 64, pid: 32185
 create flags: 0x8041 /file.14 0100600 umask=0077
    unique: 128, error: -28 (No space left on device), outsize: 16
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 31554
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 31357
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 31556
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.0
+getattr /file.0
+   unique: 10, error: -2 (No such file or directory), outsize: 16
+unique: 12, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.0
+getattr /file.0
+   unique: 12, error: -2 (No such file or directory), outsize: 16
+unique: 14, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.0 0100600 umask=0077
+   create[0] flags: 0x8041 /file.0
+getattr /file.0
+   NODEID: 2
+   unique: 14, success, outsize: 160
+unique: 16, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 31556
+   unique: 16, error: -38 (Function not implemented), outsize: 16
+unique: 18, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 18, success, outsize: 16
+unique: 20, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.1
+getattr /file.1
+   unique: 20, error: -2 (No such file or directory), outsize: 16
+unique: 22, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.1
+getattr /file.1
+   unique: 22, error: -2 (No such file or directory), outsize: 16
+unique: 24, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.1 0100600 umask=0077
+   create[0] flags: 0x8041 /file.1
+getattr /file.1
+   NODEID: 3
+   unique: 24, success, outsize: 160
+unique: 26, opcode: RELEASE (18), nodeid: 3, insize: 64, pid: 0
+   unique: 26, success, outsize: 16
+unique: 28, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.2
+getattr /file.2
+   unique: 28, error: -2 (No such file or directory), outsize: 16
+unique: 30, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.2
+getattr /file.2
+   unique: 30, error: -2 (No such file or directory), outsize: 16
+unique: 32, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.2 0100600 umask=0077
+   create[0] flags: 0x8041 /file.2
+getattr /file.2
+   NODEID: 4
+   unique: 32, success, outsize: 160
+unique: 34, opcode: RELEASE (18), nodeid: 4, insize: 64, pid: 0
+   unique: 34, success, outsize: 16
+unique: 36, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.3
+getattr /file.3
+   unique: 36, error: -2 (No such file or directory), outsize: 16
+unique: 38, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.3
+getattr /file.3
+   unique: 38, error: -2 (No such file or directory), outsize: 16
+unique: 40, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.3 0100600 umask=0077
+   create[0] flags: 0x8041 /file.3
+getattr /file.3
+   NODEID: 5
+   unique: 40, success, outsize: 160
+unique: 42, opcode: RELEASE (18), nodeid: 5, insize: 64, pid: 0
+   unique: 42, success, outsize: 16
+unique: 44, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.4
+getattr /file.4
+   unique: 44, error: -2 (No such file or directory), outsize: 16
+unique: 46, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.4
+getattr /file.4
+   unique: 46, error: -2 (No such file or directory), outsize: 16
+unique: 48, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.4 0100600 umask=0077
+   create[0] flags: 0x8041 /file.4
+getattr /file.4
+   NODEID: 6
+   unique: 48, success, outsize: 160
+unique: 50, opcode: RELEASE (18), nodeid: 6, insize: 64, pid: 0
+   unique: 50, success, outsize: 16
+unique: 52, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.5
+getattr /file.5
+   unique: 52, error: -2 (No such file or directory), outsize: 16
+unique: 54, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.5
+getattr /file.5
+   unique: 54, error: -2 (No such file or directory), outsize: 16
+unique: 56, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.5 0100600 umask=0077
+   create[0] flags: 0x8041 /file.5
+getattr /file.5
+   NODEID: 7
+   unique: 56, success, outsize: 160
+unique: 58, opcode: RELEASE (18), nodeid: 7, insize: 64, pid: 0
+   unique: 58, success, outsize: 16
+unique: 60, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.6
+getattr /file.6
+   unique: 60, error: -2 (No such file or directory), outsize: 16
+unique: 62, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.6
+getattr /file.6
+   unique: 62, error: -2 (No such file or directory), outsize: 16
+unique: 64, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.6 0100600 umask=0077
+   create[0] flags: 0x8041 /file.6
+getattr /file.6
+   NODEID: 8
+   unique: 64, success, outsize: 160
+unique: 66, opcode: RELEASE (18), nodeid: 8, insize: 64, pid: 0
+   unique: 66, success, outsize: 16
+unique: 68, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.7
+getattr /file.7
+   unique: 68, error: -2 (No such file or directory), outsize: 16
+unique: 70, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.7
+getattr /file.7
+   unique: 70, error: -2 (No such file or directory), outsize: 16
+unique: 72, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.7 0100600 umask=0077
+   create[0] flags: 0x8041 /file.7
+getattr /file.7
+   NODEID: 9
+   unique: 72, success, outsize: 160
+unique: 74, opcode: RELEASE (18), nodeid: 9, insize: 64, pid: 0
+   unique: 74, success, outsize: 16
+unique: 76, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.8
+getattr /file.8
+   unique: 76, error: -2 (No such file or directory), outsize: 16
+unique: 78, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.8
+getattr /file.8
+   unique: 78, error: -2 (No such file or directory), outsize: 16
+unique: 80, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.8 0100600 umask=0077
+   create[0] flags: 0x8041 /file.8
+getattr /file.8
+   NODEID: 10
+   unique: 80, success, outsize: 160
+unique: 82, opcode: RELEASE (18), nodeid: 10, insize: 64, pid: 0
+   unique: 82, success, outsize: 16
+unique: 84, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.9
+getattr /file.9
+   unique: 84, error: -2 (No such file or directory), outsize: 16
+unique: 86, opcode: LOOKUP (1), nodeid: 1, insize: 47, pid: 31556
+LOOKUP /file.9
+getattr /file.9
+   unique: 86, error: -2 (No such file or directory), outsize: 16
+unique: 88, opcode: CREATE (35), nodeid: 1, insize: 63, pid: 31556
+create flags: 0x8041 /file.9 0100600 umask=0077
+   create[0] flags: 0x8041 /file.9
+getattr /file.9
+   NODEID: 11
+   unique: 88, success, outsize: 160
+unique: 90, opcode: RELEASE (18), nodeid: 11, insize: 64, pid: 0
+   unique: 90, success, outsize: 16
+unique: 92, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.10
+getattr /file.10
+   unique: 92, error: -2 (No such file or directory), outsize: 16
+unique: 94, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.10
+getattr /file.10
+   unique: 94, error: -2 (No such file or directory), outsize: 16
+unique: 96, opcode: CREATE (35), nodeid: 1, insize: 64, pid: 31556
+create flags: 0x8041 /file.10 0100600 umask=0077
+   create[0] flags: 0x8041 /file.10
+getattr /file.10
+   NODEID: 12
+   unique: 96, success, outsize: 160
+unique: 98, opcode: RELEASE (18), nodeid: 12, insize: 64, pid: 0
+   unique: 98, success, outsize: 16
+unique: 100, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.11
+getattr /file.11
+   unique: 100, error: -2 (No such file or directory), outsize: 16
+unique: 102, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.11
+getattr /file.11
+   unique: 102, error: -2 (No such file or directory), outsize: 16
+unique: 104, opcode: CREATE (35), nodeid: 1, insize: 64, pid: 31556
+create flags: 0x8041 /file.11 0100600 umask=0077
+   create[0] flags: 0x8041 /file.11
+getattr /file.11
+   NODEID: 13
+   unique: 104, success, outsize: 160
+unique: 106, opcode: RELEASE (18), nodeid: 13, insize: 64, pid: 0
+   unique: 106, success, outsize: 16
+unique: 108, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.12
+getattr /file.12
+   unique: 108, error: -2 (No such file or directory), outsize: 16
+unique: 110, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.12
+getattr /file.12
+   unique: 110, error: -2 (No such file or directory), outsize: 16
+unique: 112, opcode: CREATE (35), nodeid: 1, insize: 64, pid: 31556
+create flags: 0x8041 /file.12 0100600 umask=0077
+   create[0] flags: 0x8041 /file.12
+getattr /file.12
+   NODEID: 14
+   unique: 112, success, outsize: 160
+unique: 114, opcode: RELEASE (18), nodeid: 14, insize: 64, pid: 0
+   unique: 114, success, outsize: 16
+unique: 116, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.13
+getattr /file.13
+   unique: 116, error: -2 (No such file or directory), outsize: 16
+unique: 118, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.13
+getattr /file.13
+   unique: 118, error: -2 (No such file or directory), outsize: 16
+unique: 120, opcode: CREATE (35), nodeid: 1, insize: 64, pid: 31556
+create flags: 0x8041 /file.13 0100600 umask=0077
+   create[0] flags: 0x8041 /file.13
+getattr /file.13
+   NODEID: 15
+   unique: 120, success, outsize: 160
+unique: 122, opcode: RELEASE (18), nodeid: 15, insize: 64, pid: 0
+   unique: 122, success, outsize: 16
+unique: 124, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.14
+getattr /file.14
+   unique: 124, error: -2 (No such file or directory), outsize: 16
+unique: 126, opcode: LOOKUP (1), nodeid: 1, insize: 48, pid: 31556
+LOOKUP /file.14
+getattr /file.14
+   unique: 126, error: -2 (No such file or directory), outsize: 16
+unique: 128, opcode: CREATE (35), nodeid: 1, insize: 64, pid: 31556
+create flags: 0x8041 /file.14 0100600 umask=0077
+   unique: 128, error: -28 (No space left on device), outsize: 16
