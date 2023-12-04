@@ -119,17 +119,28 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
 
     // Search in direct entries first
-    vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[0] * VSFS_BLOCK_SIZE);
-    for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
-        if (strcmp(entries[i].name, path + 1) == 0) {
-            *ino = entries[i].ino;
-            return 0;
+    for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
+        if (root_ino->i_direct[n] != VSFS_BLK_MAX) {
+            vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
+            for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+                if (strcmp(entries[i].name, path + 1) == 0) {
+                    *ino = entries[i].ino;
+                    return 0;
+                }
+            }
         }
     }
 
     // Search in indirect entries if it exists
-    // if (root_ino->i_indirect != )
-    entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+    if (root_ino->i_indirect != VSFS_BLK_MAX){
+        vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+        for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+            if (strcmp(indirect_entries[i].name, path + 1) == 0) {
+                *ino = indirect_entries[i].ino;
+                return 0;
+            }
+        }
+    }
 
 	return -ENOENT; // Not found
 }
@@ -227,7 +238,7 @@ static int vsfs_getattr(const char *path, struct stat *st)
     st->st_mode = inode->i_mode;
     st->st_nlink = inode->i_nlink;
     st->st_size = inode->i_size;
-    st->st_blocks = inode->i_blocks * (VSFS_BLOCK_SIZE / 512); // in 512-byte units
+    st->st_blocks = inode->i_blocks;
     st->st_mtim = inode->i_mtime;
 
     return 0;
