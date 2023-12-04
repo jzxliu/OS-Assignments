@@ -1,2 +1,2 @@
 Accumulated 4.0 points out of 8.0 for the preceding readdir tests.
-Elapsed time: 0.00023118406534194946 seconds
+Elapsed time: 0.0003693751059472561 seconds

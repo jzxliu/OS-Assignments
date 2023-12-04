@@ -1,33 +1,5 @@
 Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=256, f_bfree=248, 
                 f_bavail=248, f_files=256, f_ffree=255, f_favail=255, f_flag=4102, f_namemax=252)
-Stat: file.0 - check blocks.
-8 != 0
-Stat: file.1 - check blocks.
-8 != 0
-Stat: file.2 - check blocks.
-8 != 0
-Stat: file.3 - check blocks.
-8 != 0
-Stat: file.4 - check blocks.
-8 != 0
-Stat: file.5 - check blocks.
-8 != 0
-Stat: file.6 - check blocks.
-8 != 0
-Stat: file.7 - check blocks.
-8 != 0
-Stat: file.8 - check blocks.
-8 != 0
-Stat: file.9 - check blocks.
-8 != 0
-Stat: file.10 - check blocks.
-8 != 0
-Stat: file.11 - check blocks.
-8 != 0
-Stat: file.12 - check blocks.
-8 != 0
-Stat: file.13 - check blocks.
-8 != 0
 Traceback (most recent call last):
   File "/h/u2/csc369h/fall/pub/a4/testing/scripts/test.py", line 28, in run_test
     test_function(submission, log)

@@ -295,3 +295,30 @@ unique: 10, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 53528
    unique: 10, success, outsize: 16
 unique: 12, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
    unique: 12, success, outsize: 16
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 63691
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: OPENDIR (27), nodeid: 1, insize: 48, pid: 63576
+   unique: 6, success, outsize: 32
+unique: 8, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 63576
+readdir[0] from 0
+   unique: 8, success, outsize: 200
+unique: 10, opcode: READDIR (28), nodeid: 1, insize: 80, pid: 63576
+   unique: 10, success, outsize: 16
+unique: 12, opcode: RELEASEDIR (29), nodeid: 1, insize: 64, pid: 0
+   unique: 12, success, outsize: 16
