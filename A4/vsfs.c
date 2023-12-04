@@ -120,7 +120,7 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
 
     // Search in direct entries first
     for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
-        if (root_ino->i_direct[n] != VSFS_BLK_MAX) {
+        if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
             vsfs_dentry *entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
             for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
                 if (strcmp(entries[i].name, path + 1) == 0) {
@@ -132,7 +132,7 @@ static int path_lookup(const char *path,  vsfs_ino_t *ino) {
     }
 
     // Search in indirect entries if it exists
-    if (root_ino->i_indirect != VSFS_BLK_MAX){
+    if (root_ino->i_indirect >= fs->sb->sb_data_region && root_ino->i_indirect < VSFS_BLK_MAX){
         vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
         for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
             if (strcmp(indirect_entries[i].name, path + 1) == 0) {
@@ -239,7 +239,8 @@ static int vsfs_getattr(const char *path, struct stat *st)
     st->st_nlink = inode->i_nlink;
     st->st_size = inode->i_size;
     st->st_blocks = inode->i_blocks * (VSFS_BLOCK_SIZE / 512); // in 512-byte units
-    if (inode->i_indirect != VSFS_BLK_MAX) { // Count an extra indirect block
+    if (inode->i_indirect >= fs->sb->sb_data_region && inode->i_indirect < VSFS_BLK_MAX) { // Valid indirect index
+        // Count an extra indirect block
         st->st_blocks += (VSFS_BLOCK_SIZE / 512);
     }
     st->st_mtim = inode->i_mtime;
