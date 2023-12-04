@@ -591,7 +591,7 @@ static int vsfs_truncate(const char *path, off_t size)
 
     // Calculate number of blocks before and after truncate
     unsigned int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
-    unsigned int cur_blocks = inode->i_blocks;
+    unsigned int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
 
     if (new_blocks > cur_blocks) {
 
@@ -620,6 +620,7 @@ static int vsfs_truncate(const char *path, off_t size)
             } else {
                 inode->i_direct[i] = blk;
             }
+            inode->i_blocks += 1;
             // zero out the new block
             memset((char *)(fs->image + blk * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
             fs->sb->sb_free_blocks -= 1;
@@ -629,16 +630,17 @@ static int vsfs_truncate(const char *path, off_t size)
         for (unsigned int i = new_blocks; i < cur_blocks; i++) {
             if (i >= VSFS_NUM_DIRECT) {
                 vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
-                indirect_entries[i - VSFS_NUM_DIRECT] = VSFS_BLK_UNASSIGNED;
                 bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, indirect_entries[i - VSFS_NUM_DIRECT]);
+                indirect_entries[i - VSFS_NUM_DIRECT] = VSFS_BLK_UNASSIGNED;
             } else {
                 bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, inode->i_direct[i]);
                 inode->i_direct[i] = VSFS_BLK_UNASSIGNED;
             }
+            inode->i_blocks -= 1;
             fs->sb->sb_free_blocks += 1;
         }
     }
-    inode->i_blocks = new_blocks;
+
     inode->i_size = size;
     clock_gettime(CLOCK_REALTIME, &(inode->i_mtime));
 
