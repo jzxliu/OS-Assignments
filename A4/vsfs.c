@@ -332,15 +332,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     new_inode->i_nlink = 1;
     new_inode->i_size = 0;
     new_inode->i_blocks = 0;
-
-    if (times[1].tv_nsec == UTIME_NOW) {
-        if (clock_gettime(CLOCK_REALTIME, &(new_inode->i_mtime)) != 0) {
-            // clock_gettime should not fail, unless you give it a bad pointer to a timespec.
-            assert(false);
-        }
-    } else {
-        new_inode->i_mtime = times[1];
-    }
+    clock_gettime(CLOCK_REALTIME, &(new_inode->i_mtime);
 
     fs->sb->sb_free_inodes -= 1;
 
@@ -359,16 +351,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
                 root_entries[i].ino = index;
                 strncpy(root_entries[i].name, path + 1, VSFS_NAME_MAX - 1); // Does not copy the '/'
                 root_ino->i_nlink += 1;
-
-                if (times[1].tv_nsec == UTIME_NOW) {
-                    if (clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime)) != 0) {
-                        // clock_gettime should not fail, unless you give it a bad pointer to a timespec.
-                        assert(false);
-                    }
-                } else {
-                    root_ino->i_mtime = times[1];
-                }
-
+                clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime);
                 return 0;
             }
         }
