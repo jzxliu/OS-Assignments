@@ -591,7 +591,7 @@ static int vsfs_truncate(const char *path, off_t size)
 
     // Calculate number of blocks before and after truncate
     unsigned int new_blocks = div_round_up(size, VSFS_BLOCK_SIZE);
-    unsigned int cur_blocks = div_round_up(inode->i_size, VSFS_BLOCK_SIZE);
+    unsigned int cur_blocks = inode->i_blocks;
 
     if (new_blocks > cur_blocks) {
 
