@@ -395,18 +395,12 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
     // Find a space in indirect blocks to put new inode
 
     // Initiate an indirect block if we dont have one
-    if (!root_ino->i_indirect){
+    if (root_ino->i_indirect < fs->sb->sb_data_region || root_ino->i_indirect >= VSFS_BLK_MAX){
         if (bitmap_alloc(fs->dbmap, fs->sb->sb_num_blocks, &(root_ino->i_indirect))){
             goto out;
         }
         memset((char *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE), 0, VSFS_BLOCK_SIZE);
         fs->sb->sb_free_blocks -= 1;
-
-        // Set all the entries
-        vsfs_dentry *new_indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
-        for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
-            new_indirect_entries[i].ino = VSFS_INO_MAX;
-        }
     }
 
     // Search in indirect for spot
