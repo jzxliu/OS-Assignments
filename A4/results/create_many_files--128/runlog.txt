@@ -6,4 +6,4 @@ Points:
 	2.0/2.0 - create_many created 128 files, got 256.0/256.0 raw points from check_stat
 	1/1 - listing of created files is correct
 	1.0/1 - fsck result.
-Elapsed time: 0.20056753000244498 seconds
+Elapsed time: 0.20373354200273752 seconds
