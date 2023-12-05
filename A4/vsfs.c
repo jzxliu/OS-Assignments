@@ -633,6 +633,13 @@ static int vsfs_truncate(const char *path, off_t size)
         }
 
         if (inode->i_indirect && new_blocks < VSFS_NUM_DIRECT){ // Don't need indirect anymore
+            vsfs_blk_t *indirect_entries = (vsfs_blk_t *)(fs->image + inode->i_indirect * VSFS_BLOCK_SIZE);
+            for (unsigned int i = 0; i < VSFS_BLK_MAX / sizeof(vsfs_blk_t); i++){
+                if (indirect_entries[i]) {
+                    bitmap_free(fs->dbmap, fs->sb->sb_num_inodes, indirect_entries[i]);
+                    fs->sb->sb_free_blocks += 1;
+                }
+            }
             bitmap_free(fs->dbmap, fs->sb->sb_num_inodes, inode->i_indirect);
             inode->i_indirect = 0;
             fs->sb->sb_free_blocks += 1;
