@@ -404,7 +404,7 @@ static int vsfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
 
         // Set all the entries
         vsfs_dentry *new_indirect_entries = (vsfs_dentry *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
-        for (size_t i = 0; i < root_ino->i_size / sizeof(vsfs_dentry); i++) {
+        for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
             new_indirect_entries[i].ino = VSFS_INO_MAX;
         }
     }
