@@ -1,2 +1,2 @@
 checking if submission listing of vsfs-many.disk matches expected.
-Elapsed time: 0.20064448518678546 seconds
+Elapsed time: 0.1407600548118353 seconds

@@ -1,2 +1,2 @@
-Accumulated 15.21875 points out of 18.0 for the preceding create tests. Scaling to 8.5 / 10.0
-Elapsed time: 0.0002369589637964964 seconds
+Accumulated 18.0 points out of 18.0 for the preceding create tests. Scaling to 10.0 / 10.0
+Elapsed time: 0.00020610797218978405 seconds

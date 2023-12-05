@@ -3,4 +3,4 @@ Initial State:  os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_
 attempting to grow past max file size correctly returned EFBIG.
 Final State:    os.statvfs_result(f_bsize=4096, f_frsize=4096, f_blocks=4096, f_bfree=2015, 
                 f_bavail=2015, f_files=128, f_ffree=123, f_favail=123, f_flag=4102, f_namemax=252)
-Elapsed time: 0.23452676483429968 seconds
+Elapsed time: 0.22865666705183685 seconds
