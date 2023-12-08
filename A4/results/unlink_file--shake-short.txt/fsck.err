@@ -338,3 +338,31 @@ File system is inconsistent, but checking bitmaps anyway.
 DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
 ERROR: Found 5 bit mismatches.
 DONE CHECKING DATA BITMAP. ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: directory should have link count of 2, not 1 (subdirectories are not supported)
+	ERROR: inode 1's link count 1 and inode bitmap status free are inconsistent.
+ERROR: block 6 pointed to by inode block 0 is not marked allocated in data bitmap.
+ERROR: block 7 pointed to by inode block 1 is not marked allocated in data bitmap.
+ERROR: block 8 pointed to by inode block 2 is not marked allocated in data bitmap.
+ERROR: block 9 pointed to by inode block 3 is not marked allocated in data bitmap.
+ERROR: block 10 pointed to by inode block 4 is not marked allocated in data bitmap.
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: Found 5 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.
+DONE CHECKING SUPERBLOCK. NO ERRORS FOUND.
+ERROR: directory should have link count of 2, not 1 (subdirectories are not supported)
+	ERROR: inode 1's link count 1 and inode bitmap status free are inconsistent.
+ERROR: block 6 pointed to by inode block 0 is not marked allocated in data bitmap.
+ERROR: block 7 pointed to by inode block 1 is not marked allocated in data bitmap.
+ERROR: block 8 pointed to by inode block 2 is not marked allocated in data bitmap.
+ERROR: block 9 pointed to by inode block 3 is not marked allocated in data bitmap.
+ERROR: block 10 pointed to by inode block 4 is not marked allocated in data bitmap.
+DONE CHECKING INODES. ERRORS FOUND.
+DONE CHECKING DIRECTORIES. NO ERRORS FOUND.
+File system is inconsistent, but checking bitmaps anyway.
+DONE CHECKING INODE BITMAP. NO ERRORS FOUND.
+ERROR: Found 5 bit mismatches.
+DONE CHECKING DATA BITMAP. ERRORS FOUND.

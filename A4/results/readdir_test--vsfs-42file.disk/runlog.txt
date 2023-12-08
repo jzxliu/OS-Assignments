@@ -1,2 +1,2 @@
 checking if submission listing of vsfs-42file.disk matches expected.
-Elapsed time: 0.23425720585510135 seconds
+Elapsed time: 0.12948276987299323 seconds
