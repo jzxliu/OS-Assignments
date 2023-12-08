@@ -44,6 +44,7 @@
 // trailing '/'. For example, "/tmp/my_userid/dir/" will be passed to
 // FUSE callbacks as "/dir".
 
+static int vsfs_truncate(const char *path, off_t size);
 
 /**
  * Initialize the file system.
@@ -457,18 +458,18 @@ static int vsfs_unlink(const char *path)
 	fs_ctx *fs = get_fs();
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
 
+    vsfs_inode to_free;
+
     // Search in direct entries first
     for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
         if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
             vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
             for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                 if (strcmp(direct_entries[i].name, path + 1) == 0) {
+                    to_free = direct_entries[i].ino;
                     bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, direct_entries[i].ino);
-                    fs->sb->sb_free_inodes += 1;
                     direct_entries[i].ino = VSFS_INO_MAX;
-                    root_ino->i_nlink -= 1;
-                    clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-                    return 0;
+                    goto free_inode;
                 }
             }
         }
@@ -484,18 +485,23 @@ static int vsfs_unlink(const char *path)
                 vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
                 for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                     if (strcmp(indirect_entries[i].name, path + 1) == 0) {
+                        to_free = indirect_entries[i].ino;
                         bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, indirect_entries[i].ino);
-                        fs->sb->sb_free_inodes += 1;
                         indirect_entries[i].ino = VSFS_INO_MAX;
-
-                        root_ino->i_nlink -= 1;
-                        clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-                        return 0;
+                        goto free_inode;
                     }
                 }
             }
         }
     }
+
+    free_inode:
+    fs->sb->sb_free_inodes += 1;
+    root_ino->i_nlink -= 1;
+    clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
+
+    vsfs_truncate(path, 0);
+
 
 	return 0; // Shouldn't get here since path exists by assumption
 }
