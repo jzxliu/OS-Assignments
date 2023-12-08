@@ -500,8 +500,9 @@ static int vsfs_unlink(const char *path)
         }
     }
 
+    unlink_inode:
 
-    vsfs_inode *ino = fs->itable[to_free];
+    vsfs_inode *ino = &fs->itable[to_free];
 
     for (size_t n = 0; n < VSFS_NUM_DIRECT; n++) {
         if (ino->i_direct[n]) {
