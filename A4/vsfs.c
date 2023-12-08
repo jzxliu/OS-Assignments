@@ -457,18 +457,21 @@ static int vsfs_unlink(const char *path)
 	fs_ctx *fs = get_fs();
     vsfs_inode *root_ino = &fs->itable[VSFS_ROOT_INO];
 
+    vsfs_ino_t to_free;
+
     // Search in direct entries first
     for (int n = 0; n < VSFS_NUM_DIRECT; n++) {
         if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
             vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
             for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                 if (strcmp(direct_entries[i].name, path + 1) == 0) {
+                    to_free = direct_entries[i].ino;
                     bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, direct_entries[i].ino);
                     fs->sb->sb_free_inodes += 1;
                     direct_entries[i].ino = VSFS_INO_MAX;
                     root_ino->i_nlink -= 1;
                     clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-                    return 0;
+                    break;
                 }
             }
         }
@@ -484,17 +487,40 @@ static int vsfs_unlink(const char *path)
                 vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
                 for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                     if (strcmp(indirect_entries[i].name, path + 1) == 0) {
+                        to_free = indirect_entries[i].ino;
                         bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, indirect_entries[i].ino);
                         fs->sb->sb_free_inodes += 1;
                         indirect_entries[i].ino = VSFS_INO_MAX;
-
                         root_ino->i_nlink -= 1;
                         clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-                        return 0;
+                        goto unlink_inode;
                     }
                 }
             }
         }
+    }
+
+
+    vsfs_inode *ino = fs->itable[to_free];
+
+    for (size_t n = 0; n < VSFS_NUM_DIRECT; n++) {
+        if (ino->i_direct[n]) {
+            bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, ino->i_direct[n]);
+            fs->sb->sb_free_blocks += 1;
+        }
+    }
+
+    if (root_ino->i_indirect >= fs->sb->sb_data_region && root_ino->i_indirect < VSFS_BLK_MAX) {
+        vsfs_blk_t *indirect_blocks = (vsfs_blk_t *)(fs->image + root_ino->i_indirect * VSFS_BLOCK_SIZE);
+        // Search in every indirect block that exists
+        for (size_t n = 0; n < VSFS_BLOCK_SIZE/sizeof(vsfs_blk_t); n++){
+            if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
+                bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, indirect_blocks[n]);
+                fs->sb->sb_free_blocks += 1;
+            }
+        }
+        bitmap_free(fs->dbmap, fs->sb->sb_num_blocks, root_ino->i_indirect);
+        fs->sb->sb_free_blocks += 1;
     }
 
 	return 0; // Shouldn't get here since path exists by assumption
