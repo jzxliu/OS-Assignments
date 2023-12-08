@@ -2106,3 +2106,165 @@ read[0] 4096 bytes from 8192 flags: 0x8000
    unique: 30, success, outsize: 16
 unique: 32, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
    unique: 32, success, outsize: 16
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 11451
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 11256
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 11453
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 8, success, outsize: 144
+unique: 10, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 11453
+   unique: 10, success, outsize: 32
+unique: 12, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 11453
+   unique: 12, success, outsize: 32
+unique: 14, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 11453
+   unique: 14, success, outsize: 32
+unique: 16, opcode: READ (15), nodeid: 2, insize: 80, pid: 11453
+read[0] 4096 bytes from 0 flags: 0x8000
+   read[0] 35 bytes from 0
+   unique: 16, success, outsize: 51
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 11453
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 11455
+   unique: 22, success, outsize: 32
+unique: 24, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 11455
+getattr /onefile.txt
+   unique: 24, success, outsize: 120
+unique: 26, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 11455
+   unique: 26, success, outsize: 32
+unique: 28, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 11455
+   unique: 28, success, outsize: 32
+unique: 30, opcode: READ (15), nodeid: 2, insize: 80, pid: 11455
+read[0] 4096 bytes from 8192 flags: 0x8000
+   read[0] 0 bytes from 8192
+   unique: 30, success, outsize: 16
+unique: 32, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 32, success, outsize: 16
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 13811
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 13624
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 13813
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 8, success, outsize: 144
+unique: 10, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 13813
+   unique: 10, success, outsize: 32
+unique: 12, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 13813
+   unique: 12, success, outsize: 32
+unique: 14, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 13813
+   unique: 14, success, outsize: 32
+unique: 16, opcode: READ (15), nodeid: 2, insize: 80, pid: 13813
+read[0] 4096 bytes from 0 flags: 0x8000
+   read[0] 35 bytes from 0
+   unique: 16, success, outsize: 51
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 13813
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 13815
+   unique: 22, success, outsize: 32
+unique: 24, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 13815
+getattr /onefile.txt
+   unique: 24, success, outsize: 120
+unique: 26, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 13815
+   unique: 26, success, outsize: 32
+unique: 28, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 13815
+   unique: 28, success, outsize: 32
+unique: 30, opcode: READ (15), nodeid: 2, insize: 80, pid: 13815
+read[0] 4096 bytes from 8192 flags: 0x8000
+   read[0] 0 bytes from 8192
+   unique: 30, success, outsize: 16
+unique: 32, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 32, success, outsize: 16
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 36622
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 36145
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: LOOKUP (1), nodeid: 1, insize: 52, pid: 36624
+LOOKUP /onefile.txt
+getattr /onefile.txt
+   NODEID: 2
+   unique: 8, success, outsize: 144
+unique: 10, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 36624
+   unique: 10, success, outsize: 32
+unique: 12, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 36624
+   unique: 12, success, outsize: 32
+unique: 14, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 36624
+   unique: 14, success, outsize: 32
+unique: 16, opcode: READ (15), nodeid: 2, insize: 80, pid: 36624
+read[0] 4096 bytes from 0 flags: 0x8000
+   read[0] 35 bytes from 0
+   unique: 16, success, outsize: 51
+unique: 18, opcode: FLUSH (25), nodeid: 2, insize: 64, pid: 36624
+   unique: 18, error: -38 (Function not implemented), outsize: 16
+unique: 20, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 20, success, outsize: 16
+unique: 22, opcode: OPEN (14), nodeid: 2, insize: 48, pid: 36628
+   unique: 22, success, outsize: 32
+unique: 24, opcode: GETATTR (3), nodeid: 2, insize: 56, pid: 36628
+getattr /onefile.txt
+   unique: 24, success, outsize: 120
+unique: 26, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 36628
+   unique: 26, success, outsize: 32
+unique: 28, opcode: IOCTL (39), nodeid: 2, insize: 72, pid: 36628
+   unique: 28, success, outsize: 32
+unique: 30, opcode: READ (15), nodeid: 2, insize: 80, pid: 36628
+read[0] 4096 bytes from 8192 flags: 0x8000
+   read[0] 0 bytes from 8192
+   unique: 30, success, outsize: 16
+unique: 32, opcode: RELEASE (18), nodeid: 2, insize: 64, pid: 0
+   unique: 32, success, outsize: 16

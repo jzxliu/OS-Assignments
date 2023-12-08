@@ -1470,3 +1470,114 @@ getattr /shake-med.txt
 unique: 16, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 58002
 statfs /
    unique: 16, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 11590
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 11256
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 11592
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 54, pid: 11592
+LOOKUP /shake-med.txt
+getattr /shake-med.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 11592
+   unique: 12, error: -38 (Function not implemented), outsize: 16
+unique: 14, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 11592
+truncate /shake-med.txt 32768
+getattr /shake-med.txt
+   unique: 14, success, outsize: 120
+unique: 16, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 11592
+statfs /
+   unique: 16, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 13961
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 13624
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 13963
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 54, pid: 13963
+LOOKUP /shake-med.txt
+getattr /shake-med.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 13963
+   unique: 12, error: -38 (Function not implemented), outsize: 16
+unique: 14, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 13963
+truncate /shake-med.txt 32768
+getattr /shake-med.txt
+   unique: 14, success, outsize: 120
+unique: 16, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 13963
+statfs /
+   unique: 16, success, outsize: 96
+FUSE library version: 2.9.9
+nullpath_ok: 0
+nopath: 0
+utime_omit_ok: 0
+unique: 2, opcode: INIT (26), nodeid: 0, insize: 56, pid: 0
+INIT: 7.34
+flags=0x33fffffb
+max_readahead=0x00020000
+   INIT: 7.19
+   flags=0x00000011
+   max_readahead=0x00020000
+   max_write=0x00001000
+   max_background=0
+   congestion_threshold=0
+   unique: 2, success, outsize: 40
+unique: 4, opcode: GETATTR (3), nodeid: 1, insize: 56, pid: 36752
+getattr /
+   unique: 4, success, outsize: 120
+unique: 6, opcode: ACCESS (34), nodeid: 1, insize: 48, pid: 36145
+   unique: 6, error: -38 (Function not implemented), outsize: 16
+unique: 8, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 36754
+statfs /
+   unique: 8, success, outsize: 96
+unique: 10, opcode: LOOKUP (1), nodeid: 1, insize: 54, pid: 36754
+LOOKUP /shake-med.txt
+getattr /shake-med.txt
+   NODEID: 2
+   unique: 10, success, outsize: 144
+unique: 12, opcode: GETXATTR (22), nodeid: 2, insize: 68, pid: 36754
+   unique: 12, error: -38 (Function not implemented), outsize: 16
+unique: 14, opcode: SETATTR (4), nodeid: 2, insize: 128, pid: 36754
+truncate /shake-med.txt 32768
+getattr /shake-med.txt
+   unique: 14, success, outsize: 120
+unique: 16, opcode: STATFS (17), nodeid: 1, insize: 40, pid: 36754
+statfs /
+   unique: 16, success, outsize: 96

@@ -1,3 +1,3 @@
-Accumulated 8.899999999999999 points out of 15.0 for the preceding unlink tests.
-Scaled to 5.9 out of 10.
-Elapsed time: 0.0002538610715419054 seconds
+Accumulated 10.999999999999998 points out of 15.0 for the preceding unlink tests.
+Scaled to 7.3 out of 10.
+Elapsed time: 0.00016493815928697586 seconds
