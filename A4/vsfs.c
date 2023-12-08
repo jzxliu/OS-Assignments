@@ -44,7 +44,6 @@
 // trailing '/'. For example, "/tmp/my_userid/dir/" will be passed to
 // FUSE callbacks as "/dir".
 
-static int vsfs_truncate(const char *path, off_t size);
 
 /**
  * Initialize the file system.
@@ -465,11 +464,10 @@ static int vsfs_unlink(const char *path)
             for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                 if (strcmp(direct_entries[i].name, path + 1) == 0) {
                     bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, direct_entries[i].ino);
-                    direct_entries[i].ino = VSFS_INO_MAX;
                     fs->sb->sb_free_inodes += 1;
+                    direct_entries[i].ino = VSFS_INO_MAX;
                     root_ino->i_nlink -= 1;
                     clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-                    vsfs_truncate(path, 0);
                     return 0;
                 }
             }
@@ -487,11 +485,11 @@ static int vsfs_unlink(const char *path)
                 for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
                     if (strcmp(indirect_entries[i].name, path + 1) == 0) {
                         bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, indirect_entries[i].ino);
-                        indirect_entries[i].ino = VSFS_INO_MAX;
                         fs->sb->sb_free_inodes += 1;
+                        indirect_entries[i].ino = VSFS_INO_MAX;
+
                         root_ino->i_nlink -= 1;
                         clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-                        vsfs_truncate(path, 0);
                         return 0;
                     }
                 }
