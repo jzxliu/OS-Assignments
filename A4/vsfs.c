@@ -464,14 +464,15 @@ static int vsfs_unlink(const char *path)
         if (root_ino->i_direct[n] >= fs->sb->sb_data_region && root_ino->i_direct[n] < VSFS_BLK_MAX) {
             vsfs_dentry *direct_entries = (vsfs_dentry *)(fs->image + root_ino->i_direct[n] * VSFS_BLOCK_SIZE);
             for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
-                if (strcmp(direct_entries[i].name, path + 1) == 0) {
+                if (strcmp(direct_entries[i].name, path + 1) == 0 && direct_entries[i].ino) {
+                    memset(direct_entries[i].name, 0, VSFS_NAME_MAX);
                     to_free = direct_entries[i].ino;
                     bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, direct_entries[i].ino);
                     fs->sb->sb_free_inodes += 1;
                     direct_entries[i].ino = VSFS_INO_MAX;
                     root_ino->i_nlink -= 1;
                     clock_gettime(CLOCK_REALTIME, &(root_ino->i_mtime));
-                    break;
+                    goto unlink_inode;
                 }
             }
         }
@@ -486,7 +487,8 @@ static int vsfs_unlink(const char *path)
             if (indirect_blocks[n] >= fs->sb->sb_data_region && indirect_blocks[n] < VSFS_BLK_MAX){
                 vsfs_dentry *indirect_entries = (vsfs_dentry *)(fs->image + indirect_blocks[n] * VSFS_BLOCK_SIZE);
                 for (size_t i = 0; i < VSFS_BLOCK_SIZE / sizeof(vsfs_dentry); i++) {
-                    if (strcmp(indirect_entries[i].name, path + 1) == 0) {
+                    if (strcmp(indirect_entries[i].name, path + 1) == 0 && indirect_entries[i].ino) {
+                        memset(indirect_entries[i].name, 0, VSFS_NAME_MAX);
                         to_free = indirect_entries[i].ino;
                         bitmap_free(fs->ibmap, fs->sb->sb_num_inodes, indirect_entries[i].ino);
                         fs->sb->sb_free_inodes += 1;
@@ -499,6 +501,8 @@ static int vsfs_unlink(const char *path)
             }
         }
     }
+
+    return 0;
 
     unlink_inode:
 
